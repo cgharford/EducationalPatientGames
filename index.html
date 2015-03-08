@@ -4,7 +4,22 @@
     <meta charset="UTF-8">
     <title>Trauma Game\</title>
     <script type = "text/javascript" src = "./phaser.js"></script>
-    <script type = "text/javascript" src = "./game1/game.js"></script>
+    <script type = "text/javascript" src = "./boot.js"></script>
+    <script type = "text/javascript" src = "./game1/preload1.js"></script>
+    <script type = "text/javascript" src = "./game1/title1.js"></script>
+    <script type = "text/javascript" src = "./game1/game1.js"></script>
+    <script>
+        (function() {
+            var game = new Phaser.Game(400,400,Phaser.CANVAS, "Trauma Games");
+            game.state.add("Boot",boot);
+            //todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
+            //which game they want to play, then start the preload state of that particular game
+            game.state.add("Preload1",preload1);
+            game.state.add("Title1",title1);
+            game.state.add("Game1",game1);
+            game.state.start("Boot");
+        })();
+    </script>
 </head>
 <body>
 
