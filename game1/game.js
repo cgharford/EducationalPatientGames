@@ -13,27 +13,13 @@ var score;
 var scoreText;
 var errorText;
 var errorTextTimer;
+var victoryText;
 
 function create() {
-    safeChildren = game.add.group();
-    for (var i = 0; i < 3; i++) {
-        var safeChild = safeChildren.create(game.world.randomX, game.world.randomY, 'safe');
-        safeChild.inputEnabled = true;
-        safeChild.events.onInputDown.add(onSafeClick,this); //onSafeClick is the callback function, this the sprite that was clicked
-    }
-    safeChildren.setAll('scale.x',0.25); //ideally the real sprites will be designed so no scaling is necessary
-    safeChildren.setAll('scale.y',0.25);
-    safeChildren.setAll('outOfBoundsKill',true);
-
     unsafeChildren = game.add.group();
-    for (var i = 0; i < 3; i++) {
-        var unsafeChild = unsafeChildren.create(game.world.randomX, game.world.randomY, 'unsafe');
-        unsafeChild.inputEnabled = true;
-        unsafeChild.events.onInputDown.add(onUnsafeClick,this);
-    }
-    unsafeChildren.setAll('scale.x',0.25);
-    unsafeChildren.setAll('scale.y',0.25);
-    unsafeChildren.setAll('outOfBoundsKill',true);
+    safeChildren = game.add.group();
+    placeRandomChildren(unsafeChildren, 'unsafe', onUnsafeClick);
+    placeRandomChildren(safeChildren, 'safe', onSafeClick);
 
     score = 0;
     scoreText = game.add.text(0,0,'Score:' + score,{fill: '#ffffff'});
@@ -41,12 +27,19 @@ function create() {
         {font: '16px Arial', fill: '#ffffff', align: 'center'});
     errorText.visible = false;
     errorText.anchor.set(0.5);
+    victoryText = game.add.text(game.width/2,game.height/2,'Congratulations you won!',
+        {font: '24px Arial', fill: '#ffffff', align: 'center', wordWrap: true});
+    victoryText.visible = false;
+    victoryText.anchor.set(0.5);
 }
 
 function update() {
     scoreText.text = 'Score:' + score;
     if ((errorText.visible == true) && (game.time.now > errorTextTimer))
         errorText.visible = false;
+    if (unsafeChildren.countLiving() == 0)
+        victory();
+
 }
 
 function onSafeClick(sprite) {
@@ -64,4 +57,23 @@ function onUnsafeClick(sprite) {
     safeChild.scale.y = 0.25;
     safeChild.outOfBoundsKill = true;
     sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
+}
+
+function victory() {
+    safeChildren.forEach(function (child) {
+        child.kill();
+    });
+    errorText.visible = false;
+    victoryText.visible = true;
+}
+
+function placeRandomChildren(group, spriteName, listener) {
+    for (var i = 0; i < 3; i++) {
+        var child = group.create(game.world.randomX, game.world.randomY, spriteName);
+        child.inputEnabled = true;
+        child.events.onInputDown.add(listener,this);
+    }
+    group.setAll('scale.x',0.25);
+    group.setAll('scale.y',0.25);
+    group.setAll('outOfBoundsKill',true);
 }
