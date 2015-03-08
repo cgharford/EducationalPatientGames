@@ -11,6 +11,8 @@ var safeChildren;
 var unsafeChildren;
 var score;
 var scoreText;
+var errorText;
+var errorTextTimer;
 
 function create() {
     safeChildren = game.add.group();
@@ -35,15 +37,22 @@ function create() {
 
     score = 0;
     scoreText = game.add.text(0,0,'Score:' + score,{fill: '#ffffff'});
-    //scoreText.visible = true;
+    errorText = game.add.text(game.width/2,game.height/2,'Error that person was performing \na safe activity!',
+        {font: '16px Arial', fill: '#ffffff', align: 'center'});
+    errorText.visible = false;
+    errorText.anchor.set(0.5);
 }
 
 function update() {
     scoreText.text = 'Score:' + score;
+    if ((errorText.visible == true) && (game.time.now > errorTextTimer))
+        errorText.visible = false;
 }
 
 function onSafeClick(sprite) {
     score -= 1; //todo: make error text display when a safe child is clicked
+    errorTextTimer = game.time.now + 500; //error text will be displayed for 500 ms when a safe child is clicked
+    errorText.visible = true;
 }
 
 function onUnsafeClick(sprite) {
