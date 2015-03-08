@@ -48,7 +48,6 @@ function update() {
     if ((errorText.visible == true) && (game.time.now > errorTextTimer))
         errorText.visible = false;
 }
-
 function onSafeClick(sprite) {
     score -= 1; //todo: make error text display when a safe child is clicked
     errorTextTimer = game.time.now + 500; //error text will be displayed for 500 ms when a safe child is clicked
