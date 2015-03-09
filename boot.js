@@ -13,7 +13,7 @@ boot.prototype = {
         this.scale.pageAlignVertically = true;
         this.scale.setScreenSize(true); //may need to remove/change this since method is deprecated
         //this is where we can load a wrapper menu instead of the preload state of first game
-        this.game.state.start("Preload1");
+        this.game.state.start("Wrapper");
     }
 };
 

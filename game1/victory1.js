@@ -10,6 +10,9 @@ victory1.prototype = {
             textStyle);
         victoryText.visible = true;
         victoryText.anchor.set(0.5);
-        this.game.input.onDown.add(function () {this.game.state.start('Title1')}, this);
+        this.game.input.onDown.add(this.restart, this);
+    },
+    restart: function() {
+        this.game.state.start('Title1');
     }
 }
