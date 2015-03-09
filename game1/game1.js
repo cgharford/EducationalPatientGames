@@ -6,7 +6,10 @@ var game1 = function(game) {
     var scoreText;
     var errorText;
     var errorTextTimer;
-    var victoryText;
+    var successText;
+    var successTextTimer;
+    var victoryText
+    var textStyle;
 };
 
 game1.prototype = {
@@ -15,15 +18,19 @@ game1.prototype = {
         safeChildren = this.game.add.group();
         this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
         this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
-
+        textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
         scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
         errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Error that person was performing \na safe activity!',
-            {font: '16px Arial', fill: '#ffffff', align: 'center'});
+            textStyle);
         errorText.visible = false;
         errorText.anchor.set(0.5);
+        successText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Nice',
+            textStyle);
+        successText.visible = false;
+        successText.anchor.set(0.5);
         victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations you won!',
-            {font: '24px Arial', fill: '#ffffff', align: 'center', wordWrap: true});
+            textStyle);
         victoryText.visible = false;
         victoryText.anchor.set(0.5);
     },
@@ -31,17 +38,21 @@ game1.prototype = {
 
     update: function () {
         scoreText.text = 'Score:' + score;
-        if ((errorText.visible == true) && (this.game.time.now > errorTextTimer))
+        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
             errorText.visible = false;
-        if (unsafeChildren.countLiving() == 0)
+        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
+            successText.visible = false;
+        if (unsafeChildren.countLiving() === 0)
             this.victory();
 
     },
 
     onSafeClick: function (sprite) {
-        score -= 1; //todo: make error text display when a safe child is clicked
+        score -= 1;
+        successText.visible = false;
         errorTextTimer = this.game.time.now + 500; //error text will be displayed for 500 ms when a safe child is clicked
         errorText.visible = true;
+
     },
 
     onUnsafeClick: function (sprite) {
@@ -53,6 +64,9 @@ game1.prototype = {
         safeChild.scale.y = 0.25;
         safeChild.outOfBoundsKill = true;
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
+        errorText.visible = false;
+        successTextTimer = this.game.time.now + 500;
+        successText.visible = true;
     },
 
     victory: function () {
@@ -60,6 +74,7 @@ game1.prototype = {
             child.kill();
         });
         errorText.visible = false;
+        successText.visible = false;
         victoryText.visible = true;
         this.game.state.start("Title1",true,false);
     },
