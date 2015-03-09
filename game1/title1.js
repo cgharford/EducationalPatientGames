@@ -12,9 +12,12 @@ title1.prototype = {
             textStyle);
         titleText.anchor.set(0.5);
         titleText.visible = true;
-        var playButton = this.game.add.button(this.game.width/2,this.game.height/2 + titleText.height, 'play button',
-            this.playGame(),this);
+        var playButton = this.game.add.sprite(this.game.width/2, this.game.height/2 + titleText.height, 'play button');
+        playButton.inputEnabled = true;
+        //var playButton = this.game.add.button(this.game.width/2,this.game.height/2 + titleText.height, 'play button',
+        //    this.playGame(),this);
         playButton.anchor.set(0.5);
+        playButton.events.onInputDown.add(this.playGame,this);
     },
     playGame: function() {
         this.game.state.start("Game1");
