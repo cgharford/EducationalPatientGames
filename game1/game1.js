@@ -21,7 +21,7 @@ game1.prototype = {
         textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
         scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
-        errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Error that person was performing \na safe activity!',
+        errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!',
             textStyle);
         errorText.visible = false;
         errorText.anchor.set(0.5);
