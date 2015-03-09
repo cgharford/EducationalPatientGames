@@ -8,7 +8,7 @@ var game1 = function(game) {
     var errorTextTimer;
     var successText;
     var successTextTimer;
-    var victoryText
+    var victoryText;
     var textStyle;
 };
 
@@ -76,7 +76,7 @@ game1.prototype = {
         errorText.visible = false;
         successText.visible = false;
         victoryText.visible = true;
-        this.game.state.start("Title1",true,false);
+        this.game.state.start("Victory1",true,false);
     },
 
     placeRandomChildren: function (group, spriteName, listener) {
