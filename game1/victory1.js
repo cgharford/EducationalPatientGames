@@ -1,7 +1,6 @@
-var victory1 = function(game) {
-    var victoryText;
-    var textStyle;
-};
+var victory1 = function(game) {};
+var victoryText;
+var textStyle;
 
 victory1.prototype = {
     create: function () {

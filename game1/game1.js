@@ -1,16 +1,15 @@
 //game state for game1
-var game1 = function(game) {
-    var safeChildren;
-    var unsafeChildren;
-    var score;
-    var scoreText;
-    var errorText;
-    var errorTextTimer;
-    var successText;
-    var successTextTimer;
-    var victoryText;
-    var textStyle;
-};
+var game1 = function(game) {};
+var safeChildren;
+var unsafeChildren;
+var score;
+var scoreText;
+var errorText;
+var errorTextTimer;
+var successText;
+var successTextTimer;
+var victoryText;
+var textStyle;
 
 game1.prototype = {
     create: function () {
