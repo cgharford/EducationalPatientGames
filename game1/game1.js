@@ -50,21 +50,28 @@ game1.prototype = {
         score -= 1;
         successText.visible = false;
         errorTextTimer = this.game.time.now + 500; //error text will be displayed for 500 ms when a safe child is clicked
+        errorText.position.x = sprite.position.x;
+        errorText.position.y = sprite.position.y + sprite.height;
         errorText.visible = true;
 
     },
 
     onUnsafeClick: function (sprite) {
         score += 1;
-        var safeChild = safeChildren.create(sprite.position.x, sprite.position.y, 'safe');
+        var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
         safeChild.inputEnabled = true;
         safeChild.events.onInputDown.add(this.onSafeClick, this);
         safeChild.scale.x = 0.25;
         safeChild.scale.y = 0.25;
+        safeChild.anchor.set(0.5);
+        safeChild.position.x = sprite.position.x;
+        safeChild.position.y = sprite.position.y;
         safeChild.outOfBoundsKill = true;
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
+        successText.position.x = safeChild.position.x;
+        successText.position.y = safeChild.position.y + safeChild.height;
         successText.visible = true;
     },
 
@@ -80,9 +87,13 @@ game1.prototype = {
 
     placeRandomChildren: function (group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
-            var child = group.create(this.game.world.randomX, this.game.world.randomY, spriteName);
+            var child;
+            child = group.create(0, 0, spriteName);
             child.inputEnabled = true;
             child.events.onInputDown.add(listener, this);
+            child.anchor.set(0.5);
+            child.position.x = this.game.world.randomX;
+            child.position.y = this.game.world.randomY;
         }
         group.setAll('scale.x', 0.25);
         group.setAll('scale.y', 0.25);
