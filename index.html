@@ -12,7 +12,7 @@
     <script type = "text/javascript" src = "./wrapper.js"></script>
     <script>
         (function() {
-            var game = new Phaser.Game(400,400,Phaser.CANVAS, "Trauma Games");
+            var game = new Phaser.Game('80%','80%',Phaser.CANVAS, "container");
             game.state.add("Boot",boot);
             //todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
             //which game they want to play, then start the preload state of that particular game
