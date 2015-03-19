@@ -3,9 +3,12 @@ var preload1 = function(game) {};
 
 preload1.prototype = {
     preload: function() {
-        this.game.load.image('safe','./assets/images/bluesquare.png');
-        this.game.load.image('unsafe','./assets/images/redsquare.png'); //todo:  load these as spritesheets and add animtions
+        //this.game.load.image('safe','./assets/images/bluesquare.png');
+        //this.game.load.image('unsafe','./assets/images/redsquare.png'); //todo:  load these as spritesheets and add animtions
         this.game.load.image('play button', './assets/images/button1.png');
+        this.game.load.spritesheet('safe', './assets/images/spritesheets/h-bikegirl-red.png', 80, 80);
+        this.game.load.spritesheet('unsafe', './assets/images/spritesheets/bikegirl-red.png', 80, 80);
+
     },
     create: function() {
         this.game.state.add("Title1",title1);

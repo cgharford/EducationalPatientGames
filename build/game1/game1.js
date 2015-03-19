@@ -1,5 +1,6 @@
 //game state for game1
 var game1 = function(game) {};
+var child;
 var safeChildren;
 var unsafeChildren;
 var score;
@@ -13,10 +14,13 @@ var textStyle;
 
 game1.prototype = {
     create: function () {
+
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
+
         this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
         this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
+
         textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
         scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
@@ -36,6 +40,9 @@ game1.prototype = {
 
 
     update: function () {
+
+        child.animations.play('ride');
+
         scoreText.text = 'Score:' + score;
         if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
             errorText.visible = false;
@@ -43,6 +50,7 @@ game1.prototype = {
             successText.visible = false;
         if (unsafeChildren.countLiving() === 0)
             this.victory();
+
 
     },
 
@@ -87,13 +95,16 @@ game1.prototype = {
 
     placeRandomChildren: function (group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
-            var child;
+
             child = group.create(0, 0, spriteName);
             child.inputEnabled = true;
             child.events.onInputDown.add(listener, this);
             child.anchor.set(0.5);
             child.position.x = this.game.world.randomX;
             child.position.y = this.game.world.randomY;
+
+            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+
         }
         group.setAll('scale.x', 0.25);
         group.setAll('scale.y', 0.25);
