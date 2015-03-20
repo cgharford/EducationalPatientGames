@@ -72,12 +72,19 @@ game1.prototype = {
                 currentChild.move();
                 currentChild.animations.play('ride');
 			}
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
+            /* if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill();//weird stuff still happening with killing offscreen?
+<<<<<<< HEAD
             }
            // if (Math.random() > .99) {
             //    this.changeDirection(currentChild);
            // }
+=======
+            } */
+            if (Math.random() > .98) {
+                this.changeDirection(currentChild);
+            }
+>>>>>>> origin/master
 
         }
         for (var i = 0; i < safeChildren.children.length; i++) {
@@ -86,12 +93,19 @@ game1.prototype = {
                 currentChild.move();
                 currentChild.animations.play('ride');
 			}
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
+            /* if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
+<<<<<<< HEAD
             }
           //  if (Math.random() > .98) {
            //     this.changeDirection(currentChild);
             //}
+=======
+            } */
+            if (Math.random() > .98) {
+                this.changeDirection(currentChild);
+            }
+>>>>>>> origin/master
         }
 
 
@@ -171,6 +185,7 @@ game1.prototype = {
         child.direction = direction;
         child.scale.x = .25;
         child.scale.y = .25;
+        child.checkWorldBounds = true;
         child.outOfBoundsKill = true;        //Not sure if outOfBoundsKill is doing it's job
         child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
 
