@@ -21,12 +21,13 @@ game1.prototype = {
 		//this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
         //this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
 		//Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
-        this.createChild(50, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        this.createChild(50, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        this.createChild(200, 200, "left", safeChildren, 'safe', this.onSafeClick);
+        this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 
-        this.startSpawn(5, this.game.width, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        this.startSpawn(3, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
+        this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
+		this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 
         //This will allow to check num of living unsafe children to see if offscreen are killed
         //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
@@ -74,9 +75,9 @@ game1.prototype = {
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill();//weird stuff still happening with killing offscreen?
             }
-            if (Math.random() > .98) {
-                this.changeDirection(currentChild);
-            }
+           // if (Math.random() > .99) {
+            //    this.changeDirection(currentChild);
+           // }
 
         }
         for (var i = 0; i < safeChildren.children.length; i++) {
@@ -88,9 +89,9 @@ game1.prototype = {
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
             }
-            if (Math.random() > .98) {
-                this.changeDirection(currentChild);
-            }
+          //  if (Math.random() > .98) {
+           //     this.changeDirection(currentChild);
+            //}
         }
 
 
