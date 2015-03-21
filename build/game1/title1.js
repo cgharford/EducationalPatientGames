@@ -3,7 +3,6 @@
 var title1 = function(game) {};
 var textStyle;
 
-//todo: for some reason it doesn't pause and wait for play button to be clicked
 title1.prototype = {
     create: function() {
         textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};

@@ -3,7 +3,14 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Trauma Game\</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link type="text/css" href="./css/bootstrap.min.css">
+
     <script type = "text/javascript" src = "./js/libs/phaser.js"></script>
+    <script type = "text/javascript" src = "./js/libs/jquery.min.js"></script>
+
     <script type = "text/javascript" src = "./build/boot.js"></script>
     <script type = "text/javascript" src = "./build/wrapper.js"></script>
 
@@ -14,16 +21,24 @@
 
     <script>
         (function() {
-            var game = new Phaser.Game('80%','80%',Phaser.CANVAS, "container");
+            var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;
+
+            var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game-container");
+
             game.state.add("Boot",boot);
             //todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
             //which game they want to play, then start the preload state of that particular game
             game.state.add("Wrapper",wrapper);
             game.state.start("Boot");
+
+
         })();
     </script>
+
 </head>
 <body>
+
+<div class="container-fluid" id="game-container"></div>
 
 </body>
 </html>
