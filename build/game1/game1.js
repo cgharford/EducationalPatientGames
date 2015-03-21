@@ -15,6 +15,7 @@ game1.prototype = {
     create: function () {
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
+<<<<<<< HEAD
 //this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
 //this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
 //Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
@@ -26,6 +27,23 @@ game1.prototype = {
         this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 //This will allow to check num of living unsafe children to see if offscreen are killed
 //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
+=======
+
+		//this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
+        //this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
+		//Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
+        this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+
+        this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
+		this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+
+        //This will allow to check num of living unsafe children to see if offscreen are killed
+        //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
         textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
         scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
@@ -43,7 +61,13 @@ game1.prototype = {
         victoryText.anchor.set(0.5);
     },
     update: function () {
+<<<<<<< HEAD
 // child.animations.play('ride');
+=======
+
+       // child.animations.play('ride');
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
         scoreText.text = 'Score:' + score;
         if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
             errorText.visible = false;
@@ -51,12 +75,21 @@ game1.prototype = {
             successText.visible = false;
         if (unsafeChildren.countLiving() === 0)
             this.victory();
+<<<<<<< HEAD
 //Trying out movement stuff
+=======
+
+
+
+        //Trying out movement stuff
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
         for (var i = 0; i < unsafeChildren.children.length; i++) {
             var currentChild = unsafeChildren.children[i];
             if (currentChild.alive){
                 currentChild.move();
                 currentChild.animations.play('ride');
+<<<<<<< HEAD
             }
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill();//weird stuff still happening with killing offscreen?
@@ -64,12 +97,30 @@ game1.prototype = {
 // if (Math.random() > .99) {
 // this.changeDirection(currentChild);
 // }
+=======
+			}
+            /* if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
+                currentChild.kill();//weird stuff still happening with killing offscreen?
+<<<<<<< HEAD
+            }
+           // if (Math.random() > .99) {
+            //    this.changeDirection(currentChild);
+           // }
+=======
+            } */
+            if (Math.random() > .98) {
+                this.changeDirection(currentChild);
+            }
+>>>>>>> origin/master
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
         }
         for (var i = 0; i < safeChildren.children.length; i++) {
             var currentChild = safeChildren.children[i];
             if (currentChild.alive){
                 currentChild.move();
                 currentChild.animations.play('ride');
+<<<<<<< HEAD
             }
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
@@ -78,6 +129,25 @@ game1.prototype = {
 // this.changeDirection(currentChild);
 //}
         }
+=======
+			}
+            /* if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
+                currentChild.kill(); //weird stuff still happening with killing offscreen?
+<<<<<<< HEAD
+            }
+          //  if (Math.random() > .98) {
+           //     this.changeDirection(currentChild);
+            //}
+=======
+            } */
+            if (Math.random() > .98) {
+                this.changeDirection(currentChild);
+            }
+>>>>>>> origin/master
+        }
+
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
     },
     onSafeClick: function (sprite) {
         score -= 1;
@@ -89,6 +159,7 @@ game1.prototype = {
     },
     onUnsafeClick: function (sprite) {
         score += 1;
+<<<<<<< HEAD
         /* var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
          safeChild.inputEnabled = true;
          safeChild.events.onInputDown.add(this.onSafeClick, this);
@@ -99,6 +170,18 @@ game1.prototype = {
          safeChild.position.y = sprite.position.y;
          safeChild.outOfBoundsKill = true;*/
         this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
+=======
+      /*  var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
+        safeChild.inputEnabled = true;
+        safeChild.events.onInputDown.add(this.onSafeClick, this);
+        safeChild.scale.x = 0.25;
+        safeChild.scale.y = 0.25;
+        safeChild.anchor.set(0.5);
+        safeChild.position.x = sprite.position.x;
+        safeChild.position.y = sprite.position.y;
+        safeChild.outOfBoundsKill = true;*/
+		this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
@@ -129,9 +212,17 @@ game1.prototype = {
         group.setAll('scale.y', 0.25);
         group.setAll('outOfBoundsKill', true);
     },
+<<<<<<< HEAD
     startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
         var delayTime = Phaser.Timer.SECOND * timeDelay;
         this.game.time.events.loop(delayTime, this.createChild,this, x, y, direction, group, spriteName, listener);
+=======
+	 startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
+        var delayTime = Phaser.Timer.SECOND * timeDelay;
+        this.game.time.events.loop(delayTime, this.createChild,this, x, y, direction, group, spriteName, listener);
+
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
     },
     createChild: function (startx, starty, direction, group, spriteName, listener) {
         var child;
@@ -144,8 +235,15 @@ game1.prototype = {
         child.direction = direction;
         child.scale.x = .25;
         child.scale.y = .25;
+<<<<<<< HEAD
         child.outOfBoundsKill = true; //Not sure if outOfBoundsKill is doing it's job
         child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+=======
+        child.checkWorldBounds = true;
+        child.outOfBoundsKill = true;        //Not sure if outOfBoundsKill is doing it's job
+        child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
         child.move = function () {
             if (this.direction === "up") {
                 this.position.y--;
@@ -159,6 +257,7 @@ game1.prototype = {
             else if (this.direction === "right") {
                 this.position.x++;
             }
+<<<<<<< HEAD
         };
 //group.setAll('scale.x', 0.25);
 //group.setAll('scale.y', 0.25);
@@ -166,6 +265,18 @@ game1.prototype = {
     },
 //NOTE: Since sprites die offscreen I don't worry about them randomly going off screen.
 //TODO: plan to plot movement along background instead of random movement, random movement just for demo purposes
+=======
+			
+			
+        };
+        //group.setAll('scale.x', 0.25);
+        //group.setAll('scale.y', 0.25);
+        //group.setAll('outOfBoundsKill', true);
+    },
+
+    //NOTE: Since sprites die offscreen I don't worry about them randomly going off screen.
+    //TODO: plan to plot movement along background instead of random movement, random movement just for demo purposes
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
     changeDirection: function(sprite){
         var randNum = Math.round(Math.random() * (100));
         if (randNum < 25){
@@ -179,10 +290,23 @@ game1.prototype = {
         }
         else{
             sprite.direction = "down";
+<<<<<<< HEAD
         }
     },
 //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
     announceLiving: function(){
         alert(this.unsafeChildren.countLiving());
     }
+=======
+
+        }
+    },
+
+    //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
+    announceLiving: function(){
+        alert(this.unsafeChildren.countLiving());
+    }
+
+
+>>>>>>> 22d27fe7c960e00b06227388e2b968d6dbcee9d9
 };
