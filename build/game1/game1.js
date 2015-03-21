@@ -73,11 +73,15 @@ game1.prototype = {
                 currentChild.animations.play('ride');
 			}
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
-                currentChild.kill();//weird stuff still happening with killing offscreen?
+                currentChild.kill();
+                //weird stuff still happening with killing offscreen?
             }
-           // if (Math.random() > .99) {
-            //    this.changeDirection(currentChild);
-           // }
+
+            /*
+            if (Math.random() > .99) {
+                this.changeDirection(currentChild);
+            }
+           */
 
         }
         for (var i = 0; i < safeChildren.children.length; i++) {
@@ -89,9 +93,11 @@ game1.prototype = {
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
             }
-          //  if (Math.random() > .98) {
-           //     this.changeDirection(currentChild);
-            //}
+            /*
+            if (Math.random() > .98) {
+                this.changeDirection(currentChild);
+            }
+            */
         }
 
 
@@ -109,7 +115,8 @@ game1.prototype = {
 
     onUnsafeClick: function (sprite) {
         score += 1;
-      /*  var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
+        /*
+        var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
         safeChild.inputEnabled = true;
         safeChild.events.onInputDown.add(this.onSafeClick, this);
         safeChild.scale.x = 0.25;
@@ -117,7 +124,8 @@ game1.prototype = {
         safeChild.anchor.set(0.5);
         safeChild.position.x = sprite.position.x;
         safeChild.position.y = sprite.position.y;
-        safeChild.outOfBoundsKill = true;*/
+        safeChild.outOfBoundsKill = true;
+        */
 		this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
         errorText.visible = false;
