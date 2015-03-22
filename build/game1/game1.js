@@ -13,6 +13,13 @@ var victoryText;
 var textStyle;
 game1.prototype = {
     create: function () {
+
+        var park = this.add.sprite(1024, 768, 'park');
+        park.x = 0;
+        park.y = 0;
+        park.height = this.game.height;
+        park.width = this.game.width;
+
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
 
