@@ -153,8 +153,8 @@ game1.prototype = {
             child.position.y = this.game.world.randomY;
             child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
         }
-        group.setAll('scale.x', 0.25);
-        group.setAll('scale.y', 0.25);
+        //group.setAll('scale.x', 0.25);
+        //group.setAll('scale.y', 0.25);
         group.setAll('outOfBoundsKill', true);
     },
 
@@ -172,8 +172,8 @@ game1.prototype = {
         child.position.x = startx;
         child.position.y = starty;
         child.direction = direction;
-        child.scale.x = .25;
-        child.scale.y = .25;
+        //child.scale.x = .25;
+        //child.scale.y = .25;
 
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;        //Not sure if outOfBoundsKill is doing it's job
