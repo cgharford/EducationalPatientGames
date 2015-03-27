@@ -11,7 +11,7 @@ boot.prototype = {
         /*
         if (this.game.device.desktop === false) {
             this.scale.forceOrientation(true,false);
-            this.scale.enterIncorrectOrientation.add(function () {}, this);
+            this.scale.enterIncorrectOrientation.add(function() {}, this);
             this.scale.leaveIncorrectOrientation.add(function() {}, this);
          }*/
         //this is where we can load a wrapper menu instead of the preload state of first game
