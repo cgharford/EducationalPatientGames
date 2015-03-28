@@ -18,4 +18,3 @@ boot.prototype = {
         this.game.state.start("Wrapper");
     }
 };
-
