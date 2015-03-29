@@ -234,17 +234,13 @@ game1.prototype = {
 		shifter.position.x = x;
 		shifter.position.y = y;
 		shifter.direction = newDirection;
-		shifter.on = true;
 		this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
 
 	},
 	
 	shiftDirection : function(sprite, shifter){
-		if (shifter.on){
-			sprite.direction = shifter.direction;
-			shifter.on = False
-		}
-		else (shifter.on = true)
+		sprite.direction = shifter.direction;
+		
 	},
 		
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
