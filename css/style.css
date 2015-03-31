@@ -1,4 +1,30 @@
-html,body{
-	background-color: black;
-	color:white;
+nav{
+    padding-top: 30px;
+    padding-bottom:10px;
+}
+
+h2{
+    display: inline-block;
+    margin-top: 0px;
+}
+
+.navbar-form{
+    border-bottom: none;
+    border-top: none;
+}
+
+body{
+	color: #ADD8E6;
+	background: url("../assets/images/html-blue-bg.png");
+}
+
+#game-container{
+    padding-top:50px;
+    padding-bottom:50px;
+}
+
+footer{
+    color: white;
+    height: 70px;
+    position: relative;
 }

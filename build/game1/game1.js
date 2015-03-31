@@ -13,7 +13,7 @@ var victoryText;
 var textStyle;
 game1.prototype = {
     create: function () {
-
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
         var park = this.add.sprite(1024, 768, 'park');
         park.x = 0;
         park.y = 0;
@@ -22,6 +22,9 @@ game1.prototype = {
 
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
+		directionShifters = this.game.add.group();
+		
+		
 
 		//this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
         //this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
@@ -30,10 +33,15 @@ game1.prototype = {
         this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
         this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 
+		//We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
+       // this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
 		this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 
+		
+		this.createShifter(this.game.width-100, 150, "down");
+		
+		this.createShifter(this.game.width-100, 750, "left");
         //This will allow to check num of living unsafe children to see if offscreen are killed
         //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
 
@@ -54,6 +62,8 @@ game1.prototype = {
         victoryText.anchor.set(0.5);
     },
     update: function () {
+		this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
+		this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
        // child.animations.play('ride');
 
@@ -174,7 +184,7 @@ game1.prototype = {
         child.direction = direction;
         //child.scale.x = .25;
         //child.scale.y = .25;
-
+		this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;        //Not sure if outOfBoundsKill is doing it's job
         child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
@@ -217,7 +227,22 @@ game1.prototype = {
 
         }
     },
+	
+	createShifter : function(x, y, newDirection) {
+		shifter = directionShifters.create(0, 0);
+		shifter.anchor.set(.5);
+		shifter.position.x = x;
+		shifter.position.y = y;
+		shifter.direction = newDirection;
+		this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
 
+	},
+	
+	shiftDirection : function(sprite, shifter){
+		sprite.direction = shifter.direction;
+		
+	},
+		
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
     announceLiving: function(){
         alert(this.unsafeChildren.countLiving());
