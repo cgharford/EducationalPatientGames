@@ -5,6 +5,9 @@
 //expect is the jasmine equivalent of assert
 
 "use strict";
+var HOSTNAME = "bluefish.cs.unc.edu";
+var SERVERLISTENPORT = "3130";
+
 describe("Hello World", function() {
     it("says hello", function() {
         expect(helloWorld()).toEqual("Hello World!");
@@ -13,16 +16,17 @@ describe("Hello World", function() {
         expect(helloWorld()).not.toEqual(null);
     })
 });
-
-describe("Server Responds", function() {
+//to test the server need to run server in background and then simulate requests in the testing suite
+describe("Server", function() {
     var request = require('request');
-    var myServ = new Server(10080);
+    var serverAddr = HOSTNAME + ":" + SERVERLISTENPORT;
     it("says hello", function(done) {
-        request("http://localhost:10080", function(error, response, body) {
+        request(serverAddr, function(error, response, body) {
             expect(body).toEqual("Hello");
             done();
         })
     })
+
 });
 
 
