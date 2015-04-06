@@ -17,9 +17,8 @@ game1.prototype = {
         var park = this.add.sprite(1024, 768, 'park');
         park.x = 0;
         park.y = 0;
-        park.height = this.game.height;
+		park.height = this.game.height;
         park.width = this.game.width;
-
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
 		directionShifters = this.game.add.group();
@@ -29,19 +28,26 @@ game1.prototype = {
 		//this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
         //this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
 		//Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
-        this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+       // this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+       // this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+       // this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 
 		//We can create spawn points wherever we want so the sprites start on paths etc.
-        this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        //this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
        // this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
-		this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-
+		//this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		this.createChild(this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		this.createShifter(13 * (this.game.width/14), this.game.height/8, "down");
+		this.createShifter(13 * (this.game.width / 14), 17 * this.game.height/18, "left");
+		this.createShifter(this.game.width/5, 4 * this.game.height/8, "right");
+		this.createShifter(4*this.game.width/9, 4 * this.game.height/8, "up-right");
+		this.createShifter(7*this.game.width/11, this.game.height/4, "up-left");
 		
-		this.createShifter(this.game.width-100, 150, "down");
+		//this.createShifter(this.game.width-100, 150, "down");
 		
-		this.createShifter(this.game.width-100, 750, "left");
+		//this.createShifter(this.game.width-100, 750, "left");
         //This will allow to check num of living unsafe children to see if offscreen are killed
         //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
 
@@ -203,6 +209,28 @@ game1.prototype = {
                 this.position.x++;
             }
 			
+			else if (this.direction == "up-right"){
+				this.position.x++;
+				this.position.y--;
+			}
+			
+			else if (this.direction == "up-left"){
+				this.position.x--;
+				this.position.y--;
+			
+			}
+			
+			else if (this.direction == "down-left"){
+				this.position.x--;
+				this.position.y++;
+			}
+			
+			else if (this.direction == "down-right"){
+				this.position.x++;
+				this.position.y++;
+				
+			}
+			
         };
         //group.setAll('scale.x', 0.25);
         //group.setAll('scale.y', 0.25);
@@ -229,7 +257,7 @@ game1.prototype = {
     },
 	
 	createShifter : function(x, y, newDirection) {
-		shifter = directionShifters.create(0, 0);
+		shifter = directionShifters.create(0, 0, 'redsquare');
 		shifter.anchor.set(.5);
 		shifter.position.x = x;
 		shifter.position.y = y;
