@@ -68,6 +68,8 @@ game1.prototype = {
         victoryText.anchor.set(0.5);
     },
     update: function () {
+		//this.game.width  = window.innerWidth * window.devicePixelRatio;
+		//this.game.height = window.innerHeight * window.devicePixelRatio;
 		this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
 		this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
@@ -257,7 +259,7 @@ game1.prototype = {
     },
 	
 	createShifter : function(x, y, newDirection) {
-		shifter = directionShifters.create(0, 0, 'redsquare');
+		shifter = directionShifters.create(0, 0);
 		shifter.anchor.set(.5);
 		shifter.position.x = x;
 		shifter.position.y = y;
