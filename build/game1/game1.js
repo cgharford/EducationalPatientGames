@@ -3,8 +3,10 @@ var game1 = function(game) {};
 //var child;
 var safeChildren;
 var unsafeChildren;
+var directionShifters;
 var score;
 var scoreText;
+var bad_sound;
 var errorText;
 var errorTextTimer;
 var successText;
@@ -13,6 +15,7 @@ var victoryText;
 var textStyle;
 game1.prototype = {
     create: function () {
+
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
         var park = this.add.sprite(1024, 768, 'park');
         park.x = 0;
@@ -45,6 +48,8 @@ game1.prototype = {
         //This will allow to check num of living unsafe children to see if offscreen are killed
         //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
 
+        bad_sound = this.add.audio('bad_sound');
+
         textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
         scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
@@ -62,58 +67,60 @@ game1.prototype = {
         victoryText.anchor.set(0.5);
     },
     update: function () {
-		this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
-		this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
+        if(this.cache.isSoundDecoded('bad_sound') && this.ready === false) {
 
-       // child.animations.play('ride');
+            this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
+            this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
-        scoreText.text = 'Score:' + score;
-        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
-            errorText.visible = false;
-        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
-            successText.visible = false;
-        if (unsafeChildren.countLiving() === 0)
-            this.victory();
+            // child.animations.play('ride');
 
-        //Trying out movement stuff
+            scoreText.text = 'Score:' + score;
+            if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
+                errorText.visible = false;
+            if ((successText.visible === true) && (this.game.time.now > successTextTimer))
+                successText.visible = false;
+            if (unsafeChildren.countLiving() === 0)
+                this.victory();
 
-        for (var i = 0; i < unsafeChildren.children.length; i++) {
-            var currentChild = unsafeChildren.children[i];
-            if (currentChild.alive){
-                currentChild.move();
-                currentChild.animations.play('ride');
+            //Trying out movement stuff
+
+            for (var i = 0; i < unsafeChildren.children.length; i++) {
+                var currentChild = unsafeChildren.children[i];
+                if (currentChild.alive) {
+                    currentChild.move();
+                    currentChild.animations.play('ride');
+
+                }
+                if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+                    currentChild.kill();
+                    //weird stuff still happening with killing offscreen?
+                }
+
+                /*
+                 if (Math.random() > .99) {
+                 this.changeDirection(currentChild);
+                 }
+                 */
 
             }
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
-                currentChild.kill();
-                //weird stuff still happening with killing offscreen?
-            }
+            for (var i = 0; i < safeChildren.children.length; i++) {
+                var currentChild = safeChildren.children[i];
+                if (currentChild.alive) {
+                    currentChild.move();
+                    currentChild.animations.play('ride');
 
-            /*
-            if (Math.random() > .99) {
-                this.changeDirection(currentChild);
-            }
-           */
+                }
+                if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+                    currentChild.kill(); //weird stuff still happening with killing offscreen?
+                }
+                /*
+                 if (Math.random() > .98) {
+                 this.changeDirection(currentChild);
+                 }
+                 */
 
+            }
         }
-        for (var i = 0; i < safeChildren.children.length; i++) {
-            var currentChild = safeChildren.children[i];
-            if (currentChild.alive){
-                currentChild.move();
-                currentChild.animations.play('ride');
-
-            }
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0){
-                currentChild.kill(); //weird stuff still happening with killing offscreen?
-            }
-            /*
-            if (Math.random() > .98) {
-                this.changeDirection(currentChild);
-            }
-            */
-
-        }
-
     },
     onSafeClick: function (sprite) {
         score -= 1;
@@ -122,6 +129,8 @@ game1.prototype = {
         errorText.position.x = sprite.position.x;
         errorText.position.y = sprite.position.y + sprite.height;
         errorText.visible = true;
+        bad_sound.play();
+
     },
     onUnsafeClick: function (sprite) {
         score += 1;

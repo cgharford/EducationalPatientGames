@@ -8,6 +8,7 @@ preload1.prototype = {
         this.game.load.image('park', './assets/images/park-bg.jpg');
         this.game.load.spritesheet('safe', './assets/images/spritesheets/h-bikegirl-red.png', 80, 80);
         this.game.load.spritesheet('unsafe', './assets/images/spritesheets/bikegirl-red.png', 80, 80);
+        this.game.load.audio('bad_sound', './assets/audio/bad-sound.wav', true);
 
     },
     create: function() {
