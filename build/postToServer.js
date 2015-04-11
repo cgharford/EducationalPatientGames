@@ -1,6 +1,6 @@
 var http = require('http');
-HOST = "localhost";
-PORT = 10080;
+HOST = "bluefish.cs.unc.edu";
+PORT = 3131;
 name = "test";
 highScore = 5000;
 
