@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Sat Mar 28 2015 16:05:35 GMT-0400 (Eastern Daylight Time)
+// Generated on Thu Apr 09 2015 12:34:57 GMT-0400 (Eastern Daylight Time)
 
 module.exports = function(config) {
   config.set({
@@ -15,8 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      './specs/*.js',
-      './build/*.js'
+      'build/**.js',
+      'specs/*Spec.js'
     ],
 
 
