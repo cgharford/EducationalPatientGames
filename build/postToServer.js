@@ -1,8 +1,10 @@
 var http = require('http');
-HOST = bluefish.cs.unc.edu
-PORT = 3131;
+HOST = "localhost";
+PORT = 10080;
+name = "test";
+highScore = 5000;
 
-function postToServer(name, highScore) {
+//function postToServer(name, highScore) {
     var user = {
         username: name,
         score: highScore
@@ -25,7 +27,7 @@ function postToServer(name, highScore) {
 
 // Setup the request.  The options parameter is
 // the object we defined above.
-    var req = http.request(options, function (res) {
+    var req = http.request(options); /*, function (res) {
         res.setEncoding('utf-8');
 
         var responseString = '';
@@ -41,9 +43,9 @@ function postToServer(name, highScore) {
 
     req.on('error', function (e) {
         // TODO: handle error.
-    });
+    }); */
 
     req.write(userString);
     req.end();
 
-}
+//}
