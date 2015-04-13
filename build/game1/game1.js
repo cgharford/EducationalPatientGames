@@ -40,13 +40,15 @@ game1.prototype = {
        // this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
 		//this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 		this.createChild(this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-		this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-		this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick);
-		this.createShifter(13 * (this.game.width/14), this.game.height/8, "down");
-		this.createShifter(13 * (this.game.width / 14), 17 * this.game.height/18, "left");
-		this.createShifter(this.game.width/5, 4 * this.game.height/8, "right");
-		this.createShifter(4*this.game.width/9, 4 * this.game.height/8, "up-right");
-		this.createShifter(7*this.game.width/11, this.game.height/4, "up-left");
+		//this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		//this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
+		this.startSpawn(6, this.game.width, (this.game.height/8), "left");		
+		this.startSpawn(4, 0, (this.game.height/4), "down-right")
+		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down");
+		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left");
+		this.createShifter(this.game.width/7, 5 * this.game.height/9, "right");
+		this.createShifter(5*this.game.width/9, 4 * this.game.height/8, "up-right");
+		this.createShifter(7*this.game.width/11, this.game.height/7, "up-left");
 		
 		//this.createShifter(this.game.width-100, 150, "down");
 		
@@ -58,36 +60,49 @@ game1.prototype = {
 
         textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
-        scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
+		timeRemaining = 60;
+        scoreText = this.game.add.text(0, 0, 'Score: ' + score, {fill: '#ffffff'});
         errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!',
             textStyle);
+		clockText = this.game.add.text(this.game.width/20 + errorText.width, 0, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
+		this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
         errorText.visible = false;
         errorText.anchor.set(0.5);
         successText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Nice',
             textStyle);
         successText.visible = false;
         successText.anchor.set(0.5);
-        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations you won!',
-            textStyle);
-        victoryText.visible = false;
+        //victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations you won!', textStyle);
+		victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
+		victoryText.visible = false;
         victoryText.anchor.set(0.5);
     },
     update: function () {
-        	if(this.cache.isSoundDecoded('bad_sound') && this.ready === false) {
+		
+				//todo: this was breaking the game, not sure how critical it is to have
+        	//if(this.cache.isSoundDecoded('bad_sound') && this.ready === false) {
 
             this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
             this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
             // child.animations.play('ride');
 
-            scoreText.text = 'Score:' + score;
+            scoreText.text = 'Score: ' + score;
+			clockText.text = 'Time Remaining: ' + timeRemaining;
+			victoryText.text = 'Congratulations your score is ' + score + '!'
+		
             if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
                 errorText.visible = false;
             if ((successText.visible === true) && (this.game.time.now > successTextTimer))
                 successText.visible = false;
-            if (unsafeChildren.countLiving() === 0)
-                this.victory();
+            //if (unsafeChildren.countLiving() === 0)
+            //    this.victory();
 
+		
+			if (timeRemaining <= 0){
+				this.victory();
+			}
             //Trying out movement stuff
 
             for (var i = 0; i < unsafeChildren.children.length; i++) {
@@ -125,11 +140,13 @@ game1.prototype = {
                  }
                  */
 
-            }
+            //}
         }
     },
     onSafeClick: function (sprite) {
-        score -= 1;
+        if (score > 0){
+			score -= 1;
+		}
         successText.visible = false;
         errorTextTimer = this.game.time.now + 500; //error text will be displayed for 500 ms when a safe child is clicked
         errorText.position.x = sprite.position.x;
@@ -150,14 +167,19 @@ game1.prototype = {
         safeChild.position.x = sprite.position.x;
         safeChild.position.y = sprite.position.y;
         safeChild.outOfBoundsKill = true;*/
-        this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
-
+		var safeChild;
+		safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
+		errorText.visible = false;
+		successTextTimer = this.game.time.now + 500;
+		successText.position.x = sprite.position.x;
+		successText.position.y = sprite.position.y;
+		successText.visible = true;
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
-        errorText.visible = false;
-        successTextTimer = this.game.time.now + 500;
-        successText.position.x = safeChild.position.x;
-        successText.position.y = safeChild.position.y + safeChild.height;
-        successText.visible = true;
+       // errorText.visible = false;
+        //successTextTimer = this.game.time.now + 500;
+       // successText.position.x = safeChild.position.x;
+       // successText.position.y = safeChild.position.y + safeChild.height;
+       // successText.visible = true;
     },
     victory: function () {
         safeChildren.forEach(function (child) {
@@ -166,7 +188,7 @@ game1.prototype = {
         errorText.visible = false;
         successText.visible = false;
         victoryText.visible = true;
-        this.game.state.start("Victory1",true,false);
+        this.game.state.start("Victory1",true,false, score);
     },
     placeRandomChildren: function (group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
@@ -183,11 +205,41 @@ game1.prototype = {
         group.setAll('outOfBoundsKill', true);
     },
 
-    startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
+    //startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
+	startSpawn: function (timeDelay, x, y, direction) {
         var delayTime = Phaser.Timer.SECOND * timeDelay;
-        this.game.time.events.loop(delayTime, this.createChild,this, x, y, direction, group, spriteName, listener);
+		//var newSprite = null;
+		
+        this.game.time.events.loop(delayTime, this.createRandomChild,this, x, y, direction);
 
     },
+	
+	updateTime: function(){
+		timeRemaining-= 1;
+	},
+	
+	
+	createRandomChild: function (startx, starty, direction){
+		var group;
+		var spriteName;
+		var listener;
+		var randomNum = Math.random();
+		if (randomNum > .35){
+			
+			group = unsafeChildren;
+			spriteName = 'unsafe';
+			listener = this.onUnsafeClick;
+		}
+		else {
+			
+			group = safeChildren;
+			spriteName = 'safe';
+			listener = this.onSafeClick;
+		}
+		
+		 this.createChild(startx, starty, direction, group, spriteName, listener);
+		
+	},
     createChild: function (startx, starty, direction, group, spriteName, listener) {
         var child;
         child = group.create(0, 0, spriteName);
@@ -197,11 +249,13 @@ game1.prototype = {
         child.position.x = startx;
         child.position.y = starty;
         child.direction = direction;
+		if (child.direction == "right" || child.direction == "down-right"  || child.direction == "up-right")
+			child.scale.x = child.scale.x * -1;
         //child.scale.x = .25;
         //child.scale.y = .25;
 		this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
-        child.outOfBoundsKill = true;        //Not sure if outOfBoundsKill is doing it's job
+        child.outOfBoundsKill = true;        
         child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
 
         child.move = function () {
@@ -266,18 +320,32 @@ game1.prototype = {
     },
 	
 	createShifter : function(x, y, newDirection) {
-		shifter = directionShifters.create(0, 0);
+		shifter = directionShifters.create(0, 0, "redsquare");
+		shifter.visible = false;
+		shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
+		shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);
 		shifter.anchor.set(.5);
 		shifter.position.x = x;
 		shifter.position.y = y;
 		shifter.direction = newDirection;
+		shifter.scale.x = (window.innerWidth * window.devicePixelRatio * .0004);
+		shifter.scale.y = (window.innerHeight * window.devicePixelRatio * .0004);
+        
 		this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
 
 	},
 	
 	shiftDirection : function(sprite, shifter){
-		sprite.direction = shifter.direction;
 		
+		if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")){
+			sprite.scale.x = sprite.scale.x * -1;
+		}
+		else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")){
+			sprite.scale.x = sprite.scale.x * -1;
+		}
+		else sprite.scale.x = sprite.scale.x;
+		
+		sprite.direction = shifter.direction;
 	},
 		
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
