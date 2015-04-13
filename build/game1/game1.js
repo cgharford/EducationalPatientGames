@@ -1,7 +1,8 @@
 //game state for game1
 var game1 = function(game) {};
 
-var safeChildren,
+var park,
+    safeChildren,
     unsafeChildren,
     directionShifters,
     textStyle,
@@ -11,7 +12,10 @@ var safeChildren,
     errorTextTimer,
     successText,
     successTextTimer,
+    timeRemaining,
+    clockText,
     pause,
+    instructions,
     bad_sound,
     victoryText;
 
@@ -21,7 +25,7 @@ game1.prototype = {
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         //Add background
-        var park = this.add.sprite(1024, 768, 'park');
+        park = this.add.sprite(1024, 768, 'park');
         park.x = 0;
         park.y = 0;
 		park.height = this.game.height;
@@ -96,6 +100,9 @@ game1.prototype = {
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
+        instructions = this.add.image(1000, this.game.world.centerY - 500, 'instructions');
+        instructions.visible = false;
+
         // Click anywhere to unpause
         this.game.input.onDown.add(this.unpauseGame, this);
 
@@ -107,9 +114,13 @@ game1.prototype = {
 
     pauseGame: function(){
         this.game.paused = true;
+        instructions.visible = true;
+
     },
     unpauseGame: function(){
         this.game.paused = false;
+        instructions.visible = false;
+
     },
 
     update: function () {
