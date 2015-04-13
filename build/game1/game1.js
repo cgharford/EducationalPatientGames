@@ -11,6 +11,7 @@ var safeChildren,
     errorTextTimer,
     successText,
     successTextTimer,
+    pause,
     bad_sound,
     victoryText;
 
@@ -73,7 +74,7 @@ game1.prototype = {
         score = 0;
         timeRemaining = 60;
 
-        textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
+        textStyle = {font: '30px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
 
         // Add error message
         errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!', textStyle);
@@ -86,14 +87,29 @@ game1.prototype = {
         successText.anchor.set(0.5);
 
         //  Place score and timer in upper left hand corner
-        scoreText = this.game.add.text(0, 0, 'Score: ' + score, {fill: '#ffffff'});
-        clockText = this.game.add.text(this.game.width/20 + errorText.width, 0, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
+        scoreText = this.game.add.text(20, this.game.height - 50, 'Score: ' + score, {fill: '#ffffff'});
+        clockText = this.game.add.text(this.game.width/20 + errorText.width, this.game.height - 50, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
+        // Allow game to be paused
+        pause = this.game.add.text(errorText.width + clockText.width*2, this.game.height - 50, "Pause", {fill: '#ffffff'});
+        pause.inputEnabled = true;
+        pause.events.onInputDown.add(this.pauseGame, this);
+
+        // Click anywhere to unpause
+        this.game.input.onDown.add(this.unpauseGame, this);
 
         // On time out, show score
 		victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
 		victoryText.visible = false;
         victoryText.anchor.set(0.5);
+    },
+
+    pauseGame: function(){
+        this.game.paused = true;
+    },
+    unpauseGame: function(){
+        this.game.paused = false;
     },
 
     update: function () {
@@ -379,6 +395,4 @@ game1.prototype = {
     announceLiving: function(){
         alert(this.unsafeChildren.countLiving());
     }
-
-
 };
