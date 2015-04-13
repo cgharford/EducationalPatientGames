@@ -40,8 +40,10 @@ game1.prototype = {
        // this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
 		//this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 		this.createChild(this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-		this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-		this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		//this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		//this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
+		this.startSpawn(6, this.game.width, (this.game.height/8), "left");		
+		this.startSpawn(4, 0, (this.game.height/4), "down-right")
 		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down");
 		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left");
 		this.createShifter(this.game.width/7, 5 * this.game.height/9, "right");
@@ -59,7 +61,7 @@ game1.prototype = {
         textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
         score = 0;
 		timeRemaining = 60;
-        scoreText = this.game.add.text(0, 0, 'Score:' + score, {fill: '#ffffff'});
+        scoreText = this.game.add.text(0, 0, 'Score: ' + score, {fill: '#ffffff'});
         errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!',
             textStyle);
 		clockText = this.game.add.text(this.game.width/20 + errorText.width, 0, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
@@ -71,9 +73,9 @@ game1.prototype = {
             textStyle);
         successText.visible = false;
         successText.anchor.set(0.5);
-        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations you won!',
-            textStyle);
-        victoryText.visible = false;
+        //victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations you won!', textStyle);
+		victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
+		victoryText.visible = false;
         victoryText.anchor.set(0.5);
     },
     update: function () {
@@ -86,8 +88,10 @@ game1.prototype = {
 
             // child.animations.play('ride');
 
-            scoreText.text = 'Score:' + score;
+            scoreText.text = 'Score: ' + score;
 			clockText.text = 'Time Remaining: ' + timeRemaining;
+			victoryText.text = 'Congratulations your score is ' + score + '!'
+		
             if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
                 errorText.visible = false;
             if ((successText.visible === true) && (this.game.time.now > successTextTimer))
@@ -163,14 +167,19 @@ game1.prototype = {
         safeChild.position.x = sprite.position.x;
         safeChild.position.y = sprite.position.y;
         safeChild.outOfBoundsKill = true;*/
-        this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
-
+		var safeChild;
+		safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
+		errorText.visible = false;
+		successTextTimer = this.game.time.now + 500;
+		successText.position.x = sprite.position.x;
+		successText.position.y = sprite.position.y;
+		successText.visible = true;
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
-        errorText.visible = false;
-        successTextTimer = this.game.time.now + 500;
-        successText.position.x = safeChild.position.x;
-        successText.position.y = safeChild.position.y + safeChild.height;
-        successText.visible = true;
+       // errorText.visible = false;
+        //successTextTimer = this.game.time.now + 500;
+       // successText.position.x = safeChild.position.x;
+       // successText.position.y = safeChild.position.y + safeChild.height;
+       // successText.visible = true;
     },
     victory: function () {
         safeChildren.forEach(function (child) {
@@ -179,7 +188,7 @@ game1.prototype = {
         errorText.visible = false;
         successText.visible = false;
         victoryText.visible = true;
-        this.game.state.start("Victory1",true,false);
+        this.game.state.start("Victory1",true,false, score);
     },
     placeRandomChildren: function (group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
@@ -196,14 +205,40 @@ game1.prototype = {
         group.setAll('outOfBoundsKill', true);
     },
 
-    startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
+    //startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
+	startSpawn: function (timeDelay, x, y, direction) {
         var delayTime = Phaser.Timer.SECOND * timeDelay;
-        this.game.time.events.loop(delayTime, this.createChild,this, x, y, direction, group, spriteName, listener);
+		//var newSprite = null;
+		
+        this.game.time.events.loop(delayTime, this.createRandomChild,this, x, y, direction);
 
     },
 	
 	updateTime: function(){
 		timeRemaining-= 1;
+	},
+	
+	
+	createRandomChild: function (startx, starty, direction){
+		var group;
+		var spriteName;
+		var listener;
+		var randomNum = Math.random();
+		if (randomNum > .35){
+			
+			group = unsafeChildren;
+			spriteName = 'unsafe';
+			listener = this.onUnsafeClick;
+		}
+		else {
+			
+			group = safeChildren;
+			spriteName = 'safe';
+			listener = this.onSafeClick;
+		}
+		
+		 this.createChild(startx, starty, direction, group, spriteName, listener);
+		
 	},
     createChild: function (startx, starty, direction, group, spriteName, listener) {
         var child;
@@ -214,7 +249,7 @@ game1.prototype = {
         child.position.x = startx;
         child.position.y = starty;
         child.direction = direction;
-		if (child.direction == "right" || child.direction == "down-right"  || child.direction == "down-left")
+		if (child.direction == "right" || child.direction == "down-right"  || child.direction == "up-right")
 			child.scale.x = child.scale.x * -1;
         //child.scale.x = .25;
         //child.scale.y = .25;
