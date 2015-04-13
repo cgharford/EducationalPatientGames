@@ -1,0 +1,26 @@
+{
+  "name": "EducationalPatientGames",
+  "version": "1.0.0",
+  "description": "",
+  "main": "karma.conf.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/COMP523Trauma/EducationalPatientGames.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/COMP523Trauma/EducationalPatientGames/issues"
+  },
+  "homepage": "https://github.com/COMP523Trauma/EducationalPatientGames",
+  "devDependencies": {
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-cli": "0.0.4",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-jasmine": "^0.3.5"
+  }
+}

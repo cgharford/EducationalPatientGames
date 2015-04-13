@@ -1,5 +1,5 @@
 // Karma configuration
-// Generated on Thu Apr 09 2015 12:34:57 GMT-0400 (Eastern Daylight Time)
+// Generated on Mon Apr 13 2015 15:34:15 GMT-0400 (EDT)
 
 module.exports = function(config) {
   config.set({
@@ -14,14 +14,12 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: [
-      'build/**.js',
-      'specs/*Spec.js'
+    files: ['build/*.js','build/game1/*.js','js/libs/phaser.js','specs/*.js'
     ],
 
 
     // list of files to exclude
-    exclude: [
+    exclude: ['build/nodeServer.js', 'build/postToServer.js'
     ],
 
 
@@ -51,12 +49,12 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Firefox'],
 
 
     // Continuous Integration mode
