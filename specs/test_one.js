@@ -1,7 +1,23 @@
+/*
+function helloWorld(){
+    return "Hello World!";
+}
+
+describe("Test One", function(){
+    it("should say hello world", function(){
+        expect(helloWorld()).toBe("Hello World!");
+    });
+
+    it("should not be null", function(){
+        expect(helloWorld()).not.toBe(null);
+    });
+});
+*/
+
 describe("Educational Patient Games", function(){
     describe("Wrapper loads", function(){
         it("should preload game images", function(){
-            //expect().tobe();
+            //expect().toBe(true);
         });
 
         it("should add game images", function(){

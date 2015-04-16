@@ -14,12 +14,12 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: ['build/*.js','build/game1/*.js','js/libs/phaser.js','specs/*.js'
+    files: ['build/*.js','build/game1/*.js','js/libs/phaser.js','specs/test_one.js'
     ],
 
 
     // list of files to exclude
-    exclude: ['build/nodeServer.js', 'build/postToServer.js'
+    exclude: ['build/nodeServer.js', 'build/postToServer.js', 'serverSpec.js'
     ],
 
 
