@@ -7,7 +7,6 @@
 "use strict";
 
 describe("Hello World", function() {
-    //myModule = require("example.js");
     it("says hello", function() {
         expect(helloWorld()).toEqual("Hello World!");
     });
