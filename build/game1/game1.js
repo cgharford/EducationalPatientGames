@@ -1,44 +1,58 @@
 //game state for game1
 var game1 = function(game) {};
-//var child;
-var safeChildren;
-var unsafeChildren;
-var directionShifters;
-var score;
-var scoreText;
-var bad_sound;
-var errorText;
-var errorTextTimer;
-var successText;
-var successTextTimer;
-var victoryText;
-var textStyle;
+
+var park,
+    safeChildren,
+    unsafeChildren,
+    directionShifters,
+    textStyle,
+    score,
+    scoreText,
+    errorText,
+    errorTextTimer,
+    successText,
+    successTextTimer,
+    timeRemaining,
+    clockText,
+    pause,
+    instructions,
+    bad_sound,
+    victoryText;
+
 game1.prototype = {
     create: function () {
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        var park = this.add.sprite(1024, 768, 'park');
+
+        //Add background
+        park = this.add.sprite(1024, 768, 'park');
         park.x = 0;
         park.y = 0;
 		park.height = this.game.height;
         park.width = this.game.width;
+
+        //Create children group and invisible collision objects group
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
 		directionShifters = this.game.add.group();
 		
 		
+        /*
+		this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
+		
+        Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
+        this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        
 
-		//this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
-        //this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
-		//Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
-       // this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-       // this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-       // this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+		We can create spawn points wherever we want so the sprites start on paths etc.
+        this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
+		this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        */
 
-		//We can create spawn points wherever we want so the sprites start on paths etc.
-        //this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-       // this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
-		//this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 		this.createChild(this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 		//this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 		//this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
@@ -50,61 +64,89 @@ game1.prototype = {
 		this.createShifter(5*this.game.width/9, 4 * this.game.height/8, "up-right");
 		this.createShifter(7*this.game.width/11, this.game.height/7, "up-left");
 		
-		//this.createShifter(this.game.width-100, 150, "down");
-		
-		//this.createShifter(this.game.width-100, 750, "left");
-        //This will allow to check num of living unsafe children to see if offscreen are killed
-        //this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
+        /*
+		this.createShifter(this.game.width-100, 150, "down");
+		this.createShifter(this.game.width-100, 750, "left");
+        This will allow to check num of living unsafe children to see if offscreen are killed
+        this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
+        */
 
+        // Add funky negative sound
         bad_sound = this.add.audio('bad_sound');
 
-        textStyle = {font: '16px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
+        // Score starts at 0, timer starts at 60 seconds
         score = 0;
-		timeRemaining = 60;
-        scoreText = this.game.add.text(0, 0, 'Score: ' + score, {fill: '#ffffff'});
-        errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!',
-            textStyle);
-		clockText = this.game.add.text(this.game.width/20 + errorText.width, 0, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
-		this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+        timeRemaining = 60;
 
+        textStyle = {font: '30px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
+
+        // Add error message
+        errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!', textStyle);
         errorText.visible = false;
         errorText.anchor.set(0.5);
-        successText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Nice',
-            textStyle);
+
+        // Add success message
+        successText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Nice', textStyle);
         successText.visible = false;
         successText.anchor.set(0.5);
-        //victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations you won!', textStyle);
+
+        //  Place score and timer in upper left hand corner
+        scoreText = this.game.add.text(20, this.game.height - 50, 'Score: ' + score, {fill: '#ffffff'});
+        clockText = this.game.add.text(this.game.width/20 + errorText.width, this.game.height - 50, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
+        // Allow game to be paused
+        pause = this.game.add.text(errorText.width + clockText.width*2, this.game.height - 50, "Pause", {fill: '#ffffff'});
+        pause.inputEnabled = true;
+        pause.events.onInputDown.add(this.pauseGame, this);
+
+        instructions = this.add.image(1000, this.game.world.centerY - 500, 'instructions');
+        instructions.visible = false;
+
+        // Click anywhere to unpause
+        this.game.input.onDown.add(this.unpauseGame, this);
+
+        // On time out, show score
 		victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
 		victoryText.visible = false;
         victoryText.anchor.set(0.5);
     },
+
+    pauseGame: function(){
+        this.game.paused = true;
+        instructions.visible = true;
+
+    },
+    unpauseGame: function(){
+        this.game.paused = false;
+        instructions.visible = false;
+
+    },
+
     update: function () {
 		
-				//todo: this was breaking the game, not sure how critical it is to have
-        	//if(this.cache.isSoundDecoded('bad_sound') && this.ready === false) {
-
+            // On overlap of children and invisible objects (function) shift direction
             this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
             this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
-
-            // child.animations.play('ride');
-
+            
+            // Update score, timer, and victory texts with new values
             scoreText.text = 'Score: ' + score;
 			clockText.text = 'Time Remaining: ' + timeRemaining;
 			victoryText.text = 'Congratulations your score is ' + score + '!'
 		
+            // If error/success text were visible for 500ms, hide them
             if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
                 errorText.visible = false;
             if ((successText.visible === true) && (this.game.time.now > successTextTimer))
                 successText.visible = false;
-            //if (unsafeChildren.countLiving() === 0)
-            //    this.victory();
 
-		
+            // If timer runs out, show victory		
 			if (timeRemaining <= 0){
 				this.victory();
 			}
-            //Trying out movement stuff
 
+            // For each child alive, move and animate
+            // For each child off screen, kill sprite
             for (var i = 0; i < unsafeChildren.children.length; i++) {
                 var currentChild = unsafeChildren.children[i];
                 if (currentChild.alive) {
@@ -112,9 +154,9 @@ game1.prototype = {
                     currentChild.animations.play('ride');
 
                 }
+                // Weird stuff happening with killing off screen
                 if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
                     currentChild.kill();
-                    //weird stuff still happening with killing offscreen?
                 }
 
                 /*
@@ -124,6 +166,8 @@ game1.prototype = {
                  */
 
             }
+            // For each child alive, move and animate
+            // For each child off screen, kill sprite
             for (var i = 0; i < safeChildren.children.length; i++) {
                 var currentChild = safeChildren.children[i];
                 if (currentChild.alive) {
@@ -131,30 +175,40 @@ game1.prototype = {
                     currentChild.animations.play('ride');
 
                 }
+                // Weird stuff happening with killing off screen
                 if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
                     currentChild.kill(); //weird stuff still happening with killing offscreen?
                 }
+
                 /*
                  if (Math.random() > .98) {
                  this.changeDirection(currentChild);
                  }
                  */
-
-            //}
-        }
+            }   
     },
+
+    // Clicking a sprite being safe
     onSafeClick: function (sprite) {
+
+        // Decrement score
         if (score > 0){
 			score -= 1;
 		}
-        successText.visible = false;
-        errorTextTimer = this.game.time.now + 500; //error text will be displayed for 500 ms when a safe child is clicked
-        errorText.position.x = sprite.position.x;
-        errorText.position.y = sprite.position.y + sprite.height;
-        errorText.visible = true;
+
+        // Play error sound
         bad_sound.play();
 
+        // Place error msg at sprite for 500ms and set to visible
+        errorText.position.x = sprite.position.x;
+        errorText.position.y = sprite.position.y + sprite.height;
+        errorTextTimer = this.game.time.now + 500;
+        errorText.visible = true;
+        successText.visible = false;
+
     },
+
+    // Clicking a sprite being unsafe
     onUnsafeClick: function (sprite) {
         score += 1;
         /*
@@ -352,6 +406,4 @@ game1.prototype = {
     announceLiving: function(){
         alert(this.unsafeChildren.countLiving());
     }
-
-
 };

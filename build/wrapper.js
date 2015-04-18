@@ -26,6 +26,12 @@ wrapper.prototype = {
         var ngImageB = this.game.add.sprite(5*this.game.width/6, this.game.height/2, "ng");
         ngImageB.anchor.set(.5);
         ngImageB.scale.setTo(.8,.8);
+
+        if(csImage !== null && ngImageA !== null && ngImageB !== null){
+            return true;
+        } else {
+            return false;
+        }
         
     },
     captainSafetySelect: function() {
