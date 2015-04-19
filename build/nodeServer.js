@@ -27,23 +27,28 @@ var server = http.createServer(function(request, response) {
         });
         request.on('end', function() {
             var obj = JSON.parse(body);
-            console.log("creating new record in database");
+            console.log("---creating new record in database---");
             console.log("username of " + obj.username); //this is how you
             console.log("score of " + obj.score);
+            console.log("date of " + obj.date);
             console.log(obj);
             MongoClient.connect(url, function (err, db) {
                 if (err) {
                     //stop the function
+                    console.log("ERROR");
+                    db.close();
                 }
-                console.log("connected to mongo, database: + " + DATABASENAME);
-                var collection = db.collection(COLLECTIONNAME);
-                insertDocuments(collection, obj);
-                db.close();
+                else {
+                    console.log("connected to mongo, database: + " + DATABASENAME);
+                    var collection = db.collection(COLLECTIONNAME);
+                    insertDocuments(db, collection, obj);
+                    //db.close();
+                }
             });
-        })
+        });
     }
     if (request.method === "GET") {
-        //read a record
+        //return a list of scores logged today up to a limit of 20
         request.on('data', function(data) {
             body += data;
             if (body.length > 1e6) {
@@ -61,14 +66,16 @@ var server = http.createServer(function(request, response) {
     if (request.method === "DELETE") {
         //delete a record
     }
-    response.end("Hello");
+    response.end("End of response");
     });
 server.listen(port);
 console.log("Server ready");
 
-function insertDocuments(collection, data) {
+function insertDocuments(db, collection, data) {
     collection.insertOne(data, function(err, r) {
         assert.equal(null, err);
         assert.equal(1, r.insertedCount);
+        db.close();
+        console.log("record written successfully and database closed");
     })
 }
