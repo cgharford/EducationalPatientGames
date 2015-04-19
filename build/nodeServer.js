@@ -6,8 +6,10 @@ var qs = require("querystring");
 var port = process.argv[2];  //pass the port number as first argument in the command line
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
+//var ClientStream = require("ClientStream");
 var DATABASENAME = "educational_patient_games";
 var COLLECTIONNAME = "captain_safety";
+var GETLIMIT = 20; //limit to number of scores returned by a GET request
 var url = "mongodb://localhost:27017/" + DATABASENAME;
 
 var server = http.createServer(function(request, response) {
@@ -35,7 +37,7 @@ var server = http.createServer(function(request, response) {
             MongoClient.connect(url, function (err, db) {
                 if (err) {
                     //stop the function
-                    console.log("ERROR");
+                    console.log(err);
                     db.close();
                 }
                 else {
@@ -49,7 +51,8 @@ var server = http.createServer(function(request, response) {
     }
     if (request.method === "GET") {
         //return a list of scores logged today up to a limit of 20
-        request.on('data', function(data) {
+        //this occurs regardless of content of the get request so not necessary to read it
+        /* request.on('data', function(data) {
             body += data;
             if (body.length > 1e6) {
                 request.connection.destroy();
@@ -58,15 +61,24 @@ var server = http.createServer(function(request, response) {
         request.on('end', function() {
             var post = qs.parse(body);
             console.log(post);
+        }) */
+        MongoClient.connect(url, function(err, db) {
+            if (err) {
+                console.log(err);
+                db.close();
+            }
+            else {
+                console.log("connect to mongo, database: " + DATABASENAME);
+                var collection = db.collection(COLLECTIONNAME);
+                retrieveDocuments(db, collection, response);
+            }
         })
     }
-    if (request.method === "PUT") {
-        //update existing record
+    else {
+        //case of a PUT or DELETE
+        response.write("Server does not support the given HTTP method")
     }
-    if (request.method === "DELETE") {
-        //delete a record
-    }
-    response.end("End of response");
+    response.end();
     });
 server.listen(port);
 console.log("Server ready");
@@ -78,4 +90,30 @@ function insertDocuments(db, collection, data) {
         db.close();
         console.log("record written successfully and database closed");
     })
+}
+
+function retrieveDocuments(db, collection, response) {
+    var myDate = new Date();
+    collection.find({date: (myDate.getMonth()+1) + " " + myDate.getDate() + " " + myDate.getFullYear()},
+        {username: true, score: true},
+        { limit: GETLIMIT }).forEach(function (data) {
+            response.write(JSON.stringify(data));
+        });
+
+
+        /*function (err, cur) {
+            assert.equal(null, err);
+            response.writeHead(200, {"Content-Type:":"application/json"});
+            cur.forEach(function (data) {
+                response.write(data);
+            });
+        }); */
+    /*
+    myStream.on('data', function (doc) {
+        response.write(doc);
+    });
+    myStream.on('close', function() {
+        db.close();
+        console.log("records successfully retrieve and sent to the client");
+    }); */
 }
