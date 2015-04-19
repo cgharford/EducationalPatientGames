@@ -49,7 +49,7 @@ var server = http.createServer(function(request, response) {
             });
         });
     }
-    if (request.method === "GET") {
+    else if (request.method === "GET") {
         //return a list of scores logged today up to a limit of 20
         //this occurs regardless of content of the get request so not necessary to read it
         /* request.on('data', function(data) {
@@ -79,6 +79,11 @@ var server = http.createServer(function(request, response) {
         response.write("Server does not support the given HTTP method")
     }
     response.end();
+    try {
+        db.close();
+    }
+    catch (err) {
+    }
     });
 server.listen(port);
 console.log("Server ready");
@@ -88,7 +93,7 @@ function insertDocuments(db, collection, data) {
         assert.equal(null, err);
         assert.equal(1, r.insertedCount);
         db.close();
-        console.log("record written successfully and database closed");
+        console.log("record written successfully and connection closed");
     })
 }
 
