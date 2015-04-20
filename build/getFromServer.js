@@ -30,14 +30,16 @@ var req = http.request(options, function(res) {
         try {
             var resultObject = JSON.parse(responseString);
             console.log(resultObject);
+            //result object are the retrieved records in JSON format
+            //TODO:  display the given names/scoress somewhere on the client side
+            //here is how you can iterate over the scores
+            for (i = 0; i < resultObject.length; i++) {
+                console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
+            }
         }
         catch (err) {
             console.log(err);
         }
-        //TODO:  This is where you can receive the scores from the database and do whatever you need to with them
-        //the database will return score records in response to a GET request
-        //to ask for scores posted on april 19, 2015 the mongo query looks like
-        //db.captain_safety.find({date: "4 19 2015"})
     });
 });
 

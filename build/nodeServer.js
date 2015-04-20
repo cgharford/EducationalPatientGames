@@ -79,11 +79,6 @@ var server = http.createServer(function(request, response) {
         response.write("Server does not support the given HTTP method")
         response.end();
     }
-    try {
-        db.close();
-    }
-    catch (err) {
-    }
     });
 server.listen(port);
 console.log("Server ready");
@@ -107,9 +102,13 @@ function retrieveDocuments(db, collection, response) {
                 'Content-Type': 'application/json',
                 'Content-Length': body.length
             });
-            console.log(JSON.stringify(data));
+            console.log("The following records successfully retrieved at " + myDate.getHours() + ":" +
+            myDate.getMinutes() + ":" + myDate.getSeconds() + " on " +
+            (myDate.getMonth()+1) + " " + myDate.getDate() + " " + myDate.getFullYear() + "\n"
+            + JSON.stringify(data));
             response.write(JSON.stringify(data));
             response.end();
+            db.close();
         });
 
 
