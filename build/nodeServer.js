@@ -77,8 +77,8 @@ var server = http.createServer(function(request, response) {
     else {
         //case of a PUT or DELETE
         response.write("Server does not support the given HTTP method")
+        response.end();
     }
-    response.end();
     try {
         db.close();
     }
@@ -101,9 +101,26 @@ function retrieveDocuments(db, collection, response) {
     var myDate = new Date();
     collection.find({date: (myDate.getMonth()+1) + " " + myDate.getDate() + " " + myDate.getFullYear()},
         {username: true, score: true},
-        { limit: GETLIMIT }).forEach(function (data) {
+        { limit: GETLIMIT }).toArray(function (err, data) {
+            var body = JSON.stringify(data);
+            response.writeHead(200, {
+                'Content-Type': 'application/json',
+                'Content-Length': body.length
+            });
+            console.log(JSON.stringify(data));
             response.write(JSON.stringify(data));
+            response.end();
         });
+
+
+
+
+        /*.forEach(function (data) {
+            console.log(JSON.stringify(data));
+            response.write(JSON.stringify(data));
+            response.end();
+        });
+        */
 
 
         /*function (err, cur) {

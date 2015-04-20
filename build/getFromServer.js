@@ -27,8 +27,13 @@ var req = http.request(options, function(res) {
     });
 
     res.on('end', function () {
-        //var resultObject = JSON.parse(responseString);
-        console.log(responseString);
+        try {
+            var resultObject = JSON.parse(responseString);
+            console.log(resultObject);
+        }
+        catch (err) {
+            console.log(err);
+        }
         //TODO:  This is where you can receive the scores from the database and do whatever you need to with them
         //the database will return score records in response to a GET request
         //to ask for scores posted on april 19, 2015 the mongo query looks like
@@ -40,7 +45,6 @@ req.on('error', function (e) {
     // TODO: handle error.
 });
 
-req.write(userString);
 req.end();
 
 //}
