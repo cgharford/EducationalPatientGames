@@ -13,6 +13,9 @@ var park,
     successText,
     successTextTimer,
     timeRemaining,
+	firstRateIncrease,
+	secondRateIncrease,
+	maxTime,
     clockText,
     pause,
     instructions,
@@ -23,7 +26,8 @@ game1.prototype = {
     create: function () {
 
 		this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
+		firstRateIncrease = false;
+		secondRateIncrease = false;
         //Add background
         park = this.add.sprite(1024, 768, 'park');
         park.x = 0;
@@ -36,6 +40,7 @@ game1.prototype = {
         safeChildren = this.game.add.group();
 		directionShifters = this.game.add.group();
 		
+		//this.createChild(350,350, "left", unsafeChildren, 'safeSkate', this.onUnsafeClick);
 		
         /*
 		this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
@@ -57,7 +62,7 @@ game1.prototype = {
 		//this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
 		//this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
 		this.startSpawn(6, this.game.width, (this.game.height/8), "left");		
-		this.startSpawn(4, 0, (this.game.height/4), "down-right")
+		this.startSpawn(3, 0, (this.game.height/4), "down-right")
 		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down");
 		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left");
 		this.createShifter(this.game.width/7, 5 * this.game.height/9, "right");
@@ -77,7 +82,7 @@ game1.prototype = {
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
         timeRemaining = 60;
-
+		maxTime = timeRemaining
         textStyle = {font: '30px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
 
         // Add error message
@@ -90,7 +95,7 @@ game1.prototype = {
         successText.visible = false;
         successText.anchor.set(0.5);
 
-        //  Place score and timer in upper left hand corner
+        //  Place score and timer in lower left hand corner
         scoreText = this.game.add.text(20, this.game.height - 50, 'Score: ' + score, {fill: '#ffffff'});
         clockText = this.game.add.text(this.game.width/20 + errorText.width, this.game.height - 50, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
@@ -124,6 +129,42 @@ game1.prototype = {
     },
 
     update: function () {
+	
+			if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false){
+				bad_sound.play();
+				this.startSpawn(3, this.game.width, (this.game.height/8), "left");		
+				this.startSpawn(3, 0, (this.game.height/4), "down-right");
+				
+				firstRateIncrease = true;
+			}
+			
+			if (timeRemaining == (maxTime / 3) && secondRateIncrease == false){
+				bad_sound.play();
+				this.startSpawn(3, this.game.width, (this.game.height/8), "left");		
+				this.startSpawn(3, 0, (this.game.height/4), "down-right");
+				secondRateIncrease = true;
+				
+			}
+			
+			if (timeRemaining <= (maxTime / 3)){
+				for (var i = 0; i < unsafeChildren.children.length; i++) {
+				unsafeChildren.children[i].velocity = 3;
+				}
+				for (var i = 0; i < safeChildren.children.length; i++) {
+				safeChildren.children[i].velocity = 3;
+			}
+			}
+			
+			else if (timeRemaining <= (2 * (maxTime / 3))){
+				for (var i = 0; i < unsafeChildren.children.length; i++) {
+				unsafeChildren.children[i].velocity = 2;
+				
+			}
+			for (var i = 0; i < safeChildren.children.length; i++) {
+				safeChildren.children[i].velocity = 2;
+			}
+			}
+			
 		
             // On overlap of children and invisible objects (function) shift direction
             this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
@@ -154,7 +195,7 @@ game1.prototype = {
                     currentChild.animations.play('ride');
 
                 }
-                // Weird stuff happening with killing off screen
+                
                 if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
                     currentChild.kill();
                 }
@@ -196,8 +237,8 @@ game1.prototype = {
 			score -= 1;
 		}
 
-        // Play error sound
-        bad_sound.play();
+        // Play error sound -- REMOVED DUE TO NO NEGATIVE FEEDBACK REQUEST FROM CLIENT
+       // bad_sound.play();
 
         // Place error msg at sprite for 500ms and set to visible
         errorText.position.x = sprite.position.x;
@@ -222,7 +263,12 @@ game1.prototype = {
         safeChild.position.y = sprite.position.y;
         safeChild.outOfBoundsKill = true;*/
 		var safeChild;
-		safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, 'safe', this.onSafeClick);
+		var newImage;
+		if (sprite.key == 'unsafe')
+			newImage = 'safe'
+		else if (sprite.key == 'unsafeSkate')
+			newImage = 'safeSkate';
+		safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
 		errorText.visible = false;
 		successTextTimer = this.game.time.now + 500;
 		successText.position.x = sprite.position.x;
@@ -281,13 +327,17 @@ game1.prototype = {
 		if (randomNum > .35){
 			
 			group = unsafeChildren;
-			spriteName = 'unsafe';
+			if (randomNum > .5)
+				spriteName = 'unsafe';
+			else spriteName = 'unsafeSkate';
 			listener = this.onUnsafeClick;
 		}
 		else {
 			
 			group = safeChildren;
-			spriteName = 'safe';
+			if (randomNum > .5)
+				spriteName = 'safe';
+			else spriteName = 'safeSkate';
 			listener = this.onSafeClick;
 		}
 		
@@ -309,42 +359,49 @@ game1.prototype = {
         //child.scale.y = .25;
 		this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
-        child.outOfBoundsKill = true;        
-        child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
-
+        child.outOfBoundsKill = true;    
+		if (spriteName == 'safe' || spriteName == 'unsafe')
+			child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+		else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate'){
+			child.scale.x = child.scale.x * -1;
+			child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
+		}
+		
+		child.velocity = 1;
         child.move = function () {
-            if (this.direction === "up") {
-                this.position.y--;
+						
+			if (this.direction === "up") {
+                this.position.y-= this.velocity;
             }
             else if (this.direction === "down") {
-                this.position.y++;
+                this.position.y += this.velocity;
             }
             else if (this.direction === "left") {
-                this.position.x--;
+                this.position.x -= this.velocity;
             }
             else if (this.direction === "right") {
-                this.position.x++;
+                this.position.x += this.velocity;
             }
 			
 			else if (this.direction == "up-right"){
-				this.position.x++;
-				this.position.y--;
+				this.position.x+= this.velocity;
+				this.position.y-= this.velocity;
 			}
 			
 			else if (this.direction == "up-left"){
-				this.position.x--;
-				this.position.y--;
+				this.position.x -= this.velocity;
+				this.position.y-= this.velocity;
 			
 			}
 			
 			else if (this.direction == "down-left"){
-				this.position.x--;
-				this.position.y++;
+				this.position.x-= this.velocity;
+				this.position.y+= this.velocity;
 			}
 			
 			else if (this.direction == "down-right"){
-				this.position.x++;
-				this.position.y++;
+				this.position.x+= this.velocity;
+				this.position.y+= this.velocity;
 				
 			}
 			
@@ -388,6 +445,7 @@ game1.prototype = {
 		this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
 
 	},
+	
 	
 	shiftDirection : function(sprite, shifter){
 		
