@@ -110,31 +110,4 @@ function retrieveDocuments(db, collection, response) {
             response.end();
             db.close();
         });
-
-
-
-
-        /*.forEach(function (data) {
-            console.log(JSON.stringify(data));
-            response.write(JSON.stringify(data));
-            response.end();
-        });
-        */
-
-
-        /*function (err, cur) {
-            assert.equal(null, err);
-            response.writeHead(200, {"Content-Type:":"application/json"});
-            cur.forEach(function (data) {
-                response.write(data);
-            });
-        }); */
-    /*
-    myStream.on('data', function (doc) {
-        response.write(doc);
-    });
-    myStream.on('close', function() {
-        db.close();
-        console.log("records successfully retrieve and sent to the client");
-    }); */
 }
