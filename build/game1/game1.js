@@ -268,6 +268,8 @@ game1.prototype = {
 			newImage = 'safe'
 		else if (sprite.key == 'unsafeSkate')
 			newImage = 'safeSkate';
+		else if (sprite.key == 'unsafeATV')
+			newImage = 'safeATV';
 		safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
 		errorText.visible = false;
 		successTextTimer = this.game.time.now + 500;
@@ -327,17 +329,25 @@ game1.prototype = {
 		if (randomNum > .35){
 			
 			group = unsafeChildren;
-			if (randomNum > .5)
+			if (randomNum > .5 && randomNum < .7){
 				spriteName = 'unsafe';
-			else spriteName = 'unsafeSkate';
+			} else if(randomNum > .7){
+				spriteName = 'unsafeSkate';
+			} else {
+				spriteName = 'unsafeATV';
+			}
 			listener = this.onUnsafeClick;
 		}
 		else {
 			
 			group = safeChildren;
-			if (randomNum > .5)
+			if (randomNum > .5 && randomNum < .7){
 				spriteName = 'safe';
-			else spriteName = 'safeSkate';
+			} else if(randomNum > .7){
+				spriteName = 'safeSkate';
+			} else {
+				spriteName = 'safeATV';
+			}
 			listener = this.onSafeClick;
 		}
 		
@@ -360,9 +370,14 @@ game1.prototype = {
 		this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;    
-		if (spriteName == 'safe' || spriteName == 'unsafe')
+		if (spriteName == 'safe' || spriteName == 'unsafe'){
 			child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
-		else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate'){
+		}
+		if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate'){
+			child.scale.x = child.scale.x * -1;
+			child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
+		}
+		if (spriteName == 'safeATV' || spriteName == 'unsafeATV'){
 			child.scale.x = child.scale.x * -1;
 			child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
 		}
