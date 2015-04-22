@@ -1,1 +1,1 @@
-# Educational Patient Game Installation and Setup
+# Game Installation and Setup
