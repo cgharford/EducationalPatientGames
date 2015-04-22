@@ -105,7 +105,7 @@ game1.prototype = {
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
-        instructions = this.add.image(1000, this.game.world.centerY - 500, 'instructions');
+        instructions = this.add.image((this.game.width / 2) - 1024/2, (this.game.height / 2) - 768/2, 'instructions');
         instructions.visible = false;
 
         // Click anywhere to unpause
