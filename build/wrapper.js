@@ -5,7 +5,7 @@ var wrapper = function(game) {};
 wrapper.prototype = {
     preload: function() {
 	    //load images for all of the games here
-        this.game.load.image("cs", "assets/images/captainsafety.png");
+        this.game.load.image("cs", "assets/images/UIP-thumbnail.jpg");
         this.game.load.image("ng", "assets/images/newgame.png");
     },
     create: function() {
