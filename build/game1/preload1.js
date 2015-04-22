@@ -15,7 +15,8 @@ preload1.prototype = {
 		this.game.load.spritesheet('unsafeSkate', './assets/images/spritesheets/unsafe-skater.png', 90, 90);
 		this.game.load.spritesheet('safeATV', './assets/images/spritesheets/safe-atv-rider.png', 90, 90);
 		this.game.load.spritesheet('unsafeATV', './assets/images/spritesheets/unsafe-atv-rider.png', 90, 90);
-
+        this.game.load.image('replay button', './assets/images/UIP-replay-button.png');
+        this.game.load.image('victory page bg', './assets/images/UIP-victory.jpg');
 
     },
     create: function() {

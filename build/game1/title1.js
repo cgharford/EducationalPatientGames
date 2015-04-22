@@ -5,11 +5,11 @@ var textStyle;
 
 title1.prototype = {
     create: function() {
-        var bg = this.add.sprite(1024, 768, 'title page bg');
-        bg.x = 0;
-        bg.y = 0;
-        bg.height = this.game.height;
-        bg.width = this.game.width;
+        var titleBg = this.add.sprite(1024, 768, 'title page bg');
+        titleBg.x = 0;
+        titleBg.y = 0;
+        titleBg.height = this.game.height;
+        titleBg.width = this.game.width;
 
         var playButton = this.game.add.sprite(319, 160, 'play button');
         playButton.x = this.game.width - 319;
