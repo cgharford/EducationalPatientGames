@@ -11,9 +11,9 @@ title1.prototype = {
         bg.height = this.game.height;
         bg.width = this.game.width;
 
-        var playButton = this.game.add.sprite(226, 183, 'play button');
-        playButton.x = this.game.width - 226;
-        playButton.y = this.game.height - 183;
+        var playButton = this.game.add.sprite(319, 160, 'play button');
+        playButton.x = this.game.width - 319;
+        playButton.y = this.game.height - 160;
         playButton.inputEnabled = true;
         //var playButton = this.game.add.button(this.game.width/2,this.game.height/2 + titleText.height, 'play button',
         //    this.playGame(),this);

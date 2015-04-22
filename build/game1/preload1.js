@@ -3,8 +3,8 @@ var preload1 = function(game) {};
 
 preload1.prototype = {
     preload: function() {
-        this.game.load.image('play button', './assets/images/play-captain-safety.png');
-        this.game.load.image('title page bg', './assets/images/captain-safety-bg.jpg');
+        this.game.load.image('play button', './assets/images/play-button.png');
+        this.game.load.image('title page bg', './assets/images/title.jpg');
         this.game.load.image('park', './assets/images/park-bg.jpg');
         this.game.load.image('instructions', 'assets/images/instructions.jpg');
         this.game.load.image('redsquare', './assets/images/redsquare.png');
