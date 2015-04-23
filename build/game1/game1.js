@@ -63,11 +63,12 @@ game1.prototype = {
 		//this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
 		this.startSpawn(6, this.game.width, (this.game.height/8), "left");		
 		this.startSpawn(3, 0, (this.game.height/4), "down-right")
-		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down");
-		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left");
-		this.createShifter(this.game.width/7, 5 * this.game.height/9, "right");
-		this.createShifter(5*this.game.width/9, 4 * this.game.height/8, "up-right");
-		this.createShifter(7*this.game.width/11, this.game.height/7, "up-left");
+		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down", false);
+		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left", false);
+		this.createShifter(this.game.width/7, 5 * this.game.height/9, "right", false);
+		this.createShifter(5*this.game.width/9, 4 * this.game.height/8, "up-right", false);
+		this.createShifter(7*this.game.width/11, this.game.height/7, "up-left", true);
+		this.createShifter(2 * (this.game.width / 12), 23 * this.game.height/24, "left", true);
 		
         /*
 		this.createShifter(this.game.width-100, 150, "down");
@@ -363,6 +364,10 @@ game1.prototype = {
         child.position.x = startx;
         child.position.y = starty;
         child.direction = direction;
+		child.safe = false;
+		if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV'){
+			child.safe = true;
+		}
 		if (child.direction == "right" || child.direction == "down-right"  || child.direction == "up-right")
 			child.scale.x = child.scale.x * -1;
         //child.scale.x = .25;
@@ -371,18 +376,39 @@ game1.prototype = {
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;    
 		if (spriteName == 'safe' || spriteName == 'unsafe'){
+			//name, frames, fps, boolean for loop (true means plays more than once)
 			child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
 		}
-		if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate'){
+		else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate'){
 			child.scale.x = child.scale.x * -1;
 			child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
 		}
-		if (spriteName == 'safeATV' || spriteName == 'unsafeATV'){
+		else if (spriteName == 'safeATV' || spriteName == 'unsafeATV'){
 			child.scale.x = child.scale.x * -1;
-			child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
+			child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
 		}
 		
 		child.velocity = 1;
+		
+		child.flashRed = function() {
+			//child.animations.tint = 0xff0000;
+			child.tint = 0xff0000;
+		};
+		
+		child.restoreColor = function() {
+			//child.animations.tint = 0xFFFFFF;
+			child.tint = 0xFFFFFF;
+		};
+		
+		child.startRed = function(){
+		//this.game.time.events.repeat(100, 5,  child.flashRed, this);
+		//this.game.time.events.repeat(150, 5, child.restoreColor, this);
+		child.flashRed();
+		//this.game.time.events.loop(100, child.flashRed, this);
+		//this.game.time.events.loop(150, child.restoreColor, this);
+		// this.game.time.events.add(300, child.restoreColor, this);
+		
+		};
         child.move = function () {
 						
 			if (this.direction === "up") {
@@ -445,9 +471,10 @@ game1.prototype = {
         }
     },
 	
-	createShifter : function(x, y, newDirection) {
+	createShifter : function(x, y, newDirection, warning) {
 		shifter = directionShifters.create(0, 0, "redsquare");
 		shifter.visible = false;
+		shifter.warningFlag = warning;
 		shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
 		shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);
 		shifter.anchor.set(.5);
@@ -461,9 +488,12 @@ game1.prototype = {
 
 	},
 	
+
 	
 	shiftDirection : function(sprite, shifter){
-		
+		if (shifter.warningFlag == true && sprite.safe == false){
+			sprite.startRed();
+		}
 		if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")){
 			sprite.scale.x = sprite.scale.x * -1;
 		}
