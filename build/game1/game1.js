@@ -83,18 +83,18 @@ game1.prototype = {
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
         timeRemaining = 60;
-		maxTime = timeRemaining
-        textStyle = {font: '30px Arial', fill: '#ffffff', align: 'center', wordWrap: true};
+        maxTime = timeRemaining
+        textStyle = {font: '35px Arial', fill: '#ffffff', align: 'right', wordWrap: false};
 
         // Add error message
-        errorText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'That person was performing \na safe activity!', textStyle);
+        errorText = this.game.add.text(this.game.width-200, this.game.height-50, 'Dude, what?', textStyle);
         errorText.visible = false;
         errorText.anchor.set(0.5);
 
         // Add success message
-        successText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Nice', textStyle);
+        successText = this.game.add.text(this.game.width-200, this.game.height-50, 'You saved me!', textStyle);
         successText.visible = false;
-        successText.anchor.set(0.5);
+        successText.anchor.set(0.5); 
 
         //  Place score and timer in lower left hand corner
         scoreText = this.game.add.text(20, this.game.height - 50, 'Score: ' + score, {fill: '#ffffff'});
@@ -238,12 +238,7 @@ game1.prototype = {
 			score -= 1;
 		}
 
-        // Play error sound -- REMOVED DUE TO NO NEGATIVE FEEDBACK REQUEST FROM CLIENT
-       // bad_sound.play();
-
-        // Place error msg at sprite for 500ms and set to visible
-        errorText.position.x = sprite.position.x;
-        errorText.position.y = sprite.position.y + sprite.height;
+        // Show error msg for 500ms and set to visible
         errorTextTimer = this.game.time.now + 500;
         errorText.visible = true;
         successText.visible = false;
@@ -274,8 +269,6 @@ game1.prototype = {
 		safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
 		errorText.visible = false;
 		successTextTimer = this.game.time.now + 500;
-		successText.position.x = sprite.position.x;
-		successText.position.y = sprite.position.y;
 		successText.visible = true;
         sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
        // errorText.visible = false;
