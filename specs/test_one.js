@@ -1,7 +1,26 @@
-/*
-function helloWorld(){
-    return "Hello World!";
-}
+describe("Accessing Phaser", function() {
+    it("should be defined", function() {
+        var game = new Phaser.Game();
+        var gameFrame = new game1(game);
+        expect(gameFrame).toBeDefined();
+    }),
+
+        it("phaser height", function() {
+            var game = new Phaser.Game();
+            expect(game.height).toBe(600)
+        }),
+
+        it("test", function() {
+            var game = new Phaser.Game();
+            var gameFrame = new game1(game);
+        }),
+
+        it("functions should be defined", function() {
+            var game = new Phaser.Game();
+            var gameObject = new game1(game);
+            expect(gameObject.create).toBeDefined();
+        })
+});
 
 describe("Test One", function(){
     it("should say hello world", function(){
@@ -12,7 +31,7 @@ describe("Test One", function(){
         expect(helloWorld()).not.toBe(null);
     });
 });
-*/
+
 
 describe("Educational Patient Games", function(){
     describe("Wrapper loads", function(){
