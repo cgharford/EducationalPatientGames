@@ -20,18 +20,18 @@ wrapper.prototype = {
 
         var uipImage = this.game.add.sprite(this.game.width/2, this.game.height/2, "UIP-thumb");
         uipImage.anchor.set(.5);
-        //uipImage.scale.setTo(.8,.8);
+        uipImage.scale.setTo(.7,.7);
         uipImage.inputEnabled = true;
         uipImage.events.onInputDown.add(this.captainSafetySelect,this);
 
         var ngImageA = this.game.add.sprite(this.game.width/6, this.game.height/2, "new-game-thumb");
         ngImageA.anchor.set(.5);
-        //ngImageA.scale.setTo(.8,.8);
+        ngImageA.scale.setTo(.7,.7);
 
 
         var ngImageB = this.game.add.sprite(5*this.game.width/6, this.game.height/2, "new-game-thumb");
         ngImageB.anchor.set(.5);
-        //ngImageB.scale.setTo(.8,.8);
+        ngImageB.scale.setTo(.7,.7);
 
         if(uipImage !== null && ngImageA !== null && ngImageB !== null){
             return true;

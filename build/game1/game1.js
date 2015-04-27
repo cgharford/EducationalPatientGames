@@ -63,13 +63,15 @@ game1.prototype = {
 		//this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
 		this.startSpawn(6, this.game.width, (this.game.height/8), "left");		
 		this.startSpawn(3, 0, (this.game.height/4), "down-right")
-		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down", false);
-		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left", false);
-		this.createShifter(this.game.width/7, 5 * this.game.height/9, "right", false);
-		this.createShifter(5*this.game.width/9, 4 * this.game.height/8, "up-right", false);
-		this.createShifter(7*this.game.width/11, this.game.height/7, "up-left", true);
-		this.createShifter(2 * (this.game.width / 12), 23 * this.game.height/24, "left", true);
+		this.createShifter(11 * (this.game.width/12), this.game.height/8, "down", false, false);
+		this.createShifter(11 * (this.game.width / 12), 23 * this.game.height/24, "left", false, false);
+		this.createShifter(this.game.width/7, 5 * this.game.height/10, "right", false, false);
+		this.createShifter(5*this.game.width/9, 4 * this.game.height/8, "up-right", false, false);
+		this.createShifter(6.8*this.game.width/10, this.game.height/4, "up-left", true, false);
+		this.createShifter(2 * (this.game.width / 12), 23 * this.game.height/24, "left", true, false);
 		
+        this.createShifter(6 * (this.game.width / 12), 23 * this.game.height/24, "up-left", false, true);
+        this.createShifter(4*this.game.width/12, 4.7 * this.game.height/9, "left", true, false);
         /*
 		this.createShifter(this.game.width-100, 150, "down");
 		this.createShifter(this.game.width-100, 750, "left");
@@ -464,9 +466,9 @@ game1.prototype = {
         }
     },
 	
-	createShifter : function(x, y, newDirection, warning) {
+	createShifter : function(x, y, newDirection, warning, randomShift) {
 		shifter = directionShifters.create(0, 0, "redsquare");
-		shifter.visible = false;
+		shifter.visible = true;
 		shifter.warningFlag = warning;
 		shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
 		shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);
@@ -476,6 +478,7 @@ game1.prototype = {
 		shifter.direction = newDirection;
 		shifter.scale.x = (window.innerWidth * window.devicePixelRatio * .0004);
 		shifter.scale.y = (window.innerHeight * window.devicePixelRatio * .0004);
+        shifter.randomShift = randomShift;
         
 		this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
 
@@ -493,9 +496,17 @@ game1.prototype = {
 		else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")){
 			sprite.scale.x = sprite.scale.x * -1;
 		}
-		else sprite.scale.x = sprite.scale.x;
-		
-		sprite.direction = shifter.direction;
+		else sprite.scale.x = sprite.scale.x;	
+        
+        sprite.direction = shifter.direction;
+        
+        var randNum = Math.round(Math.random() * (100));
+
+        if(!(shifter.randomShift == true) && randNum < 50){
+            sprite.direction = shifter.direction;
+        } else {
+            sprite.direction = sprite.direction;
+        }
 	},
 		
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
