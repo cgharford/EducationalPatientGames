@@ -83,12 +83,13 @@ var server = http.createServer(function(request, response) {
 server.listen(port);
 console.log("Server ready");
 
-function insertDocuments(db, collection, data) {
+function insertDocuments(db, collection, data, response) {
     collection.insertOne(data, function(err, r) {
         assert.equal(null, err);
         assert.equal(1, r.insertedCount);
         db.close();
         console.log("record written successfully and connection closed");
+        response.end();
     })
 }
 

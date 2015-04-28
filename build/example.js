@@ -1,5 +1,7 @@
-//javascript to run a simple unit test
+//javascript to test browserify
 
-function helloWorld() {
-    return "Hello World!";
-}
+var getReq = require("./getFromServer.js");
+var postReq = require("./postToServer.js");
+
+getReq();
+postReq();

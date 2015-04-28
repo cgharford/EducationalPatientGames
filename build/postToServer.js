@@ -1,15 +1,18 @@
-var http = require('http');
-HOST = "bluefish.cs.unc.edu";
-PORT = 3131;
-name = "test";
-highScore = 5000;
-var myDate = new Date();
+
+module.exports = function() {
+
+    var http = require('http');
+    HOST = "bluefish.cs.unc.edu";
+    PORT = 3131;
+    name = "test";
+    highScore = 5000;
+    var myDate = new Date();
 
 //function postToServer(name, highScore) {
     var user = {
         username: name,
         score: highScore,
-        date: (myDate.getMonth()+1) + " " + myDate.getDate() + " " + myDate.getFullYear()
+        date: (myDate.getMonth() + 1) + " " + myDate.getDate() + " " + myDate.getFullYear()
     };
 
     var userString = JSON.stringify(user);
@@ -29,7 +32,7 @@ var myDate = new Date();
 
 // Setup the request.  The options parameter is
 // the object we defined above.
-    var req = http.request(options, function(res) {
+    var req = http.request(options, function (res) {
         res.setEncoding('utf-8');
 
         var responseString = '';
@@ -55,4 +58,5 @@ var myDate = new Date();
     req.write(userString);
     req.end();
 
-//}
+
+};
