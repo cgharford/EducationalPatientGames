@@ -1,11 +1,11 @@
 
-module.exports = function() {
+module.exports = function(userName, userScore) {
 
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
     PORT = 3131;
-    name = "test";
-    highScore = 5000;
+    name = userName;
+    highScore = userScore;
     var myDate = new Date();
 
 //function postToServer(name, highScore) {

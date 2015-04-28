@@ -43,7 +43,7 @@ var server = http.createServer(function(request, response) {
                 else {
                     console.log("connected to mongo, database: + " + DATABASENAME);
                     var collection = db.collection(COLLECTIONNAME);
-                    insertDocuments(db, collection, obj);
+                    insertDocuments(db, collection, obj, response);
                     //db.close();
                 }
             });
