@@ -1,9 +1,4 @@
-//title screen for game1
-
-var title1 = function(game) {};
-var textStyle;
-
-title1.prototype = {
+module.exports = {
     create: function() {
         var titleBg = this.add.sprite(1024, 768, 'title page bg');
         titleBg.x = 0;

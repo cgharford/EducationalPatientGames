@@ -1,7 +1,14 @@
 //javascript to test browserify
 
-var getReq = require("./getFromServer.js");
-var postReq = require("./postToServer.js");
+var getReq = require("./game1/getFromServer.js");
+var postReq = require("./game1/postToServer.js");
 
-getReq();
-postReq("john", 200);
+var object = getReq();
+//postReq("john", 200);
+
+
+//console.log (JSON.parse(object));
+
+for (i = 0; i < object.length; i++) {
+    console.log("name: " + object[i].username + ", score: " + object[i].score);
+};

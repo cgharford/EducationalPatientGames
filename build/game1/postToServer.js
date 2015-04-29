@@ -2,8 +2,8 @@
 module.exports = function(userName, userScore) {
 
     var http = require('http');
-    HOST = "localhost";
-    PORT = 3131;
+    HOST = "bluefish.cs.unc.edu";
+    PORT = 3130;
     name = userName;
     highScore = userScore;
     var myDate = new Date();

@@ -15,30 +15,21 @@
 
     <script type = "text/javascript" src = "./js/libs/phaser.js"></script>
 
-    <script type = "text/javascript" src = "./build/boot.js"></script>
+    <!-- <script type = "text/javascript" src = "./build/boot.js"></script>
     <script type = "text/javascript" src = "./build/wrapper.js"></script>
 
     <script type = "text/javascript" src = "./build/game1/preload1.js"></script>
     <script type = "text/javascript" src = "./build/game1/title1.js"></script>
     <script type = "text/javascript" src = "./build/game1/game1.js"></script>
-    <script type = "text/javascript" src = "./build/game1/victory1.js"></script>
-
+    <script type = "text/javascript" src = "./build/game1/victory1.js"></script> -->
+    <script type = "text/javascript" src = "./bundle.js"></script>
     <script>
-        (function() {
+        //(function() {
 			
 			//alert(window.innerWidth + "  " + window.innerHeight);
 			
-            var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;
-		
-            var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game-container");
 
-            game.state.add("Boot",boot);
-            //todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
-            //which game they want to play, then start the preload state of that particular game
-            game.state.add("Wrapper",wrapper);
-            game.state.start("Boot");
-
-        })();
+        //});
     </script>
 
 </head>
@@ -95,6 +86,23 @@
         </div>
     </div>
 </div>
+
+<!-- <div id="textDiv">
+    <!-- where the scores will go
+</div>
+<script>
+    function httpGet(theUrl)
+    {
+        var xmlHttp = null;
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", theUrl, false );
+        xmlHttp.send( null );
+        return xmlHttp.responseText;
+    }
+    var div = document.getElementById("textDiv");
+    div.textContent = httpGet("localhost:3131");
+    }
+</script> -->
 
 <div class="container-fluid" id="game-container"></div>
 <footer>

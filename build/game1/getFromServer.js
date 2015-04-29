@@ -1,11 +1,8 @@
 module.exports = function() {
-
     var http = require('http');
-
-
-    HOST = "localhost";
-    PORT = 3131;
-
+    HOST = "bluefish.cs.unc.edu";
+    PORT = 3130;
+    var resultObject = "";
 
     var headers = {
         'Content-Type': 'application/json'
@@ -30,21 +27,23 @@ module.exports = function() {
             responseString += data;
         });
 
-        res.on('end', function () {
+        var result = res.on('end', function () {
             try {
-                var resultObject = JSON.parse(responseString);
+                resultObject = JSON.parse(responseString);
                 console.log(resultObject);
                 //result object are the retrieved records in JSON format
-                //TODO:  display the given names/scoress somewhere on the client side
                 //here is how you can iterate over the scores
-                for (i = 0; i < resultObject.length; i++) {
+                /* for (i = 0; i < resultObject.length; i++) {
                     console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                }
+                } */
+                //return resultObject;
             }
             catch (err) {
                 console.log(err);
+                return null;
             }
         });
+        //return result;
     });
 
     req.on('error', function (e) {
@@ -52,6 +51,7 @@ module.exports = function() {
     });
 
     req.end();
+    return resultObject;
 
 //}
-}
+};
