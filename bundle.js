@@ -6970,7 +6970,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 60;
+        timeRemaining = 10;
         maxTime = timeRemaining
         textStyle = {font: '35px Arial', fill: '#ffffff', align: 'right', wordWrap: false};
 
@@ -7402,7 +7402,7 @@ module.exports = {
 
 };
 },{}],37:[function(require,module,exports){
-module.exports = function(game, textStyle) {
+module.exports = function(scores1, scores2, scores3, scores4) {
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
     PORT = 3131;
@@ -7436,15 +7436,11 @@ module.exports = function(game, textStyle) {
                 resultObject = JSON.parse(responseString);
                 //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
-                for (i = 0; i < resultObject.length; i++) {
-                    console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                };
+                //for (i = 0; i < resultObject.length; i++) {
+                  //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
+                //};
 
-                var string1 = "" + resultObject[i].username + ": " + resultObject[i].score;
-                var text1 = this.game.add.text(500,190,string1, textStyle);
-                text1.visible = true;
-                var text2 = this.game.add.text(0,0," THIS IS A TEST", textStyle);
-                text2.visible = true;
+                scores1.text = "TEST";
             }
             catch (err) {
                 console.log(err);
@@ -7601,14 +7597,19 @@ module.exports = {
         yourScore = this.game.add.text(431, 172, score + " saved", textStyle);
         yourScore.visible = true;
         //yourScore.anchor.set(0.5);
-        scores1 = this.game.add.text(500, 200, "test1", textStyle);
+        //yourScore.setText("TEST");
+        //yourScore.text = "TEST";
+        scores1 = this.game.add.text(700, 230, "1", textStyle);
         scores1.visible = true;
-        scores2 = this.game.add.text(700, 200, "test2", textStyle);
+        scores2 = this.game.add.text(700, 300, "1", textStyle);
         scores2.visible = true;
+        scores3 = this.game.add.text(700, 350, "1", textStyle);
+        scores3.visible = true;
+        scores4 = this.game.add.text(700, 420, "1", textStyle);
 
         this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
         //for now leave the userName field so it can easily scale later
-        this.game.globals.get(this.game, textStyle);
+        this.game.globals.get(scores1, scores2, scores3, scores4);
 
         replayButton.events.onInputDown.add(this.restart,this);
     },

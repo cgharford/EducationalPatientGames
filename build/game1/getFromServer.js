@@ -1,9 +1,9 @@
-module.exports = function(game, textStyle) {
+var resultObject = {string1: "", string2: "", string3: "", string4: ""};
+
+module.exports = function(game) {
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
     PORT = 3131;
-    var resultObject = "";
-
     var headers = {
         'Content-Type': 'application/json'
     };
@@ -18,8 +18,7 @@ module.exports = function(game, textStyle) {
 
 // Setup the request.  The options parameter is
 // the object we defined above.
-    var resultObject = '';
-    var req = http.request(options, resultObject, function (res) {
+    var req = http.request(options, function (res) {
         //res.setEncoding('utf-8');
         var responseString = '';
 
@@ -29,18 +28,14 @@ module.exports = function(game, textStyle) {
 
         res.on('end', function () {
             try {
-                resultObject = JSON.parse(responseString);
+                result = JSON.parse(responseString);
+                resultObject.string1 = result[1].username + ": " + result[1].score;
                 //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
-                for (i = 0; i < resultObject.length; i++) {
-                    console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                };
+                //for (i = 0; i < resultObject.length; i++) {
+                  //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
+                //};
 
-                var string1 = "" + resultObject[i].username + ": " + resultObject[i].score;
-                var text1 = this.game.add.text(500,190,string1, textStyle);
-                text1.visible = true;
-                var text2 = this.game.add.text(0,0," THIS IS A TEST", textStyle);
-                text2.visible = true;
             }
             catch (err) {
                 console.log(err);
@@ -58,5 +53,16 @@ module.exports = function(game, textStyle) {
     req.end();
     //return resultObject;
 
-//}
+    //wait 500 ms (not that good..)
+    var date = new Date();
+    var curDate = new Date()
+    while (true) {
+        if (curDate - date < 1000) {
+            curDate = new Date();
+        }
+        else {
+            console.log(resultObject);
+            break;
+        }
+    }
 };

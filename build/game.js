@@ -4,7 +4,8 @@ var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game
 
 game.globals = {
     get: require('./game1/getFromServer.js'),
-    post: require('./game1/postToServer.js')
+    post: require('./game1/postToServer.js'),
+    scores: {score1: "", score2: "", score3: "", score4: ""}
     //Add variables here that you want to access globally
     //score: 0 could be accessed as game.globals.score for example
 };

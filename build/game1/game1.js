@@ -61,7 +61,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 60;
+        timeRemaining = 10;
         maxTime = timeRemaining
         textStyle = {font: '35px Arial', fill: '#ffffff', align: 'right', wordWrap: false};
 
