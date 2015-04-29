@@ -6890,7 +6890,8 @@ var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game
 
 game.globals = {
     get: require('./game1/getFromServer.js'),
-    post: require('./game1/postToServer.js')
+    post: require('./game1/postToServer.js'),
+    scores: {score1: "", score2: "", score3: "", score4: ""}
     //Add variables here that you want to access globally
     //score: 0 could be accessed as game.globals.score for example
 };
@@ -6970,7 +6971,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 10;
+        timeRemaining = 60;
         maxTime = timeRemaining
         textStyle = {font: '35px Arial', fill: '#ffffff', align: 'right', wordWrap: false};
 
@@ -7402,12 +7403,12 @@ module.exports = {
 
 };
 },{}],37:[function(require,module,exports){
-module.exports = function(scores1, scores2, scores3, scores4) {
+var resultObject = {string1: "", string2: "", string3: "", string4: ""};
+
+module.exports = function(game) {
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
     PORT = 3131;
-    var resultObject = "";
-
     var headers = {
         'Content-Type': 'application/json'
     };
@@ -7422,8 +7423,7 @@ module.exports = function(scores1, scores2, scores3, scores4) {
 
 // Setup the request.  The options parameter is
 // the object we defined above.
-    var resultObject = '';
-    var req = http.request(options, resultObject, function (res) {
+    var req = http.request(options, function (res) {
         //res.setEncoding('utf-8');
         var responseString = '';
 
@@ -7433,14 +7433,14 @@ module.exports = function(scores1, scores2, scores3, scores4) {
 
         res.on('end', function () {
             try {
-                resultObject = JSON.parse(responseString);
+                result = JSON.parse(responseString);
+                resultObject.string1 = result[1].username + ": " + result[1].score;
                 //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
                 //for (i = 0; i < resultObject.length; i++) {
                   //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
                 //};
 
-                scores1.text = "TEST";
             }
             catch (err) {
                 console.log(err);
@@ -7458,7 +7458,18 @@ module.exports = function(scores1, scores2, scores3, scores4) {
     req.end();
     //return resultObject;
 
-//}
+    //wait 500 ms (not that good..)
+    var date = new Date();
+    var curDate = new Date()
+    while (true) {
+        if (curDate - date < 1000) {
+            curDate = new Date();
+        }
+        else {
+            console.log(resultObject);
+            break;
+        }
+    }
 };
 },{"http":7}],38:[function(require,module,exports){
 
@@ -7609,7 +7620,7 @@ module.exports = {
 
         this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
         //for now leave the userName field so it can easily scale later
-        this.game.globals.get(scores1, scores2, scores3, scores4);
+        this.game.globals.get(this.game);
 
         replayButton.events.onInputDown.add(this.restart,this);
     },
