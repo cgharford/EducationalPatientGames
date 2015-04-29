@@ -3,7 +3,7 @@ module.exports = function() {
     var http = require('http');
 
 
-    HOST = "bluefish.cs.unc.edu";
+    HOST = "localhost";
     PORT = 3131;
 
 
