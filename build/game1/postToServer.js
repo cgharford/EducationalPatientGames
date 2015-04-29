@@ -3,7 +3,7 @@ module.exports = function(userName, userScore) {
 
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
-    PORT = 3130;
+    PORT = 3131;
     name = userName;
     highScore = userScore;
     var myDate = new Date();
@@ -33,7 +33,7 @@ module.exports = function(userName, userScore) {
 // Setup the request.  The options parameter is
 // the object we defined above.
     var req = http.request(options, function (res) {
-        res.setEncoding('utf-8');
+        //res.setEncoding('utf-8');
 
         var responseString = '';
 

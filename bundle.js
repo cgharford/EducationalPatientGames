@@ -7402,10 +7402,10 @@ module.exports = {
 
 };
 },{}],37:[function(require,module,exports){
-module.exports = function() {
+module.exports = function(game, textStyle) {
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
-    PORT = 3130;
+    PORT = 3131;
     var resultObject = "";
 
     var headers = {
@@ -7422,32 +7422,37 @@ module.exports = function() {
 
 // Setup the request.  The options parameter is
 // the object we defined above.
-    var req = http.request(options, function (res) {
-        res.setEncoding('utf-8');
-
+    var resultObject = '';
+    var req = http.request(options, resultObject, function (res) {
+        //res.setEncoding('utf-8');
         var responseString = '';
 
         res.on('data', function (data) {
             responseString += data;
         });
 
-        var result = res.on('end', function () {
+        res.on('end', function () {
             try {
                 resultObject = JSON.parse(responseString);
-                console.log(resultObject);
                 //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
-                /* for (i = 0; i < resultObject.length; i++) {
+                for (i = 0; i < resultObject.length; i++) {
                     console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                } */
-                //return resultObject;
+                };
+
+                var string1 = "" + resultObject[i].username + ": " + resultObject[i].score;
+                var text1 = this.game.add.text(500,190,string1, textStyle);
+                text1.visible = true;
+                var text2 = this.game.add.text(0,0," THIS IS A TEST", textStyle);
+                text2.visible = true;
             }
             catch (err) {
                 console.log(err);
-                return null;
+      //          return null;
             }
         });
-        //return result;
+        //return resultObject;
+        //console.log(responseString);
     });
 
     req.on('error', function (e) {
@@ -7455,7 +7460,7 @@ module.exports = function() {
     });
 
     req.end();
-    return resultObject;
+    //return resultObject;
 
 //}
 };
@@ -7465,7 +7470,7 @@ module.exports = function(userName, userScore) {
 
     var http = require('http');
     HOST = "bluefish.cs.unc.edu";
-    PORT = 3130;
+    PORT = 3131;
     name = userName;
     highScore = userScore;
     var myDate = new Date();
@@ -7495,7 +7500,7 @@ module.exports = function(userName, userScore) {
 // Setup the request.  The options parameter is
 // the object we defined above.
     var req = http.request(options, function (res) {
-        res.setEncoding('utf-8');
+        //res.setEncoding('utf-8');
 
         var responseString = '';
 
@@ -7596,11 +7601,14 @@ module.exports = {
         yourScore = this.game.add.text(431, 172, score + " saved", textStyle);
         yourScore.visible = true;
         //yourScore.anchor.set(0.5);
+        scores1 = this.game.add.text(500, 200, "test1", textStyle);
+        scores1.visible = true;
+        scores2 = this.game.add.text(700, 200, "test2", textStyle);
+        scores2.visible = true;
 
         this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
         //for now leave the userName field so it can easily scale later
-
-
+        this.game.globals.get(this.game, textStyle);
 
         replayButton.events.onInputDown.add(this.restart,this);
     },
