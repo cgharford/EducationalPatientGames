@@ -7172,6 +7172,7 @@ module.exports = {
         errorText.visible = false;
         successText.visible = false;
         victoryText.visible = true;
+
         this.game.state.start("Victory1", true, false, score);
     },
     placeRandomChildren: function (group, spriteName, listener) {
@@ -7577,12 +7578,7 @@ module.exports = {
 };
 
 },{}],41:[function(require,module,exports){
-var victory1 = function(game, score) {};
-var yourScore;
-var textStyle;
-
-
-victory1.prototype = {
+module.exports = {
     create: function () {
 
         var victoryBg = this.add.sprite(1024, 768, 'victory page bg');
@@ -7601,7 +7597,7 @@ victory1.prototype = {
         yourScore.visible = true;
         //yourScore.anchor.set(0.5);
 
-        game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
+        this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
         //for now leave the userName field so it can easily scale later
 
 

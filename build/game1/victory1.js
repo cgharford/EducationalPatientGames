@@ -17,9 +17,12 @@ module.exports = {
         yourScore.visible = true;
         //yourScore.anchor.set(0.5);
 
-        game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
+        this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
         //for now leave the userName field so it can easily scale later
-
+        scores = this.game.globals.get();
+        if (scores.length != 0) {
+            //then write the scores
+        }
 
 
         replayButton.events.onInputDown.add(this.restart,this);

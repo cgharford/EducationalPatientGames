@@ -7,8 +7,8 @@ var object = getReq();
 //postReq("john", 200);
 
 
-//console.log (JSON.parse(object));
+console.log (object);
 
-for (i = 0; i < object.length; i++) {
+/* for (i = 0; i < object.length; i++) {
     console.log("name: " + object[i].username + ", score: " + object[i].score);
-};
+}; */

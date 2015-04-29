@@ -18,19 +18,18 @@ module.exports = function() {
 
 // Setup the request.  The options parameter is
 // the object we defined above.
-    var req = http.request(options, function (res) {
+    var resultObject = '';
+    var req = http.request(options, resultObject, function (res) {
         res.setEncoding('utf-8');
-
         var responseString = '';
 
         res.on('data', function (data) {
             responseString += data;
         });
 
-        var result = res.on('end', function () {
+        res.on('end', function () {
             try {
                 resultObject = JSON.parse(responseString);
-                console.log(resultObject);
                 //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
                 /* for (i = 0; i < resultObject.length; i++) {
@@ -43,7 +42,8 @@ module.exports = function() {
                 return null;
             }
         });
-        //return result;
+        //return resultObject;
+        //console.log(responseString);
     });
 
     req.on('error', function (e) {
