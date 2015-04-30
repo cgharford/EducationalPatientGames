@@ -26,9 +26,14 @@ module.exports = {
         scores3.visible = true;
         scores4 = this.game.add.text(700, 420, "1", textStyle);
 
-        this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
-        //for now leave the userName field so it can easily scale later
-        this.game.globals.get(this.game);
+        try {
+            this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
+            //for now leave the userName field so it can easily scale later
+            this.game.globals.get(this.game);
+        }
+        catch (err) {
+
+        }
 
         replayButton.events.onInputDown.add(this.restart,this);
     },

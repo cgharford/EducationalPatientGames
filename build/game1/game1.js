@@ -64,7 +64,7 @@ module.exports = {
 
         //CHANGED TO 5 SEC FOR TESTING
         score = 0;
-        timeRemaining = 5;
+        timeRemaining = 60;
         maxTime = timeRemaining
         textStyle = {font: '35px Arial', fill: '#666699', align: 'right', wordWrap: false};
 
