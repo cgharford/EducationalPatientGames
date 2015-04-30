@@ -47,8 +47,9 @@ module.exports = {
         this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
         this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
 
-        this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
-        this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
+        // Troublemakers
+        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
+        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
         /*
          this.createShifter(this.game.width-100, 150, "down");
          this.createShifter(this.game.width-100, 750, "left");
@@ -63,25 +64,25 @@ module.exports = {
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
-        textStyle = {font: '35px Arial', fill: '#ffffff', align: 'right', wordWrap: false};
+        textStyle = {font: '35px Arial', fill: '#666699', align: 'right', wordWrap: false};
 
         // Add error message
-        errorText = this.game.add.text(this.game.width - 200, this.game.height - 50, 'Dude, what?', textStyle);
+        errorText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'Dude, what?', textStyle);
         errorText.visible = false;
         errorText.anchor.set(0.5);
 
         // Add success message
-        successText = this.game.add.text(this.game.width - 200, this.game.height - 50, 'You saved me!', textStyle);
+        successText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'You saved me!', textStyle);
         successText.visible = false;
         successText.anchor.set(0.5);
 
         //  Place score and timer in lower left hand corner
-        scoreText = this.game.add.text(20, this.game.height - 50, 'Score: ' + score, {fill: '#ffffff'});
-        clockText = this.game.add.text(this.game.width / 20 + errorText.width, this.game.height - 50, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
+        scoreText = this.game.add.text(60, this.game.width / 50, 'Score: ' + score, {fill: '#666699'});
+        clockText = this.game.add.text(120+ scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {fill: '#666699'});
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
         // Allow game to be paused
-        pause = this.game.add.text(errorText.width + clockText.width * 2, this.game.height - 50, "Pause", {fill: '#ffffff'});
+        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {fill: '#666699'});
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
@@ -446,7 +447,7 @@ module.exports = {
 
     createShifter: function (x, y, newDirection, warning, randomShift) {
         shifter = directionShifters.create(0, 0, "redsquare");
-        shifter.visible = true;
+        shifter.visible = false;
         shifter.warningFlag = warning;
         shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
         shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);

@@ -1,6 +1,817 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = {
 
+        create: function () {
+            this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; //resizes game to fit parent but maintains aspect ratio
+            this.scale.setMinMax(480, 260, 1024, 768);
+            this.scale.pageAlignHorizontally = true;
+            this.scale.pageAlignVertically = true;
+            //these functions can be used to force users to use a specific orientation on mobile devices
+            /*
+             if (this.game.device.desktop === false) {
+             this.scale.forceOrientation(true,false);
+             this.scale.enterIncorrectOrientation.add(function() {}, this);
+             this.scale.leaveIncorrectOrientation.add(function() {}, this);
+             }*/
+            //this is where we can load a wrapper menu instead of the preload state of first game
+            this.game.state.start("Wrapper");
+        }
+    };
 },{}],2:[function(require,module,exports){
+var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;
+
+var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game-container");
+
+game.globals = {
+    get: require('./game1/getFromServer.js'),
+    post: require('./game1/postToServer.js'),
+    scores: {score1: "", score2: "", score3: "", score4: ""}
+    //Add variables here that you want to access globally
+    //score: 0 could be accessed as game.globals.score for example
+};
+
+
+
+//todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
+//which game they want to play, then start the preload state of that particular game
+game.state.add('Preload1',require('./game1/preload1.js'));
+game.state.add("Title1",require('./game1/title1.js'));
+game.state.add("Game1",require('./game1/game1.js'));
+game.state.add("Victory1",require('./game1/victory1.js'));
+game.state.add('Boot', require('./boot.js'));
+game.state.add('Wrapper', require('./wrapper.js'));
+game.state.start('Boot');
+},{"./boot.js":1,"./game1/game1.js":3,"./game1/getFromServer.js":4,"./game1/postToServer.js":5,"./game1/preload1.js":6,"./game1/title1.js":7,"./game1/victory1.js":8,"./wrapper.js":9}],3:[function(require,module,exports){
+module.exports = {
+
+    create: function () {
+
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        firstRateIncrease = false;
+        secondRateIncrease = false;
+        //Add background
+        park = this.add.sprite(1024, 768, 'park');
+        park.x = 0;
+        park.y = 0;
+        park.height = this.game.height;
+        park.width = this.game.width;
+
+        //Create children group and invisible collision objects group
+        unsafeChildren = this.game.add.group();
+        safeChildren = this.game.add.group();
+        directionShifters = this.game.add.group();
+
+        //this.createChild(350,350, "left", unsafeChildren, 'safeSkate', this.onUnsafeClick);
+
+        /*
+         this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
+         this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
+
+         Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
+         this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+         this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+         this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+
+
+         We can create spawn points wherever we want so the sprites start on paths etc.
+         this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+         this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
+         this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+         */
+
+        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        //this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        //this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
+        this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
+        this.startSpawn(3, 0, (this.game.height / 4), "down-right")
+        this.createShifter(11 * (this.game.width / 12), this.game.height / 8, "down", false, false);
+        this.createShifter(11 * (this.game.width / 12), 23 * this.game.height / 24, "left", false, false);
+        this.createShifter(this.game.width / 7, 5 * this.game.height / 10, "right", false, false);
+        this.createShifter(5 * this.game.width / 9, 4 * this.game.height / 8, "up-right", false, false);
+        this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
+        this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
+
+        // Troublemakers
+        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
+        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
+        /*
+         this.createShifter(this.game.width-100, 150, "down");
+         this.createShifter(this.game.width-100, 750, "left");
+         This will allow to check num of living unsafe children to see if offscreen are killed
+         this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
+         */
+
+        // Add funky negative sound
+        bad_sound = this.add.audio('bad_sound');
+
+        // Score starts at 0, timer starts at 60 seconds
+        score = 0;
+        timeRemaining = 60;
+        maxTime = timeRemaining
+        textStyle = {font: '35px Arial', fill: '#666699', align: 'right', wordWrap: false};
+
+        // Add error message
+        errorText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'Dude, what?', textStyle);
+        errorText.visible = false;
+        errorText.anchor.set(0.5);
+
+        // Add success message
+        successText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'You saved me!', textStyle);
+        successText.visible = false;
+        successText.anchor.set(0.5);
+
+        //  Place score and timer in lower left hand corner
+        scoreText = this.game.add.text(60, this.game.width / 50, 'Score: ' + score, {fill: '#666699'});
+        clockText = this.game.add.text(120+ scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {fill: '#666699'});
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
+        // Allow game to be paused
+        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {fill: '#666699'});
+        pause.inputEnabled = true;
+        pause.events.onInputDown.add(this.pauseGame, this);
+
+        instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
+        instructions.visible = false;
+
+        // Click anywhere to unpause
+        this.game.input.onDown.add(this.unpauseGame, this);
+
+        // On time out, show score
+        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
+        victoryText.visible = false;
+        victoryText.anchor.set(0.5);
+    },
+
+    pauseGame: function () {
+        this.game.paused = true;
+        instructions.visible = true;
+
+    },
+    unpauseGame: function () {
+        this.game.paused = false;
+        instructions.visible = false;
+
+    },
+
+    update: function () {
+
+        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
+            bad_sound.play();
+            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
+            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
+
+            firstRateIncrease = true;
+        }
+
+        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
+            bad_sound.play();
+            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
+            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
+            secondRateIncrease = true;
+
+        }
+
+        if (timeRemaining <= (maxTime / 3)) {
+            for (var i = 0; i < unsafeChildren.children.length; i++) {
+                unsafeChildren.children[i].velocity = 3;
+            }
+            for (var i = 0; i < safeChildren.children.length; i++) {
+                safeChildren.children[i].velocity = 3;
+            }
+        }
+
+        else if (timeRemaining <= (2 * (maxTime / 3))) {
+            for (var i = 0; i < unsafeChildren.children.length; i++) {
+                unsafeChildren.children[i].velocity = 2;
+
+            }
+            for (var i = 0; i < safeChildren.children.length; i++) {
+                safeChildren.children[i].velocity = 2;
+            }
+        }
+
+
+        // On overlap of children and invisible objects (function) shift direction
+        this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
+        this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
+
+        // Update score, timer, and victory texts with new values
+        scoreText.text = 'Score: ' + score;
+        clockText.text = 'Time Remaining: ' + timeRemaining;
+        victoryText.text = 'Congratulations your score is ' + score + '!'
+
+        // If error/success text were visible for 500ms, hide them
+        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
+            errorText.visible = false;
+        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
+            successText.visible = false;
+
+        // If timer runs out, show victory
+        if (timeRemaining <= 0) {
+            this.victory();
+        }
+
+        // For each child alive, move and animate
+        // For each child off screen, kill sprite
+        for (var i = 0; i < unsafeChildren.children.length; i++) {
+            var currentChild = unsafeChildren.children[i];
+            if (currentChild.alive) {
+                currentChild.move();
+                currentChild.animations.play('ride');
+
+            }
+
+            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+                currentChild.kill();
+            }
+
+            /*
+             if (Math.random() > .99) {
+             this.changeDirection(currentChild);
+             }
+             */
+
+        }
+        // For each child alive, move and animate
+        // For each child off screen, kill sprite
+        for (var i = 0; i < safeChildren.children.length; i++) {
+            var currentChild = safeChildren.children[i];
+            if (currentChild.alive) {
+                currentChild.move();
+                currentChild.animations.play('ride');
+
+            }
+            // Weird stuff happening with killing off screen
+            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+                currentChild.kill(); //weird stuff still happening with killing offscreen?
+            }
+
+            /*
+             if (Math.random() > .98) {
+             this.changeDirection(currentChild);
+             }
+             */
+        }
+    },
+
+    // Clicking a sprite being safe
+    onSafeClick: function (sprite) {
+
+        // Decrement score
+        if (score > 0) {
+            score -= 1;
+        }
+
+        // Show error msg for 500ms and set to visible
+        errorTextTimer = this.game.time.now + 500;
+        errorText.visible = true;
+        successText.visible = false;
+
+    },
+
+    // Clicking a sprite being unsafe
+    onUnsafeClick: function (sprite) {
+        score += 1;
+        /*
+         var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
+         safeChild.inputEnabled = true;
+         safeChild.events.onInputDown.add(this.onSafeClick, this);
+         safeChild.scale.x = 0.25;
+         safeChild.scale.y = 0.25;
+         safeChild.anchor.set(0.5);
+         safeChild.position.x = sprite.position.x;
+         safeChild.position.y = sprite.position.y;
+         safeChild.outOfBoundsKill = true;*/
+        var safeChild;
+        var newImage;
+        if (sprite.key == 'unsafe')
+            newImage = 'safe'
+        else if (sprite.key == 'unsafeSkate')
+            newImage = 'safeSkate';
+        else if (sprite.key == 'unsafeATV')
+            newImage = 'safeATV';
+        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
+        errorText.visible = false;
+        successTextTimer = this.game.time.now + 500;
+        successText.visible = true;
+        sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
+        // errorText.visible = false;
+        //successTextTimer = this.game.time.now + 500;
+        // successText.position.x = safeChild.position.x;
+        // successText.position.y = safeChild.position.y + safeChild.height;
+        // successText.visible = true;
+    },
+    victory: function () {
+        safeChildren.forEach(function (child) {
+            child.kill();
+        });
+        errorText.visible = false;
+        successText.visible = false;
+        victoryText.visible = true;
+
+        this.game.state.start("Victory1", true, false, score);
+    },
+    placeRandomChildren: function (group, spriteName, listener) {
+        for (var i = 0; i < 3; i++) {
+            child = group.create(0, 0, spriteName);
+            child.inputEnabled = true;
+            child.events.onInputDown.add(listener, this);
+            child.anchor.set(0.5);
+            child.position.x = this.game.world.randomX;
+            child.position.y = this.game.world.randomY;
+            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+        }
+        //group.setAll('scale.x', 0.25);
+        //group.setAll('scale.y', 0.25);
+        group.setAll('outOfBoundsKill', true);
+    },
+
+    //startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
+    startSpawn: function (timeDelay, x, y, direction) {
+        var delayTime = Phaser.Timer.SECOND * timeDelay;
+        //var newSprite = null;
+
+        this.game.time.events.loop(delayTime, this.createRandomChild, this, x, y, direction);
+
+    },
+
+    updateTime: function () {
+        timeRemaining -= 1;
+    },
+
+
+    createRandomChild: function (startx, starty, direction) {
+        var group;
+        var spriteName;
+        var listener;
+        var randomNum = Math.random();
+        if (randomNum > .35) {
+
+            group = unsafeChildren;
+            if (randomNum > .5 && randomNum < .7) {
+                spriteName = 'unsafe';
+            } else if (randomNum > .7) {
+                spriteName = 'unsafeSkate';
+            } else {
+                spriteName = 'unsafeATV';
+            }
+            listener = this.onUnsafeClick;
+        }
+        else {
+
+            group = safeChildren;
+            if (randomNum > .5 && randomNum < .7) {
+                spriteName = 'safe';
+            } else if (randomNum > .7) {
+                spriteName = 'safeSkate';
+            } else {
+                spriteName = 'safeATV';
+            }
+            listener = this.onSafeClick;
+        }
+
+        this.createChild(startx, starty, direction, group, spriteName, listener);
+
+    },
+    createChild: function (startx, starty, direction, group, spriteName, listener) {
+        var child;
+        child = group.create(0, 0, spriteName);
+        child.inputEnabled = true;
+        child.events.onInputDown.add(listener, this);
+        child.anchor.set(0.5);
+        child.position.x = startx;
+        child.position.y = starty;
+        child.direction = direction;
+        child.safe = false;
+        if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV') {
+            child.safe = true;
+        }
+        if (child.direction == "right" || child.direction == "down-right" || child.direction == "up-right")
+            child.scale.x = child.scale.x * -1;
+        //child.scale.x = .25;
+        //child.scale.y = .25;
+        this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
+        child.checkWorldBounds = true;
+        child.outOfBoundsKill = true;
+        if (spriteName == 'safe' || spriteName == 'unsafe') {
+            //name, frames, fps, boolean for loop (true means plays more than once)
+            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+        }
+        else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
+            child.scale.x = child.scale.x * -1;
+            child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
+        }
+        else if (spriteName == 'safeATV' || spriteName == 'unsafeATV') {
+            child.scale.x = child.scale.x * -1;
+            child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
+        }
+
+        child.velocity = 1;
+
+        child.flashRed = function () {
+            //child.animations.tint = 0xff0000;
+            child.tint = 0xff0000;
+        };
+
+        child.restoreColor = function () {
+            //child.animations.tint = 0xFFFFFF;
+            child.tint = 0xFFFFFF;
+        };
+
+        child.startRed = function () {
+            //this.game.time.events.repeat(100, 5,  child.flashRed, this);
+            //this.game.time.events.repeat(150, 5, child.restoreColor, this);
+            child.flashRed();
+            //this.game.time.events.loop(100, child.flashRed, this);
+            //this.game.time.events.loop(150, child.restoreColor, this);
+            // this.game.time.events.add(300, child.restoreColor, this);
+
+        };
+        child.move = function () {
+
+            if (this.direction === "up") {
+                this.position.y -= this.velocity;
+            }
+            else if (this.direction === "down") {
+                this.position.y += this.velocity;
+            }
+            else if (this.direction === "left") {
+                this.position.x -= this.velocity;
+            }
+            else if (this.direction === "right") {
+                this.position.x += this.velocity;
+            }
+
+            else if (this.direction == "up-right") {
+                this.position.x += this.velocity;
+                this.position.y -= this.velocity;
+            }
+
+            else if (this.direction == "up-left") {
+                this.position.x -= this.velocity;
+                this.position.y -= this.velocity;
+
+            }
+
+            else if (this.direction == "down-left") {
+                this.position.x -= this.velocity;
+                this.position.y += this.velocity;
+            }
+
+            else if (this.direction == "down-right") {
+                this.position.x += this.velocity;
+                this.position.y += this.velocity;
+
+            }
+
+        };
+        //group.setAll('scale.x', 0.25);
+        //group.setAll('scale.y', 0.25);
+        //group.setAll('outOfBoundsKill', true);
+    },
+
+    //NOTE: Since sprites die offscreen I don't worry about them randomly going off screen.
+    //TODO: plan to plot movement along background instead of random movement, random movement just for demo purposes
+    changeDirection: function (sprite) {
+        var randNum = Math.round(Math.random() * (100));
+        if (randNum < 25) {
+            sprite.direction = "left";
+        }
+        else if (randNum < 50) {
+            sprite.direction = "right";
+        }
+        else if (randNum < 75) {
+            sprite.direction = "up";
+        }
+        else {
+            sprite.direction = "down";
+
+        }
+    },
+
+    createShifter: function (x, y, newDirection, warning, randomShift) {
+        shifter = directionShifters.create(0, 0, "redsquare");
+        shifter.visible = false;
+        shifter.warningFlag = warning;
+        shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
+        shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);
+        shifter.anchor.set(.5);
+        shifter.position.x = x;
+        shifter.position.y = y;
+        shifter.direction = newDirection;
+        shifter.scale.x = (window.innerWidth * window.devicePixelRatio * .0004);
+        shifter.scale.y = (window.innerHeight * window.devicePixelRatio * .0004);
+        shifter.randomShift = randomShift;
+
+        this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
+
+    },
+
+
+    shiftDirection: function (sprite, shifter) {
+        if (shifter.warningFlag == true && sprite.safe == false) {
+            sprite.startRed();
+        }
+        if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")) {
+            sprite.scale.x = sprite.scale.x * -1;
+        }
+        else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")) {
+            sprite.scale.x = sprite.scale.x * -1;
+        }
+        else sprite.scale.x = sprite.scale.x;
+
+        sprite.direction = shifter.direction;
+
+        var randNum = Math.round(Math.random() * (100));
+
+        if (!(shifter.randomShift == true) && randNum < 50) {
+            sprite.direction = shifter.direction;
+        } else {
+            sprite.direction = sprite.direction;
+        }
+    },
+
+    //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
+    announceLiving: function () {
+        alert(this.unsafeChildren.countLiving());
+    }
+
+};
+},{}],4:[function(require,module,exports){
+var resultObject = {string1: "", string2: "", string3: "", string4: ""};
+
+module.exports = function(game) {
+    var http = require('http');
+    HOST = "bluefish.cs.unc.edu";
+    PORT = 3131;
+    var headers = {
+        'Content-Type': 'application/json'
+    };
+
+    var options = {
+        host: HOST,
+        port: PORT,
+        path: '/',
+        method: 'GET',
+        headers: headers
+    };
+
+// Setup the request.  The options parameter is
+// the object we defined above.
+    var req = http.request(options, function (res) {
+        //res.setEncoding('utf-8');
+        var responseString = '';
+
+        res.on('data', function (data) {
+            responseString += data;
+        });
+
+        res.on('end', function () {
+            try {
+                result = JSON.parse(responseString);
+                resultObject.string1 = result[1].username + ": " + result[1].score;
+                //result object are the retrieved records in JSON format
+                //here is how you can iterate over the scores
+                //for (i = 0; i < resultObject.length; i++) {
+                  //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
+                //};
+
+            }
+            catch (err) {
+                console.log(err);
+      //          return null;
+            }
+        });
+        //return resultObject;
+        //console.log(responseString);
+    });
+
+    req.on('error', function (e) {
+        // TODO: handle error.
+    });
+
+    req.end();
+    //return resultObject;
+
+    //wait 500 ms (not that good..)
+    var date = new Date();
+    var curDate = new Date()
+    while (true) {
+        if (curDate - date < 1000) {
+            curDate = new Date();
+        }
+        else {
+            console.log(resultObject);
+            break;
+        }
+    }
+};
+},{"http":16}],5:[function(require,module,exports){
+
+module.exports = function(userName, userScore) {
+
+    var http = require('http');
+    HOST = "bluefish.cs.unc.edu";
+    PORT = 3131;
+    name = userName;
+    highScore = userScore;
+    var myDate = new Date();
+
+//function postToServer(name, highScore) {
+    var user = {
+        username: name,
+        score: highScore,
+        date: (myDate.getMonth() + 1) + " " + myDate.getDate() + " " + myDate.getFullYear()
+    };
+
+    var userString = JSON.stringify(user);
+
+    var headers = {
+        'Content-Type': 'application/json',
+        'Content-Length': userString.length
+    };
+
+    var options = {
+        host: HOST,
+        port: PORT,
+        path: '/',
+        method: 'POST',
+        headers: headers
+    };
+
+// Setup the request.  The options parameter is
+// the object we defined above.
+    var req = http.request(options, function (res) {
+        //res.setEncoding('utf-8');
+
+        var responseString = '';
+
+        res.on('data', function (data) {
+            responseString += data;
+        });
+
+        res.on('end', function () {
+            //var resultObject = JSON.parse(responseString);
+            console.log(responseString);
+            //TODO:  This is where you can receive the scores from the database and do whatever you need to with them
+            //the database will return score records in response to a GET request
+            //to ask for scores posted on april 19, 2015 the mongo query looks like
+            //db.captain_safety.find({date: "4 19 2015"})
+        });
+    });
+
+    req.on('error', function (e) {
+        // TODO: handle error.
+    });
+
+    req.write(userString);
+    req.end();
+
+
+};
+},{"http":16}],6:[function(require,module,exports){
+module.exports = {
+    preload: function() {
+        this.game.load.image('play button', './assets/images/UIP-play-button.png');
+        this.game.load.image('title page bg', './assets/images/UIP-title.jpg');
+        this.game.load.image('park', './assets/images/park-bg.jpg');
+        this.game.load.image('instructions', 'assets/images/instructions.jpg');
+        this.game.load.image('redsquare', './assets/images/redsquare.png');
+        this.game.load.audio('bad_sound', './assets/audio/bad-sound.wav', true);
+        this.game.load.spritesheet('safe', './assets/images/spritesheets/safe-biker-red.png', 80, 80);
+        this.game.load.spritesheet('unsafe', './assets/images/spritesheets/unsafe-biker-red.png', 80, 80);
+		this.game.load.spritesheet('safeSkate', './assets/images/spritesheets/safe-skater.png', 90, 90);
+		this.game.load.spritesheet('unsafeSkate', './assets/images/spritesheets/unsafe-skater.png', 90, 90);
+		this.game.load.spritesheet('safeATV', './assets/images/spritesheets/safe-atv-rider.png', 90, 90);
+		this.game.load.spritesheet('unsafeATV', './assets/images/spritesheets/unsafe-atv-rider.png', 90, 90);
+        this.game.load.image('replay button', './assets/images/UIP-replay-button.png');
+        this.game.load.image('victory page bg', './assets/images/UIP-victory.jpg');
+
+    },
+    create: function() {
+        this.game.state.start("Title1");
+    }
+};
+},{}],7:[function(require,module,exports){
+module.exports = {
+    create: function() {
+        var titleBg = this.add.sprite(1024, 768, 'title page bg');
+        titleBg.x = 0;
+        titleBg.y = 0;
+        titleBg.height = this.game.height;
+        titleBg.width = this.game.width;
+
+        var playButton = this.game.add.sprite(319, 160, 'play button');
+        playButton.x = this.game.width - 319;
+        playButton.y = this.game.height - 160;
+        playButton.inputEnabled = true;
+        //var playButton = this.game.add.button(this.game.width/2,this.game.height/2 + titleText.height, 'play button',
+        //    this.playGame(),this);
+        //playButton.anchor.set(0.5);
+        playButton.events.onInputDown.add(this.playGame,this);
+
+        /*
+        textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};
+
+        var titleText = this.game.add.text(this.game.width/2,this.game.height/2,"Captain Safety",
+            textStyle);
+        titleText.anchor.set(0.5);
+        titleText.visible = true;
+        */
+    },
+    playGame: function() {
+        this.game.state.start("Game1");
+    }
+};
+
+},{}],8:[function(require,module,exports){
+module.exports = {
+    create: function () {
+
+        var victoryBg = this.add.sprite(1024, 768, 'victory page bg');
+        victoryBg.x = 0;
+        victoryBg.y = 0;
+        victoryBg.height = this.game.height;
+        victoryBg.width = this.game.width;
+
+        var replayButton = this.game.add.sprite(513, 63, 'replay button');
+        replayButton.x = this.game.width - 513;
+        replayButton.y = this.game.height - 63;
+        replayButton.inputEnabled = true;
+
+        textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};
+        yourScore = this.game.add.text(431, 172, score + " saved", textStyle);
+        yourScore.visible = true;
+        //yourScore.anchor.set(0.5);
+        //yourScore.setText("TEST");
+        //yourScore.text = "TEST";
+        scores1 = this.game.add.text(700, 230, "1", textStyle);
+        scores1.visible = true;
+        scores2 = this.game.add.text(700, 300, "1", textStyle);
+        scores2.visible = true;
+        scores3 = this.game.add.text(700, 350, "1", textStyle);
+        scores3.visible = true;
+        scores4 = this.game.add.text(700, 420, "1", textStyle);
+
+        this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
+        //for now leave the userName field so it can easily scale later
+        this.game.globals.get(this.game);
+
+        replayButton.events.onInputDown.add(this.restart,this);
+    },
+    restart: function() {
+        this.game.state.start('Title1');
+    }
+};
+},{}],9:[function(require,module,exports){
+module.exports = {
+
+    preload: function () {
+        //load images for all of the games here
+        this.game.load.image("wrapper-bg", "assets/images/wrapper.jpg");
+        this.game.load.image("new-game-thumb", "assets/images/new-game-thumbnail.jpg");
+        this.game.load.image("UIP-thumb", "assets/images/UIP-thumbnail.jpg");
+    },
+    create: function () {
+
+        wrapperBg = this.add.sprite(1024, 768, 'wrapper-bg');
+        wrapperBg.x = 0;
+        wrapperBg.y = 0;
+        wrapperBg.height = this.game.height;
+        wrapperBg.width = this.game.width;
+
+
+        var uipImage = this.game.add.sprite(this.game.width / 2, this.game.height / 2, "UIP-thumb");
+        uipImage.anchor.set(.5);
+        uipImage.scale.setTo(.7, .7);
+        uipImage.inputEnabled = true;
+        uipImage.events.onInputDown.add(this.captainSafetySelect, this);
+
+        var ngImageA = this.game.add.sprite(this.game.width / 6, this.game.height / 2, "new-game-thumb");
+        ngImageA.anchor.set(.5);
+        ngImageA.scale.setTo(.7, .7);
+
+
+        var ngImageB = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "new-game-thumb");
+        ngImageB.anchor.set(.5);
+        ngImageB.scale.setTo(.7, .7);
+
+        if (uipImage !== null && ngImageA !== null && ngImageB !== null) {
+            return true;
+        } else {
+            return false;
+        }
+
+    },
+    captainSafetySelect: function () {
+
+        this.game.state.start('Preload1');
+    }
+
+}
+},{}],10:[function(require,module,exports){
+
+},{}],11:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -1416,7 +2227,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":3,"ieee754":4,"is-array":5}],3:[function(require,module,exports){
+},{"base64-js":12,"ieee754":13,"is-array":14}],12:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -1542,7 +2353,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],4:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 exports.read = function(buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -1628,7 +2439,7 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128;
 };
 
-},{}],5:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 /**
  * isArray
@@ -1663,7 +2474,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],6:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1966,7 +2777,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],7:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var http = module.exports;
 var EventEmitter = require('events').EventEmitter;
 var Request = require('./lib/request');
@@ -2112,7 +2923,7 @@ http.STATUS_CODES = {
     510 : 'Not Extended',               // RFC 2774
     511 : 'Network Authentication Required' // RFC 6585
 };
-},{"./lib/request":8,"events":6,"url":31}],8:[function(require,module,exports){
+},{"./lib/request":17,"events":15,"url":40}],17:[function(require,module,exports){
 var Stream = require('stream');
 var Response = require('./response');
 var Base64 = require('Base64');
@@ -2323,7 +3134,7 @@ var isXHR2Compatible = function (obj) {
     if (typeof FormData !== 'undefined' && obj instanceof FormData) return true;
 };
 
-},{"./response":9,"Base64":10,"inherits":11,"stream":29}],9:[function(require,module,exports){
+},{"./response":18,"Base64":19,"inherits":20,"stream":38}],18:[function(require,module,exports){
 var Stream = require('stream');
 var util = require('util');
 
@@ -2445,7 +3256,7 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{"stream":29,"util":33}],10:[function(require,module,exports){
+},{"stream":38,"util":42}],19:[function(require,module,exports){
 ;(function () {
 
   var object = typeof exports != 'undefined' ? exports : this; // #8: web workers
@@ -2507,7 +3318,7 @@ var isArray = Array.isArray || function (xs) {
 
 }());
 
-},{}],11:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2532,12 +3343,12 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],13:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -2597,7 +3408,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],14:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (global){
 /*! http://mths.be/punycode v1.2.4 by @mathias */
 ;(function(root) {
@@ -3108,7 +3919,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],15:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3194,7 +4005,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],16:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3281,16 +4092,16 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],17:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":15,"./encode":16}],18:[function(require,module,exports){
+},{"./decode":24,"./encode":25}],27:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":19}],19:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":28}],28:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3383,7 +4194,7 @@ function forEach (xs, f) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_readable":21,"./_stream_writable":23,"_process":13,"core-util-is":24,"inherits":11}],20:[function(require,module,exports){
+},{"./_stream_readable":30,"./_stream_writable":32,"_process":22,"core-util-is":33,"inherits":20}],29:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3431,7 +4242,7 @@ PassThrough.prototype._transform = function(chunk, encoding, cb) {
   cb(null, chunk);
 };
 
-},{"./_stream_transform":22,"core-util-is":24,"inherits":11}],21:[function(require,module,exports){
+},{"./_stream_transform":31,"core-util-is":33,"inherits":20}],30:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -4386,7 +5197,7 @@ function indexOf (xs, x) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":19,"_process":13,"buffer":2,"core-util-is":24,"events":6,"inherits":11,"isarray":12,"stream":29,"string_decoder/":30,"util":1}],22:[function(require,module,exports){
+},{"./_stream_duplex":28,"_process":22,"buffer":11,"core-util-is":33,"events":15,"inherits":20,"isarray":21,"stream":38,"string_decoder/":39,"util":10}],31:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4597,7 +5408,7 @@ function done(stream, er) {
   return stream.push(null);
 }
 
-},{"./_stream_duplex":19,"core-util-is":24,"inherits":11}],23:[function(require,module,exports){
+},{"./_stream_duplex":28,"core-util-is":33,"inherits":20}],32:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5078,7 +5889,7 @@ function endWritable(stream, state, cb) {
 }
 
 }).call(this,require('_process'))
-},{"./_stream_duplex":19,"_process":13,"buffer":2,"core-util-is":24,"inherits":11,"stream":29}],24:[function(require,module,exports){
+},{"./_stream_duplex":28,"_process":22,"buffer":11,"core-util-is":33,"inherits":20,"stream":38}],33:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5188,10 +5999,10 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 }).call(this,require("buffer").Buffer)
-},{"buffer":2}],25:[function(require,module,exports){
+},{"buffer":11}],34:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":20}],26:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":29}],35:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = require('stream');
 exports.Readable = exports;
@@ -5200,13 +6011,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":19,"./lib/_stream_passthrough.js":20,"./lib/_stream_readable.js":21,"./lib/_stream_transform.js":22,"./lib/_stream_writable.js":23,"stream":29}],27:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":28,"./lib/_stream_passthrough.js":29,"./lib/_stream_readable.js":30,"./lib/_stream_transform.js":31,"./lib/_stream_writable.js":32,"stream":38}],36:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":22}],28:[function(require,module,exports){
+},{"./lib/_stream_transform.js":31}],37:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":23}],29:[function(require,module,exports){
+},{"./lib/_stream_writable.js":32}],38:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5335,7 +6146,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":6,"inherits":11,"readable-stream/duplex.js":18,"readable-stream/passthrough.js":25,"readable-stream/readable.js":26,"readable-stream/transform.js":27,"readable-stream/writable.js":28}],30:[function(require,module,exports){
+},{"events":15,"inherits":20,"readable-stream/duplex.js":27,"readable-stream/passthrough.js":34,"readable-stream/readable.js":35,"readable-stream/transform.js":36,"readable-stream/writable.js":37}],39:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5558,7 +6369,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":2}],31:[function(require,module,exports){
+},{"buffer":11}],40:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -6267,14 +7078,14 @@ function isNullOrUndefined(arg) {
   return  arg == null;
 }
 
-},{"punycode":14,"querystring":17}],32:[function(require,module,exports){
+},{"punycode":23,"querystring":26}],41:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],33:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6864,814 +7675,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":32,"_process":13,"inherits":11}],34:[function(require,module,exports){
-module.exports = {
-
-        create: function () {
-            this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; //resizes game to fit parent but maintains aspect ratio
-            this.scale.setMinMax(480, 260, 1024, 768);
-            this.scale.pageAlignHorizontally = true;
-            this.scale.pageAlignVertically = true;
-            //these functions can be used to force users to use a specific orientation on mobile devices
-            /*
-             if (this.game.device.desktop === false) {
-             this.scale.forceOrientation(true,false);
-             this.scale.enterIncorrectOrientation.add(function() {}, this);
-             this.scale.leaveIncorrectOrientation.add(function() {}, this);
-             }*/
-            //this is where we can load a wrapper menu instead of the preload state of first game
-            this.game.state.start("Wrapper");
-        }
-    };
-},{}],35:[function(require,module,exports){
-var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;
-
-var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game-container");
-
-game.globals = {
-    get: require('./game1/getFromServer.js'),
-    post: require('./game1/postToServer.js'),
-    scores: {score1: "", score2: "", score3: "", score4: ""}
-    //Add variables here that you want to access globally
-    //score: 0 could be accessed as game.globals.score for example
-};
-
-
-
-//todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
-//which game they want to play, then start the preload state of that particular game
-game.state.add('Preload1',require('./game1/preload1.js'));
-game.state.add("Title1",require('./game1/title1.js'));
-game.state.add("Game1",require('./game1/game1.js'));
-game.state.add("Victory1",require('./game1/victory1.js'));
-game.state.add('Boot', require('./boot.js'));
-game.state.add('Wrapper', require('./wrapper.js'));
-game.state.start('Boot');
-},{"./boot.js":34,"./game1/game1.js":36,"./game1/getFromServer.js":37,"./game1/postToServer.js":38,"./game1/preload1.js":39,"./game1/title1.js":40,"./game1/victory1.js":41,"./wrapper.js":42}],36:[function(require,module,exports){
-module.exports = {
-
-    create: function () {
-
-        this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        firstRateIncrease = false;
-        secondRateIncrease = false;
-        //Add background
-        park = this.add.sprite(1024, 768, 'park');
-        park.x = 0;
-        park.y = 0;
-        park.height = this.game.height;
-        park.width = this.game.width;
-
-        //Create children group and invisible collision objects group
-        unsafeChildren = this.game.add.group();
-        safeChildren = this.game.add.group();
-        directionShifters = this.game.add.group();
-
-        //this.createChild(350,350, "left", unsafeChildren, 'safeSkate', this.onUnsafeClick);
-
-        /*
-         this.placeRandomChildren(unsafeChildren, 'unsafe', this.onUnsafeClick);
-         this.placeRandomChildren(safeChildren, 'safe', this.onSafeClick);
-
-         Note: current victory conditions require that some unsafe children be created on load or instant win will occur, so that's these
-         this.createChild(250, 250, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-         this.createChild(75, 75, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-         this.createChild(200, 200, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-
-
-         We can create spawn points wherever we want so the sprites start on paths etc.
-         this.startSpawn(2, this.game.width, 150, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-         this.startSpawn(4, this.game.width, 250, "left", safeChildren, 'safe', this.onSafeClick);
-         this.startSpawn(7, this.game.width, 50, "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-         */
-
-        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        //this.startSpawn(6, this.game.width, (this.game.height/8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
-        //this.startSpawn(4, 0, (this.game.height/4), "down-right", unsafeChildren, 'unsafe', this.onUnsafeClick
-        this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
-        this.startSpawn(3, 0, (this.game.height / 4), "down-right")
-        this.createShifter(11 * (this.game.width / 12), this.game.height / 8, "down", false, false);
-        this.createShifter(11 * (this.game.width / 12), 23 * this.game.height / 24, "left", false, false);
-        this.createShifter(this.game.width / 7, 5 * this.game.height / 10, "right", false, false);
-        this.createShifter(5 * this.game.width / 9, 4 * this.game.height / 8, "up-right", false, false);
-        this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
-        this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
-
-        this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
-        this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
-        /*
-         this.createShifter(this.game.width-100, 150, "down");
-         this.createShifter(this.game.width-100, 750, "left");
-         This will allow to check num of living unsafe children to see if offscreen are killed
-         this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
-         */
-
-        // Add funky negative sound
-        bad_sound = this.add.audio('bad_sound');
-
-        // Score starts at 0, timer starts at 60 seconds
-        score = 0;
-        timeRemaining = 60;
-        maxTime = timeRemaining
-        textStyle = {font: '35px Arial', fill: '#ffffff', align: 'right', wordWrap: false};
-
-        // Add error message
-        errorText = this.game.add.text(this.game.width - 200, this.game.height - 50, 'Dude, what?', textStyle);
-        errorText.visible = false;
-        errorText.anchor.set(0.5);
-
-        // Add success message
-        successText = this.game.add.text(this.game.width - 200, this.game.height - 50, 'You saved me!', textStyle);
-        successText.visible = false;
-        successText.anchor.set(0.5);
-
-        //  Place score and timer in lower left hand corner
-        scoreText = this.game.add.text(20, this.game.height - 50, 'Score: ' + score, {fill: '#ffffff'});
-        clockText = this.game.add.text(this.game.width / 20 + errorText.width, this.game.height - 50, 'Time Remaining: ' + timeRemaining, {fill: '#ffffff'});
-        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
-
-        // Allow game to be paused
-        pause = this.game.add.text(errorText.width + clockText.width * 2, this.game.height - 50, "Pause", {fill: '#ffffff'});
-        pause.inputEnabled = true;
-        pause.events.onInputDown.add(this.pauseGame, this);
-
-        instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
-        instructions.visible = false;
-
-        // Click anywhere to unpause
-        this.game.input.onDown.add(this.unpauseGame, this);
-
-        // On time out, show score
-        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
-        victoryText.visible = false;
-        victoryText.anchor.set(0.5);
-    },
-
-    pauseGame: function () {
-        this.game.paused = true;
-        instructions.visible = true;
-
-    },
-    unpauseGame: function () {
-        this.game.paused = false;
-        instructions.visible = false;
-
-    },
-
-    update: function () {
-
-        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
-            bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
-
-            firstRateIncrease = true;
-        }
-
-        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
-            bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
-            secondRateIncrease = true;
-
-        }
-
-        if (timeRemaining <= (maxTime / 3)) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].velocity = 3;
-            }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].velocity = 3;
-            }
-        }
-
-        else if (timeRemaining <= (2 * (maxTime / 3))) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].velocity = 2;
-
-            }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].velocity = 2;
-            }
-        }
-
-
-        // On overlap of children and invisible objects (function) shift direction
-        this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
-        this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
-
-        // Update score, timer, and victory texts with new values
-        scoreText.text = 'Score: ' + score;
-        clockText.text = 'Time Remaining: ' + timeRemaining;
-        victoryText.text = 'Congratulations your score is ' + score + '!'
-
-        // If error/success text were visible for 500ms, hide them
-        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
-            errorText.visible = false;
-        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
-            successText.visible = false;
-
-        // If timer runs out, show victory
-        if (timeRemaining <= 0) {
-            this.victory();
-        }
-
-        // For each child alive, move and animate
-        // For each child off screen, kill sprite
-        for (var i = 0; i < unsafeChildren.children.length; i++) {
-            var currentChild = unsafeChildren.children[i];
-            if (currentChild.alive) {
-                currentChild.move();
-                currentChild.animations.play('ride');
-
-            }
-
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
-                currentChild.kill();
-            }
-
-            /*
-             if (Math.random() > .99) {
-             this.changeDirection(currentChild);
-             }
-             */
-
-        }
-        // For each child alive, move and animate
-        // For each child off screen, kill sprite
-        for (var i = 0; i < safeChildren.children.length; i++) {
-            var currentChild = safeChildren.children[i];
-            if (currentChild.alive) {
-                currentChild.move();
-                currentChild.animations.play('ride');
-
-            }
-            // Weird stuff happening with killing off screen
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
-                currentChild.kill(); //weird stuff still happening with killing offscreen?
-            }
-
-            /*
-             if (Math.random() > .98) {
-             this.changeDirection(currentChild);
-             }
-             */
-        }
-    },
-
-    // Clicking a sprite being safe
-    onSafeClick: function (sprite) {
-
-        // Decrement score
-        if (score > 0) {
-            score -= 1;
-        }
-
-        // Show error msg for 500ms and set to visible
-        errorTextTimer = this.game.time.now + 500;
-        errorText.visible = true;
-        successText.visible = false;
-
-    },
-
-    // Clicking a sprite being unsafe
-    onUnsafeClick: function (sprite) {
-        score += 1;
-        /*
-         var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
-         safeChild.inputEnabled = true;
-         safeChild.events.onInputDown.add(this.onSafeClick, this);
-         safeChild.scale.x = 0.25;
-         safeChild.scale.y = 0.25;
-         safeChild.anchor.set(0.5);
-         safeChild.position.x = sprite.position.x;
-         safeChild.position.y = sprite.position.y;
-         safeChild.outOfBoundsKill = true;*/
-        var safeChild;
-        var newImage;
-        if (sprite.key == 'unsafe')
-            newImage = 'safe'
-        else if (sprite.key == 'unsafeSkate')
-            newImage = 'safeSkate';
-        else if (sprite.key == 'unsafeATV')
-            newImage = 'safeATV';
-        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
-        errorText.visible = false;
-        successTextTimer = this.game.time.now + 500;
-        successText.visible = true;
-        sprite.kill(); //todo: implement a sprite recycling mechanism with some maximum amount of safe and unsafe sprites visible at a time
-        // errorText.visible = false;
-        //successTextTimer = this.game.time.now + 500;
-        // successText.position.x = safeChild.position.x;
-        // successText.position.y = safeChild.position.y + safeChild.height;
-        // successText.visible = true;
-    },
-    victory: function () {
-        safeChildren.forEach(function (child) {
-            child.kill();
-        });
-        errorText.visible = false;
-        successText.visible = false;
-        victoryText.visible = true;
-
-        this.game.state.start("Victory1", true, false, score);
-    },
-    placeRandomChildren: function (group, spriteName, listener) {
-        for (var i = 0; i < 3; i++) {
-            child = group.create(0, 0, spriteName);
-            child.inputEnabled = true;
-            child.events.onInputDown.add(listener, this);
-            child.anchor.set(0.5);
-            child.position.x = this.game.world.randomX;
-            child.position.y = this.game.world.randomY;
-            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
-        }
-        //group.setAll('scale.x', 0.25);
-        //group.setAll('scale.y', 0.25);
-        group.setAll('outOfBoundsKill', true);
-    },
-
-    //startSpawn: function (timeDelay, x, y, direction, group, spriteName, listener) {
-    startSpawn: function (timeDelay, x, y, direction) {
-        var delayTime = Phaser.Timer.SECOND * timeDelay;
-        //var newSprite = null;
-
-        this.game.time.events.loop(delayTime, this.createRandomChild, this, x, y, direction);
-
-    },
-
-    updateTime: function () {
-        timeRemaining -= 1;
-    },
-
-
-    createRandomChild: function (startx, starty, direction) {
-        var group;
-        var spriteName;
-        var listener;
-        var randomNum = Math.random();
-        if (randomNum > .35) {
-
-            group = unsafeChildren;
-            if (randomNum > .5 && randomNum < .7) {
-                spriteName = 'unsafe';
-            } else if (randomNum > .7) {
-                spriteName = 'unsafeSkate';
-            } else {
-                spriteName = 'unsafeATV';
-            }
-            listener = this.onUnsafeClick;
-        }
-        else {
-
-            group = safeChildren;
-            if (randomNum > .5 && randomNum < .7) {
-                spriteName = 'safe';
-            } else if (randomNum > .7) {
-                spriteName = 'safeSkate';
-            } else {
-                spriteName = 'safeATV';
-            }
-            listener = this.onSafeClick;
-        }
-
-        this.createChild(startx, starty, direction, group, spriteName, listener);
-
-    },
-    createChild: function (startx, starty, direction, group, spriteName, listener) {
-        var child;
-        child = group.create(0, 0, spriteName);
-        child.inputEnabled = true;
-        child.events.onInputDown.add(listener, this);
-        child.anchor.set(0.5);
-        child.position.x = startx;
-        child.position.y = starty;
-        child.direction = direction;
-        child.safe = false;
-        if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV') {
-            child.safe = true;
-        }
-        if (child.direction == "right" || child.direction == "down-right" || child.direction == "up-right")
-            child.scale.x = child.scale.x * -1;
-        //child.scale.x = .25;
-        //child.scale.y = .25;
-        this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
-        child.checkWorldBounds = true;
-        child.outOfBoundsKill = true;
-        if (spriteName == 'safe' || spriteName == 'unsafe') {
-            //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
-        }
-        else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
-            child.scale.x = child.scale.x * -1;
-            child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
-        }
-        else if (spriteName == 'safeATV' || spriteName == 'unsafeATV') {
-            child.scale.x = child.scale.x * -1;
-            child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
-        }
-
-        child.velocity = 1;
-
-        child.flashRed = function () {
-            //child.animations.tint = 0xff0000;
-            child.tint = 0xff0000;
-        };
-
-        child.restoreColor = function () {
-            //child.animations.tint = 0xFFFFFF;
-            child.tint = 0xFFFFFF;
-        };
-
-        child.startRed = function () {
-            //this.game.time.events.repeat(100, 5,  child.flashRed, this);
-            //this.game.time.events.repeat(150, 5, child.restoreColor, this);
-            child.flashRed();
-            //this.game.time.events.loop(100, child.flashRed, this);
-            //this.game.time.events.loop(150, child.restoreColor, this);
-            // this.game.time.events.add(300, child.restoreColor, this);
-
-        };
-        child.move = function () {
-
-            if (this.direction === "up") {
-                this.position.y -= this.velocity;
-            }
-            else if (this.direction === "down") {
-                this.position.y += this.velocity;
-            }
-            else if (this.direction === "left") {
-                this.position.x -= this.velocity;
-            }
-            else if (this.direction === "right") {
-                this.position.x += this.velocity;
-            }
-
-            else if (this.direction == "up-right") {
-                this.position.x += this.velocity;
-                this.position.y -= this.velocity;
-            }
-
-            else if (this.direction == "up-left") {
-                this.position.x -= this.velocity;
-                this.position.y -= this.velocity;
-
-            }
-
-            else if (this.direction == "down-left") {
-                this.position.x -= this.velocity;
-                this.position.y += this.velocity;
-            }
-
-            else if (this.direction == "down-right") {
-                this.position.x += this.velocity;
-                this.position.y += this.velocity;
-
-            }
-
-        };
-        //group.setAll('scale.x', 0.25);
-        //group.setAll('scale.y', 0.25);
-        //group.setAll('outOfBoundsKill', true);
-    },
-
-    //NOTE: Since sprites die offscreen I don't worry about them randomly going off screen.
-    //TODO: plan to plot movement along background instead of random movement, random movement just for demo purposes
-    changeDirection: function (sprite) {
-        var randNum = Math.round(Math.random() * (100));
-        if (randNum < 25) {
-            sprite.direction = "left";
-        }
-        else if (randNum < 50) {
-            sprite.direction = "right";
-        }
-        else if (randNum < 75) {
-            sprite.direction = "up";
-        }
-        else {
-            sprite.direction = "down";
-
-        }
-    },
-
-    createShifter: function (x, y, newDirection, warning, randomShift) {
-        shifter = directionShifters.create(0, 0, "redsquare");
-        shifter.visible = true;
-        shifter.warningFlag = warning;
-        shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
-        shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);
-        shifter.anchor.set(.5);
-        shifter.position.x = x;
-        shifter.position.y = y;
-        shifter.direction = newDirection;
-        shifter.scale.x = (window.innerWidth * window.devicePixelRatio * .0004);
-        shifter.scale.y = (window.innerHeight * window.devicePixelRatio * .0004);
-        shifter.randomShift = randomShift;
-
-        this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
-
-    },
-
-
-    shiftDirection: function (sprite, shifter) {
-        if (shifter.warningFlag == true && sprite.safe == false) {
-            sprite.startRed();
-        }
-        if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")) {
-            sprite.scale.x = sprite.scale.x * -1;
-        }
-        else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")) {
-            sprite.scale.x = sprite.scale.x * -1;
-        }
-        else sprite.scale.x = sprite.scale.x;
-
-        sprite.direction = shifter.direction;
-
-        var randNum = Math.round(Math.random() * (100));
-
-        if (!(shifter.randomShift == true) && randNum < 50) {
-            sprite.direction = shifter.direction;
-        } else {
-            sprite.direction = sprite.direction;
-        }
-    },
-
-    //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-    announceLiving: function () {
-        alert(this.unsafeChildren.countLiving());
-    }
-
-};
-},{}],37:[function(require,module,exports){
-var resultObject = {string1: "", string2: "", string3: "", string4: ""};
-
-module.exports = function(game) {
-    var http = require('http');
-    HOST = "bluefish.cs.unc.edu";
-    PORT = 3131;
-    var headers = {
-        'Content-Type': 'application/json'
-    };
-
-    var options = {
-        host: HOST,
-        port: PORT,
-        path: '/',
-        method: 'GET',
-        headers: headers
-    };
-
-// Setup the request.  The options parameter is
-// the object we defined above.
-    var req = http.request(options, function (res) {
-        //res.setEncoding('utf-8');
-        var responseString = '';
-
-        res.on('data', function (data) {
-            responseString += data;
-        });
-
-        res.on('end', function () {
-            try {
-                result = JSON.parse(responseString);
-                resultObject.string1 = result[1].username + ": " + result[1].score;
-                //result object are the retrieved records in JSON format
-                //here is how you can iterate over the scores
-                //for (i = 0; i < resultObject.length; i++) {
-                  //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                //};
-
-            }
-            catch (err) {
-                console.log(err);
-      //          return null;
-            }
-        });
-        //return resultObject;
-        //console.log(responseString);
-    });
-
-    req.on('error', function (e) {
-        // TODO: handle error.
-    });
-
-    req.end();
-    //return resultObject;
-
-    //wait 500 ms (not that good..)
-    var date = new Date();
-    var curDate = new Date()
-    while (true) {
-        if (curDate - date < 1000) {
-            curDate = new Date();
-        }
-        else {
-            console.log(resultObject);
-            break;
-        }
-    }
-};
-},{"http":7}],38:[function(require,module,exports){
-
-module.exports = function(userName, userScore) {
-
-    var http = require('http');
-    HOST = "bluefish.cs.unc.edu";
-    PORT = 3131;
-    name = userName;
-    highScore = userScore;
-    var myDate = new Date();
-
-//function postToServer(name, highScore) {
-    var user = {
-        username: name,
-        score: highScore,
-        date: (myDate.getMonth() + 1) + " " + myDate.getDate() + " " + myDate.getFullYear()
-    };
-
-    var userString = JSON.stringify(user);
-
-    var headers = {
-        'Content-Type': 'application/json',
-        'Content-Length': userString.length
-    };
-
-    var options = {
-        host: HOST,
-        port: PORT,
-        path: '/',
-        method: 'POST',
-        headers: headers
-    };
-
-// Setup the request.  The options parameter is
-// the object we defined above.
-    var req = http.request(options, function (res) {
-        //res.setEncoding('utf-8');
-
-        var responseString = '';
-
-        res.on('data', function (data) {
-            responseString += data;
-        });
-
-        res.on('end', function () {
-            //var resultObject = JSON.parse(responseString);
-            console.log(responseString);
-            //TODO:  This is where you can receive the scores from the database and do whatever you need to with them
-            //the database will return score records in response to a GET request
-            //to ask for scores posted on april 19, 2015 the mongo query looks like
-            //db.captain_safety.find({date: "4 19 2015"})
-        });
-    });
-
-    req.on('error', function (e) {
-        // TODO: handle error.
-    });
-
-    req.write(userString);
-    req.end();
-
-
-};
-},{"http":7}],39:[function(require,module,exports){
-module.exports = {
-    preload: function() {
-        this.game.load.image('play button', './assets/images/UIP-play-button.png');
-        this.game.load.image('title page bg', './assets/images/UIP-title.jpg');
-        this.game.load.image('park', './assets/images/park-bg.jpg');
-        this.game.load.image('instructions', 'assets/images/instructions.jpg');
-        this.game.load.image('redsquare', './assets/images/redsquare.png');
-        this.game.load.audio('bad_sound', './assets/audio/bad-sound.wav', true);
-        this.game.load.spritesheet('safe', './assets/images/spritesheets/safe-biker-red.png', 80, 80);
-        this.game.load.spritesheet('unsafe', './assets/images/spritesheets/unsafe-biker-red.png', 80, 80);
-		this.game.load.spritesheet('safeSkate', './assets/images/spritesheets/safe-skater.png', 90, 90);
-		this.game.load.spritesheet('unsafeSkate', './assets/images/spritesheets/unsafe-skater.png', 90, 90);
-		this.game.load.spritesheet('safeATV', './assets/images/spritesheets/safe-atv-rider.png', 90, 90);
-		this.game.load.spritesheet('unsafeATV', './assets/images/spritesheets/unsafe-atv-rider.png', 90, 90);
-        this.game.load.image('replay button', './assets/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/images/UIP-victory.jpg');
-
-    },
-    create: function() {
-        this.game.state.start("Title1");
-    }
-};
-},{}],40:[function(require,module,exports){
-module.exports = {
-    create: function() {
-        var titleBg = this.add.sprite(1024, 768, 'title page bg');
-        titleBg.x = 0;
-        titleBg.y = 0;
-        titleBg.height = this.game.height;
-        titleBg.width = this.game.width;
-
-        var playButton = this.game.add.sprite(319, 160, 'play button');
-        playButton.x = this.game.width - 319;
-        playButton.y = this.game.height - 160;
-        playButton.inputEnabled = true;
-        //var playButton = this.game.add.button(this.game.width/2,this.game.height/2 + titleText.height, 'play button',
-        //    this.playGame(),this);
-        //playButton.anchor.set(0.5);
-        playButton.events.onInputDown.add(this.playGame,this);
-
-        /*
-        textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};
-
-        var titleText = this.game.add.text(this.game.width/2,this.game.height/2,"Captain Safety",
-            textStyle);
-        titleText.anchor.set(0.5);
-        titleText.visible = true;
-        */
-    },
-    playGame: function() {
-        this.game.state.start("Game1");
-    }
-};
-
-},{}],41:[function(require,module,exports){
-module.exports = {
-    create: function () {
-
-        var victoryBg = this.add.sprite(1024, 768, 'victory page bg');
-        victoryBg.x = 0;
-        victoryBg.y = 0;
-        victoryBg.height = this.game.height;
-        victoryBg.width = this.game.width;
-
-        var replayButton = this.game.add.sprite(513, 63, 'replay button');
-        replayButton.x = this.game.width - 513;
-        replayButton.y = this.game.height - 63;
-        replayButton.inputEnabled = true;
-
-        textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};
-        yourScore = this.game.add.text(431, 172, score + " saved", textStyle);
-        yourScore.visible = true;
-        //yourScore.anchor.set(0.5);
-        //yourScore.setText("TEST");
-        //yourScore.text = "TEST";
-        scores1 = this.game.add.text(700, 230, "1", textStyle);
-        scores1.visible = true;
-        scores2 = this.game.add.text(700, 300, "1", textStyle);
-        scores2.visible = true;
-        scores3 = this.game.add.text(700, 350, "1", textStyle);
-        scores3.visible = true;
-        scores4 = this.game.add.text(700, 420, "1", textStyle);
-
-        this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
-        //for now leave the userName field so it can easily scale later
-        this.game.globals.get(this.game);
-
-        replayButton.events.onInputDown.add(this.restart,this);
-    },
-    restart: function() {
-        this.game.state.start('Title1');
-    }
-};
-},{}],42:[function(require,module,exports){
-module.exports = {
-
-    preload: function () {
-        //load images for all of the games here
-        this.game.load.image("wrapper-bg", "assets/images/wrapper.jpg");
-        this.game.load.image("new-game-thumb", "assets/images/new-game-thumbnail.jpg");
-        this.game.load.image("UIP-thumb", "assets/images/UIP-thumbnail.jpg");
-    },
-    create: function () {
-
-        wrapperBg = this.add.sprite(1024, 768, 'wrapper-bg');
-        wrapperBg.x = 0;
-        wrapperBg.y = 0;
-        wrapperBg.height = this.game.height;
-        wrapperBg.width = this.game.width;
-
-
-        var uipImage = this.game.add.sprite(this.game.width / 2, this.game.height / 2, "UIP-thumb");
-        uipImage.anchor.set(.5);
-        uipImage.scale.setTo(.7, .7);
-        uipImage.inputEnabled = true;
-        uipImage.events.onInputDown.add(this.captainSafetySelect, this);
-
-        var ngImageA = this.game.add.sprite(this.game.width / 6, this.game.height / 2, "new-game-thumb");
-        ngImageA.anchor.set(.5);
-        ngImageA.scale.setTo(.7, .7);
-
-
-        var ngImageB = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "new-game-thumb");
-        ngImageB.anchor.set(.5);
-        ngImageB.scale.setTo(.7, .7);
-
-        if (uipImage !== null && ngImageA !== null && ngImageB !== null) {
-            return true;
-        } else {
-            return false;
-        }
-
-    },
-    captainSafetySelect: function () {
-
-        this.game.state.start('Preload1');
-    }
-
-}
-},{}]},{},[35]);
+},{"./support/isBuffer":41,"_process":22,"inherits":20}]},{},[2]);
