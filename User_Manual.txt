@@ -14,7 +14,8 @@ This game features a finger super hero who saves all the unsafe children!
 
 You will be taken to the game level, which is set in the park.
 Bikers, skateboarders and ATV riders will start to ride across the screen -- some 
-wearing helmets, some not wearing helmets. You are given 60 seconds to identify and give helmets to as many helmetless riders as you can. To identify helmetless riders, click or tap on them and give them helmets. Doing so earns you a point each time. If a rider is about to go off screen without a helmet he or she will turn red indicating that they need a helmet. If you click on a biker already wearing a helmet, you will annoy the rider. 
+wearing helmets, some not wearing helmets. You are given 60 seconds to identify and give helmets to as many 
+helmetless riders as you can. To identify helmetless riders, click or tap on them and give them helmets. Doing so earns you a point each time. If a rider is about to go off screen without a helmet he or she will turn red indicating that they need a helmet. If you click on a biker already wearing a helmet, you will annoy the rider. 
 
 Once the 60 seconds are up your score is presented to you and you
 can restart the game over again to try for a better score.
