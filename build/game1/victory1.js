@@ -8,8 +8,8 @@ module.exports = {
         victoryBg.width = this.game.width;
 
         var replayButton = this.game.add.sprite(513, 63, 'replay button');
-        replayButton.x = this.game.width - 513;
-        replayButton.y = this.game.height - 63;
+        replayButton.x = this.game.width/20;
+        replayButton.y = this.game.height/20;
         replayButton.inputEnabled = true;
 
         textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};

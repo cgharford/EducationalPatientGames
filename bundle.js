@@ -124,8 +124,10 @@ module.exports = {
         bad_sound = this.add.audio('bad_sound');
 
         // Score starts at 0, timer starts at 60 seconds
+
+        //CHANGED TO 5 SEC FOR TESTING
         score = 0;
-        timeRemaining = 60;
+        timeRemaining = 5;
         maxTime = timeRemaining
         textStyle = {font: '35px Arial', fill: '#666699', align: 'right', wordWrap: false};
 
@@ -754,8 +756,8 @@ module.exports = {
         victoryBg.width = this.game.width;
 
         var replayButton = this.game.add.sprite(513, 63, 'replay button');
-        replayButton.x = this.game.width - 513;
-        replayButton.y = this.game.height - 63;
+        replayButton.x = this.game.width/20;
+        replayButton.y = this.game.height/20;
         replayButton.inputEnabled = true;
 
         textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};

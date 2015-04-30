@@ -61,8 +61,10 @@ module.exports = {
         bad_sound = this.add.audio('bad_sound');
 
         // Score starts at 0, timer starts at 60 seconds
+
+        //CHANGED TO 5 SEC FOR TESTING
         score = 0;
-        timeRemaining = 60;
+        timeRemaining = 5;
         maxTime = timeRemaining
         textStyle = {font: '35px Arial', fill: '#666699', align: 'right', wordWrap: false};
 
