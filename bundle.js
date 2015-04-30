@@ -1,21 +1,40 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = {
 
-        create: function () {
-            this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; //resizes game to fit parent but maintains aspect ratio
-            this.scale.setMinMax(480, 260, 1024, 768);
-            this.scale.pageAlignHorizontally = true;
-            this.scale.pageAlignVertically = true;
-            //these functions can be used to force users to use a specific orientation on mobile devices
-            /*
-             if (this.game.device.desktop === false) {
-             this.scale.forceOrientation(true,false);
-             this.scale.enterIncorrectOrientation.add(function() {}, this);
-             this.scale.leaveIncorrectOrientation.add(function() {}, this);
-             }*/
-            //this is where we can load a wrapper menu instead of the preload state of first game
-            this.game.state.start("Wrapper");
-        }
+            init: function () {
+
+                this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+                this.scale.setMinMax(480, 260, 1024, 768);
+                this.scale.pageAlignHorizontally = true;
+                this.scale.pageAlignVertically = true;
+
+                alert(this.game.device.desktop);
+
+                if (!(this.game.device.desktop)){
+                    this.scale.forceOrientation(true, false);
+                    this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
+                    this.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
+                }
+
+            },
+
+            create: function () {
+
+                this.game.state.start("Wrapper");
+            },
+
+            enterIncorrectOrientation: function () {
+                document.getElementById('game-container').style.display = 'none';
+                document.getElementById('orientation').style.display = 'block';
+
+            },
+
+            leaveIncorrectOrientation: function () {
+                document.getElementById('game-container').style.display = 'block';
+                document.getElementById('orientation').style.display = 'none';
+
+            }
+
     };
 },{}],2:[function(require,module,exports){
 var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;

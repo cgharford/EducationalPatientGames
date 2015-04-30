@@ -1,18 +1,37 @@
 module.exports = {
 
-        create: function () {
-            this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL; //resizes game to fit parent but maintains aspect ratio
-            this.scale.setMinMax(480, 260, 1024, 768);
-            this.scale.pageAlignHorizontally = true;
-            this.scale.pageAlignVertically = true;
-            //these functions can be used to force users to use a specific orientation on mobile devices
-            /*
-             if (this.game.device.desktop === false) {
-             this.scale.forceOrientation(true,false);
-             this.scale.enterIncorrectOrientation.add(function() {}, this);
-             this.scale.leaveIncorrectOrientation.add(function() {}, this);
-             }*/
-            //this is where we can load a wrapper menu instead of the preload state of first game
-            this.game.state.start("Wrapper");
-        }
+            init: function () {
+
+                this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+                this.scale.setMinMax(480, 260, 1024, 768);
+                this.scale.pageAlignHorizontally = true;
+                this.scale.pageAlignVertically = true;
+
+                alert(this.game.device.desktop);
+
+                if (!(this.game.device.desktop)){
+                    this.scale.forceOrientation(true, false);
+                    this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
+                    this.scale.leaveIncorrectOrientation.add(this.leaveIncorrectOrientation, this);
+                }
+
+            },
+
+            create: function () {
+
+                this.game.state.start("Wrapper");
+            },
+
+            enterIncorrectOrientation: function () {
+                document.getElementById('game-container').style.display = 'none';
+                document.getElementById('orientation').style.display = 'block';
+
+            },
+
+            leaveIncorrectOrientation: function () {
+                document.getElementById('game-container').style.display = 'block';
+                document.getElementById('orientation').style.display = 'none';
+
+            }
+
     };

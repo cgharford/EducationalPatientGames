@@ -9,9 +9,9 @@
     <title>Trauma Games</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<!--
+
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="css/style.css">
+<!--<link type="text/css" rel="stylesheet" href="css/style.css">
 -->
     <script type = "text/javascript" src = "./js/libs/phaser.js"></script>
 
@@ -35,6 +35,13 @@
 </head>
 <body>
 
+<div id='orientation' style="display:none;">
+    <div class="alert alert-danger" role="alert">
+        <span class="sr-only">Error:</span>
+        Flip your device, please!
+    </div>
+</div>
+
 <!-- <div id="textDiv">
     <!-- where the scores will go
 </div>
@@ -52,7 +59,7 @@
     }
 </script> -->
 
-<div class="container-fluid" id="game-container"></div>
+<div id="game-container"></div>
 
 <script type = "text/javascript" src = "./js/libs/jquery.min.js"></script>
 <script type = "text/javascript" src = "./js/libs/bootstrap.min.js"></script>
