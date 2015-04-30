@@ -6874,8 +6874,6 @@ module.exports = {
                 this.scale.pageAlignHorizontally = true;
                 this.scale.pageAlignVertically = true;
 
-                alert(this.game.device.desktop);
-
                 if (!(this.game.device.desktop)){
                     this.scale.forceOrientation(true, false);
                     this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
@@ -6898,6 +6896,7 @@ module.exports = {
             leaveIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'block';
                 document.getElementById('orientation').style.display = 'none';
+                window.location.reload();
 
             }
 
@@ -7247,9 +7246,9 @@ module.exports = {
         else {
 
             group = safeChildren;
-            if (randomNum > .5 && randomNum < .7) {
+            if (randomNum > .2 && randomNum < .35) {
                 spriteName = 'safe';
-            } else if (randomNum > .7) {
+            } else if (randomNum > .1) {
                 spriteName = 'safeSkate';
             } else {
                 spriteName = 'safeATV';

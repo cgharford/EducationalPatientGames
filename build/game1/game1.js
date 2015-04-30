@@ -318,9 +318,9 @@ module.exports = {
         else {
 
             group = safeChildren;
-            if (randomNum > .5 && randomNum < .7) {
+            if (randomNum > .2 && randomNum < .35) {
                 spriteName = 'safe';
-            } else if (randomNum > .7) {
+            } else if (randomNum > .1) {
                 spriteName = 'safeSkate';
             } else {
                 spriteName = 'safeATV';
