@@ -16,8 +16,7 @@ module.exports = function(game) {
         headers: headers
     };
 
-// Setup the request.  The options parameter is
-// the object we defined above.
+// Setup the request.
     var req = http.request(options, function (res) {
         //res.setEncoding('utf-8');
         var responseString = '';
@@ -28,22 +27,18 @@ module.exports = function(game) {
 
         res.on('end', function () {
             try {
-                result = JSON.parse(responseString);
+                result = JSON.parse(responseString); //this is the JSON, how to get it out of the callback?
                 resultObject.string1 = result[1].username + ": " + result[1].score;
-                //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
-                //for (i = 0; i < resultObject.length; i++) {
-                  //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                //};
+                /* for (i = 0; i < resultObject.length; i++) {
+                  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
+                }; */
 
             }
             catch (err) {
                 console.log(err);
-      //          return null;
             }
         });
-        //return resultObject;
-        //console.log(responseString);
     });
 
     req.on('error', function (e) {
@@ -51,18 +46,4 @@ module.exports = function(game) {
     });
 
     req.end();
-    //return resultObject;
-
-    //wait 500 ms (not that good..)
-    var date = new Date();
-    var curDate = new Date()
-    while (true) {
-        if (curDate - date < 1000) {
-            curDate = new Date();
-        }
-        else {
-            console.log(resultObject);
-            break;
-        }
-    }
 };

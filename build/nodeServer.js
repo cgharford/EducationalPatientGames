@@ -1,6 +1,3 @@
-//mongo runs on port 27017, our database is called educational_patient_games and the collection for
-//captain safety is captain_safety
-
 var http = require("http");
 var qs = require("querystring");
 var port = process.argv[2];  //pass the port number as first argument in the command line
@@ -9,18 +6,17 @@ var assert = require('assert');
 //var ClientStream = require("ClientStream");
 var DATABASENAME = "educational_patient_games";
 var COLLECTIONNAME = "captain_safety";
-var GETLIMIT = 20; //limit to number of scores returned by a GET request
+var GETLIMIT = 20; //limit to number of scores returned in response to GET request
 var url = "mongodb://localhost:27017/" + DATABASENAME;
 
 var server = http.createServer(function(request, response) {
-    //POST - create
-    //GET - read
-    //PUT - update
-    //DELETE - delete
+    //POST - create record
+    //GET - read record
+    //PUT - update record
+    //DELETE - delete record
     var body = '';
     if (request.method === "POST") {
         //create a new record
-        //post should just create a record and set score to 0
         request.on('data', function(data) {
             body += data;
             if (body.length > 1e6) {
@@ -30,42 +26,30 @@ var server = http.createServer(function(request, response) {
         request.on('end', function() {
             var obj = JSON.parse(body);
             console.log("---creating new record in database---");
-            console.log("username of " + obj.username); //this is how you
+            console.log("username of " + obj.username);
             console.log("score of " + obj.score);
             console.log("date of " + obj.date);
             console.log(obj);
             MongoClient.connect(url, function (err, db) {
                 if (err) {
-                    //stop the function
                     console.log(err);
                     db.close();
+                    response.end();
                 }
                 else {
                     console.log("connected to mongo, database: + " + DATABASENAME);
                     var collection = db.collection(COLLECTIONNAME);
                     insertDocuments(db, collection, obj, response);
-                    //db.close();
                 }
             });
         });
     }
     else if (request.method === "GET") {
-        //return a list of scores logged today up to a limit of 20
-        //this occurs regardless of content of the get request so not necessary to read it
-        /* request.on('data', function(data) {
-            body += data;
-            if (body.length > 1e6) {
-                request.connection.destroy();
-            }
-        });
-        request.on('end', function() {
-            var post = qs.parse(body);
-            console.log(post);
-        }) */
         MongoClient.connect(url, function(err, db) {
             if (err) {
                 console.log(err);
                 db.close();
+                response.end();
             }
             else {
                 console.log("connect to mongo, database: " + DATABASENAME);
@@ -75,7 +59,7 @@ var server = http.createServer(function(request, response) {
         })
     }
     else {
-        //case of a PUT or DELETE
+        //case of a PUT or DELETE, still need to respond
         response.write("Server does not support the given HTTP method")
         response.end();
     }

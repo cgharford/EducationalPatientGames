@@ -1,21 +1,28 @@
 {
   "name": "EducationalPatientGames",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Trauma Prevention Games",
   "main": "karma.conf.js",
   "dependencies": {
+    "browserify": "^10.0.0",
+    "jasmine": "^2.2.1",
     "jasmine-core": "^2.2.0",
+    "jasmine-node": "^1.14.5",
+    "jasmine-node-karma": "^1.6.1",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.7",
     "karma-jasmine": "^0.3.5",
     "karma-requirejs": "^0.2.2",
-    "jasmine-node-karma": "^1.6.1",
-    "requirejs": "^2.1.16",
-    "jasmine-node": "^1.14.5",
-    "jasmine": "^2.2.1",
-    "mongodb": "^2.0.27"
+    "mongodb": "^2.0.27",
+    "requirejs": "^2.1.16"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jasmine-core": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-cli": "0.0.4",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-jasmine": "^0.3.5"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -23,17 +30,14 @@
     "type": "git",
     "url": "https://github.com/COMP523Trauma/EducationalPatientGames.git"
   },
-  "author": "",
+  "author": "COMP523 Group 9",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/COMP523Trauma/EducationalPatientGames/issues"
   },
   "homepage": "https://github.com/COMP523Trauma/EducationalPatientGames",
-  "devDependencies": {
-    "jasmine-core": "^2.2.0",
-    "karma": "^0.12.31",
-    "karma-cli": "0.0.4",
-    "karma-firefox-launcher": "^0.1.4",
-    "karma-jasmine": "^0.3.5"
-  }
+  "keywords": [
+    "serious",
+    "game"
+  ]
 }
