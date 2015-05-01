@@ -6929,8 +6929,7 @@ game.state.start('Boot');
 module.exports = {
 
     create: function () {
-
-        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
@@ -6985,8 +6984,9 @@ module.exports = {
          this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
          */
 
-        // Add funky negative sound
+        // Add funky negative sound and positive sound
         bad_sound = this.add.audio('bad_sound');
+		good_sound = this.add.audio('good_sound');
 
         // Score starts at 0, timer starts at 60 seconds
 
@@ -7026,6 +7026,7 @@ module.exports = {
         victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
         victoryText.visible = false;
         victoryText.anchor.set(0.5);
+		this.pauseGame();
     },
 
     pauseGame: function () {
@@ -7074,6 +7075,8 @@ module.exports = {
             for (var i = 0; i < safeChildren.children.length; i++) {
                 safeChildren.children[i].velocity = 2;
             }
+			
+
         }
 
 
@@ -7158,6 +7161,7 @@ module.exports = {
     // Clicking a sprite being unsafe
     onUnsafeClick: function (sprite) {
         score += 1;
+		good_sound.play();
         /*
          var safeChild = safeChildren.create(0, 0, 'safe'); //place at (0,0) first so the anchor can be set before placement
          safeChild.inputEnabled = true;
@@ -7564,6 +7568,7 @@ module.exports = {
         this.game.load.image('instructions', 'assets/images/instructions.jpg');
         this.game.load.image('redsquare', './assets/images/redsquare.png');
         this.game.load.audio('bad_sound', './assets/audio/bad-sound.wav', true);
+		this.game.load.audio('good_sound', './assets/audio/good_sound.wav', true);
         this.game.load.spritesheet('safe', './assets/images/spritesheets/safe-biker-red.png', 80, 80);
         this.game.load.spritesheet('unsafe', './assets/images/spritesheets/unsafe-biker-red.png', 80, 80);
 		this.game.load.spritesheet('safeSkate', './assets/images/spritesheets/safe-skater.png', 90, 90);

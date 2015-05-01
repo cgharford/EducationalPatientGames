@@ -6,6 +6,7 @@ module.exports = {
         this.game.load.image('instructions', 'assets/images/instructions.jpg');
         this.game.load.image('redsquare', './assets/images/redsquare.png');
         this.game.load.audio('bad_sound', './assets/audio/bad-sound.wav', true);
+		this.game.load.audio('good_sound', './assets/audio/good_sound.wav', true);
         this.game.load.spritesheet('safe', './assets/images/spritesheets/safe-biker-red.png', 80, 80);
         this.game.load.spritesheet('unsafe', './assets/images/spritesheets/unsafe-biker-red.png', 80, 80);
 		this.game.load.spritesheet('safeSkate', './assets/images/spritesheets/safe-skater.png', 90, 90);
