@@ -7,8 +7,6 @@ module.exports = {
                 this.scale.pageAlignHorizontally = true;
                 this.scale.pageAlignVertically = true;
 
-                alert(this.game.device.desktop);
-
                 if (!(this.game.device.desktop)){
                     this.scale.forceOrientation(true, false);
                     this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
@@ -31,6 +29,7 @@ module.exports = {
             leaveIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'block';
                 document.getElementById('orientation').style.display = 'none';
+                window.location.reload();
 
             }
 
