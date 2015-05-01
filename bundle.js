@@ -6956,12 +6956,11 @@ module.exports = {
         this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
         this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
 
-        // Troublemakers
+        // Alternate Path
+		
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
         // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
         /*
-         this.createShifter(this.game.width-100, 150, "down");
-         this.createShifter(this.game.width-100, 750, "left");
          This will allow to check num of living unsafe children to see if offscreen are killed
          this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
          */
@@ -7103,12 +7102,6 @@ module.exports = {
                 currentChild.kill();
             }
 
-            /*
-             if (Math.random() > .99) {
-             this.changeDirection(currentChild);
-             }
-             */
-
         }
         // For each child alive, move and animate
         // For each child off screen, kill sprite
@@ -7143,10 +7136,10 @@ module.exports = {
     },
 
     // Clicking a sprite being unsafe
+	//creates a child to replace old child with to "put helmet on child"
     onUnsafeClick: function(sprite) {
         score += 1;
         good_sound.play();
-        //creates a child to replace old child with to "put helmet on child"
         var safeChild;
         var newImage;
         if (sprite.key == 'unsafe')
