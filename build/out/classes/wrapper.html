@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>boot</title>
+    <title>wrapper</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -83,12 +83,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>boot Class</h1>
+<h1>wrapper Class</h1>
 <div class="box meta">
 
 
         <div class="foundat">
-            Defined in: <a href="../files/boot.js.html#l2"><code>boot.js:2</code></a>
+            Defined in: <a href="../files/wrapper.js.html#l2"><code>wrapper.js:2</code></a>
         </div>
 
             Module: <a href="../modules/game.html">game</a>
@@ -97,7 +97,7 @@
 
 
 <div class="box intro">
-    <p>boot class. The boot object, boot state of the game</p>
+    <p>wrapper class. The wrapper object, first displayed screen</p>
 
 </div>
 
@@ -118,19 +118,23 @@
 
                     <ul class="index-list methods">
                             <li class="index-item method">
+                                <a href="#method_captainSafetySelect">captainSafetySelect</a>
+
+                            </li>
+                            <li class="index-item method">
                                 <a href="#method_create">create</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_enterIncorrectOrientation">enterIncorrectOrientation</a>
+                                <a href="#method_insertDocuments">insertDocuments</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_init">init</a>
+                                <a href="#method_preload">preload</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_leaveIncorrectOrientation">leaveIncorrectOrientation</a>
+                                <a href="#method_retrieveDocuments">retrieveDocuments</a>
 
                             </li>
                     </ul>
@@ -143,8 +147,8 @@
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
 
-<div id="method_create" class="method item">
-    <h3 class="name"><code>create</code></h3>
+<div id="method_captainSafetySelect" class="method item">
+    <h3 class="name"><code>captainSafetySelect</code></h3>
 
         <span class="paren">()</span>
 
@@ -158,7 +162,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/boot.js.html#l27"><code>boot.js:27</code></a>
+        <a href="../files/wrapper.js.html#l56"><code>wrapper.js:56</code></a>
         </p>
 
 
@@ -166,7 +170,7 @@
     </div>
 
     <div class="description">
-        <p>Phaser create function, starts next state &quot;Wrapper&quot;</p>
+        <p>Function to start next state of game, &quot;Preload1&quot;</p>
 
     </div>
 
@@ -174,8 +178,8 @@
 
 
 </div>
-<div id="method_enterIncorrectOrientation" class="method item">
-    <h3 class="name"><code>enterIncorrectOrientation</code></h3>
+<div id="method_create" class="method item">
+    <h3 class="name"><code>create</code></h3>
 
         <span class="paren">()</span>
 
@@ -192,7 +196,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/boot.js.html#l37"><code>boot.js:37</code></a>
+        <a href="../files/wrapper.js.html#l20"><code>wrapper.js:20</code></a>
         </p>
 
 
@@ -200,7 +204,151 @@
     </div>
 
     <div class="description">
-        <p>fixes orientation of game</p>
+        <p>Phaser create function. Adds images needed for wrapper</p>
+
+    </div>
+
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                    <p>returns boolean true if image successfully loads, false otherwise</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_insertDocuments" class="method item">
+    <h3 class="name"><code>insertDocuments</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>db</code>
+                </li>
+                <li class="arg">
+                        <code>collection</code>
+                </li>
+                <li class="arg">
+                        <code>data</code>
+                </li>
+                <li class="arg">
+                        <code>response</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                    <p>Provided by the <a href="../modules/nodeServer.html">nodeServer</a> module.</p>
+                <p>
+                Defined in
+        <a href="../files/nodeServer.js.html#l75"><code>nodeServer.js:75</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Write records</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">db</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">collection</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">data</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">response</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+            </div>
+        </div>
+
+
+</div>
+<div id="method_preload" class="method item">
+    <h3 class="name"><code>preload</code></h3>
+
+        <span class="paren">()</span>
+
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/wrapper.js.html#l9"><code>wrapper.js:9</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Phaser preload function. Preloads assets needed for wrapper</p>
 
     </div>
 
@@ -214,42 +362,26 @@
 
 
 </div>
-<div id="method_init" class="method item">
-    <h3 class="name"><code>init</code></h3>
+<div id="method_retrieveDocuments" class="method item">
+    <h3 class="name"><code>retrieveDocuments</code></h3>
 
-        <span class="paren">()</span>
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>db</code>
+                </li>
+                <li class="arg">
+                        <code>collection</code>
+                </li>
+                <li class="arg">
+                        <code>response</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
 
-
-
-
-
-
-
-
-    <div class="meta">
-                <p>
-                Defined in
-        <a href="../files/boot.js.html#l7"><code>boot.js:7</code></a>
-        </p>
-
-
-
-    </div>
-
-    <div class="description">
-        <p>initialize</p>
-
-    </div>
-
-
-
-
-</div>
-<div id="method_leaveIncorrectOrientation" class="method item">
-    <h3 class="name"><code>leaveIncorrectOrientation</code></h3>
-
-        <span class="paren">()</span>
-
+        <span class="returns-inline">
+            <span class="type"></span>
+        </span>
 
 
 
@@ -258,9 +390,10 @@
 
 
     <div class="meta">
+                    <p>Provided by the <a href="../modules/nodeServer.html">nodeServer</a> module.</p>
                 <p>
                 Defined in
-        <a href="../files/boot.js.html#l48"><code>boot.js:48</code></a>
+        <a href="../files/nodeServer.js.html#l94"><code>nodeServer.js:94</code></a>
         </p>
 
 
@@ -268,11 +401,53 @@
     </div>
 
     <div class="description">
-        <p>preserves orientation of game</p>
+        <p>Retrieve records</p>
 
     </div>
 
+        <div class="params">
+            <h4>Parameters:</h4>
 
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">db</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">collection</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+                <li class="param">
+                        <code class="param-name">response</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+            </div>
+        </div>
 
 
 </div>

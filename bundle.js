@@ -6927,7 +6927,12 @@ game.state.add('Wrapper', require('./wrapper.js'));
 game.state.start('Boot');
 },{"./boot.js":34,"./game1/game1.js":36,"./game1/getFromServer.js":37,"./game1/postToServer.js":38,"./game1/preload1.js":39,"./game1/title1.js":40,"./game1/victory1.js":41,"./wrapper.js":42}],36:[function(require,module,exports){
 module.exports = {
-    //phaser create function
+  
+   /**
+     * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.  
+     * @method create
+     * @return 
+     */
     create: function() {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         firstRateIncrease = false;
@@ -6939,7 +6944,7 @@ module.exports = {
         park.height = this.game.height;
         park.width = this.game.width;
 
-        //Create children group and invisible collision objects group
+        //
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
         directionShifters = this.game.add.group();
@@ -6965,7 +6970,7 @@ module.exports = {
          this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
          */
 
-        // Add funky negative sound and positive sound
+        //Add funky negative sound and positive sound
         bad_sound = this.add.audio('bad_sound');
         good_sound = this.add.audio('good_sound');
 
@@ -7019,17 +7024,32 @@ module.exports = {
         this.pauseGame();
     },
 
+    /**
+     * Pauses the game, shows instruction screen
+     * @method pauseGame
+     * @return 
+     */
     pauseGame: function() {
         this.game.paused = true;
         instructions.visible = true;
 
     },
+    /**
+     * Unpauses the game, removes the instruction screen
+     * @method unpauseGame
+     * @return 
+     */
     unpauseGame: function() {
         this.game.paused = false;
         instructions.visible = false;
 
     },
     //phaser update function
+    /**
+     * Functionality called every time game updates. Moves sprites, checks collision, updates time
+     * @method update
+     * @return 
+     */
     update: function() {
         //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
         if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
@@ -7121,12 +7141,18 @@ module.exports = {
     },
 
     // Clicking a sprite being safe
+    /**
+     * Called when clicking an already safe sprite, gives warning message
+     * @method onSafeClick
+     * @param {} sprite
+     * @return 
+     */
     onSafeClick: function(sprite) {
 
-        // Decrement score
-        if (score > 0) {
-            score -= 1;
-        }
+        // No longer Decrement score - client requested no negative feedback for clicking a good child sprite
+       // if (score > 0) {
+           // score -= 1;
+       // }
 
         // Show error msg for 500ms and set to visible
         errorTextTimer = this.game.time.now + 500;
@@ -7137,6 +7163,12 @@ module.exports = {
 
     // Clicking a sprite being unsafe
 	//creates a child to replace old child with to "put helmet on child"
+    /**
+     *  make an unsafe child sprite into a safe child sprite after being clicked
+     * @method onUnsafeClick
+     * @param {} sprite
+     * @return 
+     */
     onUnsafeClick: function(sprite) {
         score += 1;
         good_sound.play();
@@ -7155,6 +7187,11 @@ module.exports = {
         sprite.kill();
     },
 
+    /**
+     * Called when player "wins" the game
+     * @method victory
+     * @return 
+     */
     victory: function() {
         safeChildren.forEach(function(child) {
             child.kill();
@@ -7165,6 +7202,14 @@ module.exports = {
         //change to victory state
         this.game.state.start("Victory1", true, false, score);
     },
+    /**
+     * Function for placing random children -- NO LONGER USED BUT MAINTAINED FOR FUTURE
+     * @method placeRandomChildren
+     * @param {} group
+     * @param {} spriteName
+     * @param {} listener
+     * @return 
+     */
     placeRandomChildren: function(group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
             child = group.create(0, 0, spriteName);
@@ -7179,17 +7224,39 @@ module.exports = {
     },
 
     //function for creating a sprite spawner
+    /**
+     * function for creating a sprite spawner. x,y position, direction sprite will move in, timeDelay for sprite creation
+     * @method startSpawn
+     * @param {} timeDelay
+     * @param {} x
+     * @param {} y
+     * @param {} direction
+     * @return 
+     */
     startSpawn: function(timeDelay, x, y, direction) {
         var delayTime = Phaser.Timer.SECOND * timeDelay;
         this.game.time.events.loop(delayTime, this.createRandomChild, this, x, y, direction);
 
     },
 
+    /**
+     * Modifies the clock time of the game
+     * @method updateTime
+     * @return 
+     */
     updateTime: function() {
         timeRemaining -= 1;
     },
 
     //function to pick a random sprite from the 3 safe and 3 unsafe sprites
+    /**
+     * function to pick a random sprite from the 3 safe and 3 unsafe sprites. Gives x,y coordinate and direction to move in
+     * @method createRandomChild
+     * @param {} startx
+     * @param {} starty
+     * @param {} direction
+     * @return 
+     */
     createRandomChild: function(startx, starty, direction) {
         var group;
         var spriteName;
@@ -7227,6 +7294,17 @@ module.exports = {
     },
 
     //function to create a child, called by create random child
+    /**
+     * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
+     * @method createChild
+     * @param {} startx
+     * @param {} starty
+     * @param {} direction
+     * @param {} group
+     * @param {} spriteName
+     * @param {} listener
+     * @return 
+     */
     createChild: function(startx, starty, direction, group, spriteName, listener) {
         var child;
         //initialize properties
@@ -7261,17 +7339,37 @@ module.exports = {
         //initializing velocity to 1, adjusted as game time elapses
         child.velocity = 1;
 
+        /**
+         * Makes sprite red
+         * @method flashRed
+         * @return 
+         */
         child.flashRed = function() {
             child.tint = 0xff0000;
         };
 
+        /**
+         * Returns a sprite to its original color after flashing red
+         * @method restoreColor
+         * @return 
+         */
         child.restoreColor = function() {
             child.tint = 0xFFFFFF;
         };
 
+        /**
+         * Starts the sprite flashing red to warn player 
+         * @method startRed
+         * @return 
+         */
         child.startRed = function() {
             child.flashRed();
         };
+        /**
+         * Tells a sprite object to move in its current direction
+         * @method move
+         * @return 
+         */
         child.move = function() {
 
             if (this.direction === "up") {
@@ -7301,6 +7399,16 @@ module.exports = {
         };
     },
     //creates a shifter sprite, which will change the direction of any player sprite it collides with
+    /**
+     * creates a shifter sprite at (x, y), which will change the direction of any player sprite it collides with. Warning flag if turns sprite red
+     * @method createShifter
+     * @param {} x
+     * @param {} y
+     * @param {} newDirection
+     * @param {} warning
+     * @param {} randomShift
+     * @return 
+     */
     createShifter: function(x, y, newDirection, warning, randomShift) {
         //redsquare used as a placeholder for an invisible sprite image
         shifter = directionShifters.create(0, 0, "redsquare");
@@ -7321,6 +7429,13 @@ module.exports = {
     },
 
     //shifts the direction of a sprite based on the direction of the shifter 
+    /**
+     * shifts the direction of a sprite based on the direction of the shifter 
+     * @method shiftDirection
+     * @param {} sprite
+     * @param {} shifter
+     * @return 
+     */
     shiftDirection: function(sprite, shifter) {
         if (shifter.warningFlag == true && sprite.safe == false) {
             sprite.startRed();
@@ -7343,6 +7458,11 @@ module.exports = {
     },
 
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
+    /**
+     * Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
+     * @method announceLiving
+     * @return 
+     */
     announceLiving: function() {
         alert(this.unsafeChildren.countLiving());
     }
@@ -7367,8 +7487,7 @@ module.exports = function(game) {
         headers: headers
     };
 
-// Setup the request.  The options parameter is
-// the object we defined above.
+// Setup the request.
     var req = http.request(options, function (res) {
         //res.setEncoding('utf-8');
         var responseString = '';
@@ -7379,22 +7498,18 @@ module.exports = function(game) {
 
         res.on('end', function () {
             try {
-                result = JSON.parse(responseString);
+                result = JSON.parse(responseString); //this is the JSON, how to get it out of the callback?
                 resultObject.string1 = result[1].username + ": " + result[1].score;
-                //result object are the retrieved records in JSON format
                 //here is how you can iterate over the scores
-                //for (i = 0; i < resultObject.length; i++) {
-                  //  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
-                //};
+                /* for (i = 0; i < resultObject.length; i++) {
+                  console.log("name: " + resultObject[i].username + ", score: " + resultObject[i].score);
+                }; */
 
             }
             catch (err) {
                 console.log(err);
-      //          return null;
             }
         });
-        //return resultObject;
-        //console.log(responseString);
     });
 
     req.on('error', function (e) {
@@ -7402,20 +7517,6 @@ module.exports = function(game) {
     });
 
     req.end();
-    //return resultObject;
-
-    //wait 500 ms (not that good..)
-    var date = new Date();
-    var curDate = new Date()
-    while (true) {
-        if (curDate - date < 1000) {
-            curDate = new Date();
-        }
-        else {
-            console.log(resultObject);
-            break;
-        }
-    }
 };
 },{"http":7}],38:[function(require,module,exports){
 
@@ -7428,7 +7529,6 @@ module.exports = function(userName, userScore) {
     highScore = userScore;
     var myDate = new Date();
 
-//function postToServer(name, highScore) {
     var user = {
         username: name,
         score: highScore,
@@ -7450,11 +7550,9 @@ module.exports = function(userName, userScore) {
         headers: headers
     };
 
-// Setup the request.  The options parameter is
-// the object we defined above.
+// Setup the request.
     var req = http.request(options, function (res) {
         //res.setEncoding('utf-8');
-
         var responseString = '';
 
         res.on('data', function (data) {
@@ -7462,23 +7560,18 @@ module.exports = function(userName, userScore) {
         });
 
         res.on('end', function () {
-            //var resultObject = JSON.parse(responseString);
             console.log(responseString);
-            //TODO:  This is where you can receive the scores from the database and do whatever you need to with them
-            //the database will return score records in response to a GET request
             //to ask for scores posted on april 19, 2015 the mongo query looks like
             //db.captain_safety.find({date: "4 19 2015"})
         });
     });
 
     req.on('error', function (e) {
-        // TODO: handle error.
+        //in case error handling needs to be implemented
     });
 
     req.write(userString);
     req.end();
-
-
 };
 },{"http":7}],39:[function(require,module,exports){
 module.exports = {
@@ -7573,7 +7666,6 @@ module.exports = {
             this.game.globals.get(this.game);
         }
         catch (err) {
-
         }
 
         replayButton.events.onInputDown.add(this.restart,this);

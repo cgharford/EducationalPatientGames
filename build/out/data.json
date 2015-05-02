@@ -57,9 +57,7 @@
         },
         "game.js": {
             "name": "game.js",
-            "modules": {
-                "game": 1
-            },
+            "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
@@ -75,8 +73,12 @@
         },
         "wrapper.js": {
             "name": "wrapper.js",
-            "modules": {},
-            "classes": {},
+            "modules": {
+                "game": 1
+            },
+            "classes": {
+                "wrapper": 1
+            },
             "fors": {},
             "namespaces": {}
         }
@@ -84,8 +86,11 @@
     "modules": {
         "game": {
             "name": "game",
-            "submodules": {},
+            "submodules": {
+                "undefined": 1
+            },
             "classes": {
+                "wrapper": 1,
                 "game1": 1,
                 "preload1": 1,
                 "title1": 1,
@@ -96,9 +101,9 @@
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "boot.js",
+            "file": "wrapper.js",
             "line": 2,
-            "description": "Game module which consists of all game states and client side functionality"
+            "description": "wrapper class. The wrapper object, first displayed screen"
         },
         "nodeServer": {
             "name": "nodeServer",
@@ -190,6 +195,20 @@
             "file": "boot.js",
             "line": 2,
             "description": "boot class. The boot object, boot state of the game"
+        },
+        "wrapper": {
+            "name": "wrapper",
+            "shortname": "wrapper",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "game",
+            "namespace": "",
+            "file": "wrapper.js",
+            "line": 2,
+            "description": "wrapper class. The wrapper object, first displayed screen"
         }
     },
     "classitems": [
@@ -630,7 +649,7 @@
             "return": {
                 "description": ""
             },
-            "class": "",
+            "class": "wrapper",
             "module": "nodeServer"
         },
         {
@@ -656,41 +675,41 @@
             "return": {
                 "description": ""
             },
-            "class": "",
+            "class": "wrapper",
             "module": "nodeServer"
         },
         {
             "file": "wrapper.js",
-            "line": 3,
+            "line": 9,
             "description": "Phaser preload function. Preloads assets needed for wrapper",
             "itemtype": "method",
             "name": "preload",
             "return": {
                 "description": ""
             },
-            "class": "",
-            "module": "nodeServer"
+            "class": "wrapper",
+            "module": "game"
         },
         {
             "file": "wrapper.js",
-            "line": 14,
+            "line": 20,
             "description": "Phaser create function. Adds images needed for wrapper",
             "itemtype": "method",
             "name": "create",
             "return": {
                 "description": "returns boolean true if image successfully loads, false otherwise"
             },
-            "class": "",
-            "module": "nodeServer"
+            "class": "wrapper",
+            "module": "game"
         },
         {
             "file": "wrapper.js",
-            "line": 50,
+            "line": 56,
             "description": "Function to start next state of game, \"Preload1\"",
             "itemtype": "method",
             "name": "captainSafetySelect",
-            "class": "",
-            "module": "nodeServer"
+            "class": "wrapper",
+            "module": "game"
         }
     ],
     "warnings": []

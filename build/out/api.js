@@ -6,7 +6,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "game1",
         "preload1",
         "title1",
-        "victory1"
+        "victory1",
+        "wrapper"
     ],
     "modules": [
         "game",
@@ -16,7 +17,7 @@ YUI.add("yuidoc-meta", function(Y) {
         {
             "displayName": "game",
             "name": "game",
-            "description": "Game module which consists of all game states and client side functionality"
+            "description": "wrapper class. The wrapper object, first displayed screen"
         },
         {
             "displayName": "nodeServer",
