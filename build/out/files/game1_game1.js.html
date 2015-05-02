@@ -1,3 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>game1\game1.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/boot.html">boot</a></li>
+                                <li><a href="../classes/game1.html">game1</a></li>
+                                <li><a href="../classes/HTTPClient.html">HTTPClient</a></li>
+                                <li><a href="../classes/preload1.html">preload1</a></li>
+                                <li><a href="../classes/title1.html">title1</a></li>
+                                <li><a href="../classes/victory1.html">victory1</a></li>
+                            </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/game.html">game</a></li>
+                                <li><a href="../modules/nodeServer.html">nodeServer</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: game1\game1.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
 module.exports = {
   /**
   *Game1 class. The game1 object, primary state of the game, handles all actual gameplay.
@@ -15,7 +103,7 @@ module.exports = {
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
-        park = this.add.sprite(1024, 768, 'park');
+        park = this.add.sprite(1024, 768, &#x27;park&#x27;);
         park.x = 0;
         park.y = 0;
         park.height = this.game.height;
@@ -27,75 +115,75 @@ module.exports = {
         directionShifters = this.game.add.group();
 
 
-        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(this.game.width, (this.game.height / 8), &quot;left&quot;, unsafeChildren, &#x27;unsafe&#x27;, this.onUnsafeClick);
         //We can create spawn points wherever we want so the sprites start on paths etc.
-        this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
-        this.startSpawn(3, 0, (this.game.height / 4), "down-right")
-        this.createShifter(11 * (this.game.width / 12), this.game.height / 8, "down", false, false);
-        this.createShifter(11 * (this.game.width / 12), 23 * this.game.height / 24, "left", false, false);
-        this.createShifter(this.game.width / 7, 5 * this.game.height / 10, "right", false, false);
-        this.createShifter(5 * this.game.width / 9, 4 * this.game.height / 8, "up-right", false, false);
-        this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
-        this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
+        this.startSpawn(6, this.game.width, (this.game.height / 8), &quot;left&quot;);
+        this.startSpawn(3, 0, (this.game.height / 4), &quot;down-right&quot;)
+        this.createShifter(11 * (this.game.width / 12), this.game.height / 8, &quot;down&quot;, false, false);
+        this.createShifter(11 * (this.game.width / 12), 23 * this.game.height / 24, &quot;left&quot;, false, false);
+        this.createShifter(this.game.width / 7, 5 * this.game.height / 10, &quot;right&quot;, false, false);
+        this.createShifter(5 * this.game.width / 9, 4 * this.game.height / 8, &quot;up-right&quot;, false, false);
+        this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, &quot;up-left&quot;, true, false);
+        this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, &quot;left&quot;, true, false);
 
         // Alternate Path
 		
-        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
-        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
+        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, &quot;up-left&quot;, false, true);
+        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, &quot;left&quot;, true, false);
         /*
          This will allow to check num of living unsafe children to see if offscreen are killed
          this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
          */
 
         //Add funky negative sound and positive sound
-        bad_sound = this.add.audio('bad_sound');
-        good_sound = this.add.audio('good_sound');
+        bad_sound = this.add.audio(&#x27;bad_sound&#x27;);
+        good_sound = this.add.audio(&#x27;good_sound&#x27;);
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
         textStyle = {
-            font: '35px Arial',
-            fill: '#666699',
-            align: 'right',
+            font: &#x27;35px Arial&#x27;,
+            fill: &#x27;#666699&#x27;,
+            align: &#x27;right&#x27;,
             wordWrap: false
         };
 
         // Add error message for clicking incorrectly
-        errorText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'Dude, what?', textStyle);
+        errorText = this.game.add.text(this.game.width - 200, this.game.width / 50, &#x27;Dude, what?&#x27;, textStyle);
         errorText.visible = false;
         errorText.anchor.set(0.5);
 
         // Add success message for clicking correctly
-        successText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'You saved me!', textStyle);
+        successText = this.game.add.text(this.game.width - 200, this.game.width / 50, &#x27;You saved me!&#x27;, textStyle);
         successText.visible = false;
         successText.anchor.set(0.5);
 
         //  Place score and timer in lower left hand corner
-        scoreText = this.game.add.text(60, this.game.width / 50, 'Score: ' + score, {
-            fill: '#666699'
+        scoreText = this.game.add.text(60, this.game.width / 50, &#x27;Score: &#x27; + score, {
+            fill: &#x27;#666699&#x27;
         });
-        clockText = this.game.add.text(120 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
-            fill: '#666699'
+        clockText = this.game.add.text(120 + scoreText.width, this.game.width / 50, &#x27;Time Remaining: &#x27; + timeRemaining, {
+            fill: &#x27;#666699&#x27;
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
         // Allow game to be paused
-        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
-            fill: '#666699'
+        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, &quot;Pause&quot;, {
+            fill: &#x27;#666699&#x27;
         });
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
-        instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
+        instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, &#x27;instructions&#x27;);
         instructions.visible = false;
 
         // Click anywhere to unpause
         this.game.input.onDown.add(this.unpauseGame, this);
 
         // On time out, show score
-        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
+        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, &#x27;Congratulations your score is &#x27; + score + &#x27;!&#x27;, textStyle);
         victoryText.visible = false;
         victoryText.anchor.set(0.5);
         this.pauseGame();
@@ -130,35 +218,35 @@ module.exports = {
      */
     update: function() {
         //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
-        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
+        if (timeRemaining == (2 * (maxTime / 3)) &amp;&amp; firstRateIncrease == false) {
             bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
+            this.startSpawn(3, this.game.width, (this.game.height / 8), &quot;left&quot;);
+            this.startSpawn(3, 0, (this.game.height / 4), &quot;down-right&quot;);
 
             firstRateIncrease = true;
         }
 
-        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
+        if (timeRemaining == (maxTime / 3) &amp;&amp; secondRateIncrease == false) {
             bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
+            this.startSpawn(3, this.game.width, (this.game.height / 8), &quot;left&quot;);
+            this.startSpawn(3, 0, (this.game.height / 4), &quot;down-right&quot;);
             secondRateIncrease = true;
 
         }
         //also increase movement speed at 2/3 and 1/3 time
-        if (timeRemaining <= (maxTime / 3)) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
+        if (timeRemaining &lt;= (maxTime / 3)) {
+            for (var i = 0; i &lt; unsafeChildren.children.length; i++) {
                 unsafeChildren.children[i].velocity = 3;
             }
-            for (var i = 0; i < safeChildren.children.length; i++) {
+            for (var i = 0; i &lt; safeChildren.children.length; i++) {
                 safeChildren.children[i].velocity = 3;
             }
-        } else if (timeRemaining <= (2 * (maxTime / 3))) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
+        } else if (timeRemaining &lt;= (2 * (maxTime / 3))) {
+            for (var i = 0; i &lt; unsafeChildren.children.length; i++) {
                 unsafeChildren.children[i].velocity = 2;
 
             }
-            for (var i = 0; i < safeChildren.children.length; i++) {
+            for (var i = 0; i &lt; safeChildren.children.length; i++) {
                 safeChildren.children[i].velocity = 2;
             }
 
@@ -171,47 +259,47 @@ module.exports = {
         this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
         // Update score, timer, and victory texts with new values
-        scoreText.text = 'Score: ' + score;
-        clockText.text = 'Time Remaining: ' + timeRemaining;
-        victoryText.text = 'Congratulations your score is ' + score + '!'
+        scoreText.text = &#x27;Score: &#x27; + score;
+        clockText.text = &#x27;Time Remaining: &#x27; + timeRemaining;
+        victoryText.text = &#x27;Congratulations your score is &#x27; + score + &#x27;!&#x27;
 
         // If error/success text were visible for 500ms, hide them
-        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
+        if ((errorText.visible === true) &amp;&amp; (this.game.time.now &gt; errorTextTimer))
             errorText.visible = false;
-        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
+        if ((successText.visible === true) &amp;&amp; (this.game.time.now &gt; successTextTimer))
             successText.visible = false;
 
         // If timer runs out, show victory
-        if (timeRemaining <= 0) {
+        if (timeRemaining &lt;= 0) {
             this.victory();
         }
 
         // For each child alive, move and animate
         // For each child off screen, kill sprite
-        for (var i = 0; i < unsafeChildren.children.length; i++) {
+        for (var i = 0; i &lt; unsafeChildren.children.length; i++) {
             var currentChild = unsafeChildren.children[i];
             if (currentChild.alive) {
                 currentChild.move();
-                currentChild.animations.play('ride');
+                currentChild.animations.play(&#x27;ride&#x27;);
 
             }
 
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+            if (currentChild.position.x &gt; this.game.width || currentChild.position.x &lt; 0 || currentChild.position.y &gt; this.game.height || currentChild.position.y &lt; 0) {
                 currentChild.kill();
             }
 
         }
         // For each child alive, move and animate
         // For each child off screen, kill sprite
-        for (var i = 0; i < safeChildren.children.length; i++) {
+        for (var i = 0; i &lt; safeChildren.children.length; i++) {
             var currentChild = safeChildren.children[i];
             if (currentChild.alive) {
                 currentChild.move();
-                currentChild.animations.play('ride');
+                currentChild.animations.play(&#x27;ride&#x27;);
 
             }
             // Ensure kill of screen sprites
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+            if (currentChild.position.x &gt; this.game.width || currentChild.position.x &lt; 0 || currentChild.position.y &gt; this.game.height || currentChild.position.y &lt; 0) {
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
             }
 
@@ -230,7 +318,7 @@ module.exports = {
     onSafeClick: function(sprite) {
 
         // No longer Decrement score - client requested no negative feedback for clicking a good child sprite
-       // if (score > 0) {
+       // if (score &gt; 0) {
            // score -= 1;
        // }
 
@@ -242,7 +330,7 @@ module.exports = {
     },
 
     // Clicking a sprite being unsafe
-	//creates a child to replace old child with to "put helmet on child"
+	//creates a child to replace old child with to &quot;put helmet on child&quot;
     /**
      *  make an unsafe child sprite into a safe child sprite after being clicked
 	 *Precondition: Sprite exists and is unsafe
@@ -256,12 +344,12 @@ module.exports = {
         good_sound.play();
         var safeChild;
         var newImage;
-        if (sprite.key == 'unsafe')
-            newImage = 'safe'
-        else if (sprite.key == 'unsafeSkate')
-            newImage = 'safeSkate';
-        else if (sprite.key == 'unsafeATV')
-            newImage = 'safeATV';
+        if (sprite.key == &#x27;unsafe&#x27;)
+            newImage = &#x27;safe&#x27;
+        else if (sprite.key == &#x27;unsafeSkate&#x27;)
+            newImage = &#x27;safeSkate&#x27;;
+        else if (sprite.key == &#x27;unsafeATV&#x27;)
+            newImage = &#x27;safeATV&#x27;;
         safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
@@ -270,7 +358,7 @@ module.exports = {
     },
 
     /**
-     * Called when player "wins" the game
+     * Called when player &quot;wins&quot; the game
 	 *Postcondition: game is now in victory1 state
      * @method victory
      *   
@@ -283,7 +371,7 @@ module.exports = {
         successText.visible = false;
         victoryText.visible = true;
         //change to victory state
-        this.game.state.start("Victory1", true, false, score);
+        this.game.state.start(&quot;Victory1&quot;, true, false, score);
     },
     /**
      * Function for placing random children -- NO LONGER USED BUT MAINTAINED FOR FUTURE
@@ -294,16 +382,16 @@ module.exports = {
      *   
      */
     placeRandomChildren: function(group, spriteName, listener) {
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i &lt; 3; i++) {
             child = group.create(0, 0, spriteName);
             child.inputEnabled = true;
             child.events.onInputDown.add(listener, this);
             child.anchor.set(0.5);
             child.position.x = this.game.world.randomX;
             child.position.y = this.game.world.randomY;
-            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+            child.animations.add(&#x27;ride&#x27;, [0, 1, 2, 3, 4], 4, true);
         }
-        group.setAll('outOfBoundsKill', true);
+        group.setAll(&#x27;outOfBoundsKill&#x27;, true);
     },
 
     //function for creating a sprite spawner
@@ -335,7 +423,7 @@ module.exports = {
     //function to pick a random sprite from the 3 safe and 3 unsafe sprites
     /**
      * function to pick a random sprite from the 3 safe and 3 unsafe sprites. Gives x,y coordinate and direction to move in
-	 *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
+	 *Precondition: startx, starty are valid positive integers, and direction is &quot;up&quot; &quot;down&quot; &quot;left&quot; &quot;right&quot; &quot;up-left&quot; &quot;up-right&quot; &quot;down-left&quot; &quot;down-right&quot;
      * @method createRandomChild
      * @param {} startx x coordinate
      * @param {} starty y coordinate
@@ -348,15 +436,15 @@ module.exports = {
         var listener;
         var randomNum = Math.random();
         //.65 chance to be unsafe
-        if (randomNum > .35) {
+        if (randomNum &gt; .35) {
 
             group = unsafeChildren;
-            if (randomNum > .5 && randomNum < .7) {
-                spriteName = 'unsafe';
-            } else if (randomNum > .7) {
-                spriteName = 'unsafeSkate';
+            if (randomNum &gt; .5 &amp;&amp; randomNum &lt; .7) {
+                spriteName = &#x27;unsafe&#x27;;
+            } else if (randomNum &gt; .7) {
+                spriteName = &#x27;unsafeSkate&#x27;;
             } else {
-                spriteName = 'unsafeATV';
+                spriteName = &#x27;unsafeATV&#x27;;
             }
             listener = this.onUnsafeClick;
         }
@@ -364,12 +452,12 @@ module.exports = {
         //else safe
         else {
             group = safeChildren;
-            if (randomNum > .2 && randomNum < .35) {
-                spriteName = 'safe';
-            } else if (randomNum > .1) {
-                spriteName = 'safeSkate';
+            if (randomNum &gt; .2 &amp;&amp; randomNum &lt; .35) {
+                spriteName = &#x27;safe&#x27;;
+            } else if (randomNum &gt; .1) {
+                spriteName = &#x27;safeSkate&#x27;;
             } else {
-                spriteName = 'safeATV';
+                spriteName = &#x27;safeATV&#x27;;
             }
             listener = this.onSafeClick;
         }
@@ -381,7 +469,7 @@ module.exports = {
     //function to create a child, called by create random child
     /**
      * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
-	 *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
+	 *Precondition: startx, starty are valid positive integers, and direction is &quot;up&quot; &quot;down&quot; &quot;left&quot; &quot;right&quot; &quot;up-left&quot; &quot;up-right&quot; &quot;down-left&quot; &quot;down-right&quot; group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
 	 *Postcondition: Group size is increased by one
      * @method createChild
      * @param {} startx x coordinate
@@ -404,24 +492,24 @@ module.exports = {
         child.direction = direction;
         child.safe = false;
         //if creating a safe child
-        if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV') {
+        if (spriteName == &#x27;safeSkate&#x27; || spriteName == &#x27;safe&#x27; || spriteName == &#x27;safeATV&#x27;) {
             child.safe = true;
         }
         //if moving right, must flip the sprite image so it looks correct
-        if (child.direction == "right" || child.direction == "down-right" || child.direction == "up-right")
+        if (child.direction == &quot;right&quot; || child.direction == &quot;down-right&quot; || child.direction == &quot;up-right&quot;)
             child.scale.x = child.scale.x * -1;
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
-        if (spriteName == 'safe' || spriteName == 'unsafe') {
+        if (spriteName == &#x27;safe&#x27; || spriteName == &#x27;unsafe&#x27;) {
             //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
-        } else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
+            child.animations.add(&#x27;ride&#x27;, [0, 1, 2, 3, 4], 4, true);
+        } else if (spriteName == &#x27;safeSkate&#x27; || spriteName == &#x27;unsafeSkate&#x27;) {
             child.scale.x = child.scale.x * -1;
-            child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
-        } else if (spriteName == 'safeATV' || spriteName == 'unsafeATV') {
+            child.animations.add(&#x27;ride&#x27;, [0, 1, 2, 3, 4, 5], 5, true);
+        } else if (spriteName == &#x27;safeATV&#x27; || spriteName == &#x27;unsafeATV&#x27;) {
             child.scale.x = child.scale.x * -1;
-            child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
+            child.animations.add(&#x27;ride&#x27;, [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
         }
         //initializing velocity to 1, adjusted as game time elapses
         child.velocity = 1;
@@ -460,25 +548,25 @@ module.exports = {
          */
         child.move = function() {
 
-            if (this.direction === "up") {
+            if (this.direction === &quot;up&quot;) {
                 this.position.y -= this.velocity;
-            } else if (this.direction === "down") {
+            } else if (this.direction === &quot;down&quot;) {
                 this.position.y += this.velocity;
-            } else if (this.direction === "left") {
+            } else if (this.direction === &quot;left&quot;) {
                 this.position.x -= this.velocity;
-            } else if (this.direction === "right") {
+            } else if (this.direction === &quot;right&quot;) {
                 this.position.x += this.velocity;
-            } else if (this.direction == "up-right") {
+            } else if (this.direction == &quot;up-right&quot;) {
                 this.position.x += this.velocity;
                 this.position.y -= this.velocity;
-            } else if (this.direction == "up-left") {
+            } else if (this.direction == &quot;up-left&quot;) {
                 this.position.x -= this.velocity;
                 this.position.y -= this.velocity;
 
-            } else if (this.direction == "down-left") {
+            } else if (this.direction == &quot;down-left&quot;) {
                 this.position.x -= this.velocity;
                 this.position.y += this.velocity;
-            } else if (this.direction == "down-right") {
+            } else if (this.direction == &quot;down-right&quot;) {
                 this.position.x += this.velocity;
                 this.position.y += this.velocity;
 
@@ -489,18 +577,18 @@ module.exports = {
     //creates a shifter sprite, which will change the direction of any player sprite it collides with
     /**
      * creates a shifter sprite at (x, y), which will change the direction of any player sprite it collides with. Warning flag if turns sprite red
-	 *Precondition: x,y are valid positive integers, and newDirection is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right". 
+	 *Precondition: x,y are valid positive integers, and newDirection is &quot;up&quot; &quot;down&quot; &quot;left&quot; &quot;right&quot; &quot;up-left&quot; &quot;up-right&quot; &quot;down-left&quot; &quot;down-right&quot;. 
      * @method createShifter
      * @param {} x x coordinate
      * @param {} y y coordinate
-     * @param {} newDirection Direction the shifter will force sprites to move. May be "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
+     * @param {} newDirection Direction the shifter will force sprites to move. May be &quot;up&quot; &quot;down&quot; &quot;left&quot; &quot;right&quot; &quot;up-left&quot; &quot;up-right&quot; &quot;down-left&quot; &quot;down-right&quot;
      * @param {} warning boolean value whether a sprite will turn red when passing through the shifter
      * @param {} randomShift boolean value whether shifter will randomly choose direction
      *   
      */
     createShifter: function(x, y, newDirection, warning, randomShift) {
         //redsquare used as a placeholder for an invisible sprite image
-        shifter = directionShifters.create(0, 0, "redsquare");
+        shifter = directionShifters.create(0, 0, &quot;redsquare&quot;);
         shifter.visible = false;
         shifter.warningFlag = warning;
         shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
@@ -527,12 +615,12 @@ module.exports = {
      *   
      */
     shiftDirection: function(sprite, shifter) {
-        if (shifter.warningFlag == true && sprite.safe == false) {
+        if (shifter.warningFlag == true &amp;&amp; sprite.safe == false) {
             sprite.startRed();
         }
-        if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")) {
+        if ((sprite.direction == &quot;left&quot; || sprite.direction == &quot;up-left&quot; || sprite.direction == &quot;down-left&quot;) &amp;&amp; (shifter.direction == &quot;right&quot; || shifter.direction == &quot;up-right&quot; || shifter.direction == &quot;down-right&quot;)) {
             sprite.scale.x = sprite.scale.x * -1;
-        } else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")) {
+        } else if ((sprite.direction == &quot;right&quot; || sprite.direction == &quot;up-right&quot; || sprite.direction == &quot;down-right&quot;) &amp;&amp; (shifter.direction == &quot;left&quot; || shifter.direction == &quot;up-left&quot; || shifter.direction == &quot;down-left&quot;)) {
             sprite.scale.x = sprite.scale.x * -1;
         } else sprite.scale.x = sprite.scale.x;
 
@@ -540,7 +628,7 @@ module.exports = {
 
         var randNum = Math.round(Math.random() * (100));
 
-        if (!(shifter.randomShift == true) && randNum < 50) {
+        if (!(shifter.randomShift == true) &amp;&amp; randNum &lt; 50) {
             sprite.direction = shifter.direction;
         } else {
             sprite.direction = sprite.direction;
@@ -558,3 +646,21 @@ module.exports = {
     }
 
 };
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

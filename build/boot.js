@@ -1,5 +1,14 @@
 module.exports = {
-
+	/**
+  *boot class. The boot object, boot state of the game
+  
+  *@class boot
+  */
+            /**
+             * initialize 
+             * @method init
+             * 
+             */
             init: function () {
 
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -15,17 +24,32 @@ module.exports = {
 
             },
 
+            /**
+             * Phaser create function, starts next state "Wrapper"
+             * @method create
+             * 
+             */
             create: function () {
 
                 this.game.state.start("Wrapper");
             },
 
+            /**
+             * fixes orientation of game
+             * @method enterIncorrectOrientation
+             * @return 
+             */
             enterIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'none';
                 document.getElementById('orientation').style.display = 'block';
 
             },
 
+            /**
+             * preserves orientation of game
+             * @method leaveIncorrectOrientation
+             *  
+             */
             leaveIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'block';
                 document.getElementById('orientation').style.display = 'none';

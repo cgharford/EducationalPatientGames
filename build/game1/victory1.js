@@ -1,4 +1,16 @@
 module.exports = {
+	  /**
+  *Victory1 class. The victory1 object, final state of the game
+  
+  *@class victory1
+  
+  */
+	
+/**
+ * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates 
+   * @method create
+    * @return 
+*/	
     create: function () {
 
         var victoryBg = this.add.sprite(1024, 768, 'victory page bg');
@@ -27,7 +39,7 @@ module.exports = {
         scores3 = this.game.add.text(12*this.game.width/20, 11*this.game.height/20, "3 saved", textStyle);
         scores3.visible = true;
 
-
+	//Calls post and get methods
         try {
             this.game.globals.post("USR", score); //once users allowed to have login, will also store their username in the db
             //for now leave the userName field so it can easily scale later

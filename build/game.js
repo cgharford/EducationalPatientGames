@@ -1,3 +1,7 @@
+/**
+Game module which consists of all game states and client side functionality
+@module game
+*/
 var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;
 
 var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game-container");

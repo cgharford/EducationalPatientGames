@@ -1,4 +1,16 @@
 module.exports = {
+	  /**
+  *preload1 class. The preload object, first state of the game, preloads all necessary assets
+  
+  *@class preload1
+  
+  */
+  
+     /**
+     * phaser preload function  -- loads in all necessary assets (images, sprites, spritesheets, audio) for use in the other game states
+     * @method preload
+     *   
+     */
     preload: function() {
         this.game.load.image('play button', './assets/images/UIP-play-button.png');
         this.game.load.image('title page bg', './assets/images/UIP-title.jpg');
@@ -17,6 +29,12 @@ module.exports = {
         this.game.load.image('victory page bg', './assets/images/UIP-victory.jpg');
 
     },
+	
+	   /**
+     * phaser create function  -- loads next state, the title screen
+     * @method create
+     *   
+     */
     create: function() {
         this.game.state.start("Title1");
     }

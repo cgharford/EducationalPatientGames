@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>game1\victory1.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/boot.html">boot</a></li>
+                                <li><a href="../classes/game1.html">game1</a></li>
+                                <li><a href="../classes/HTTPClient.html">HTTPClient</a></li>
+                                <li><a href="../classes/preload1.html">preload1</a></li>
+                                <li><a href="../classes/title1.html">title1</a></li>
+                                <li><a href="../classes/victory1.html">victory1</a></li>
+                            </ul>
+                
+                            <ul id="api-modules" class="apis modules">
+                                <li><a href="../modules/game.html">game</a></li>
+                                <li><a href="../modules/nodeServer.html">nodeServer</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: game1\victory1.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+module.exports = {
+	  /**
+  *Victory1 class. The victory1 object, final state of the game
+  
+  *@class victory1
+  
+  */
+	
+/**
+ * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates 
+   * @method create
+    * @return 
+*/	
+    create: function () {
+
+        var victoryBg = this.add.sprite(1024, 768, &#x27;victory page bg&#x27;);
+        victoryBg.x = 0;
+        victoryBg.y = 0;
+        victoryBg.height = this.game.height;
+        victoryBg.width = this.game.width;
+
+        var replayButton = this.game.add.sprite(513, 63, &#x27;replay button&#x27;);
+        replayButton.x = 12*this.game.width/20;
+        replayButton.y = 14.5*this.game.height/20;
+        replayButton.inputEnabled = true;
+
+        textStyle = {font: &quot;48px Arial&quot;, fill: &quot;#ffffff&quot;, align: &quot;center&quot;};
+        var yourScore = this.game.add.text(431, 172, score + &quot; saved&quot;, textStyle);
+        yourScore.x = 12*this.game.width/20;
+        yourScore.y = 6.5*this.game.height/20;
+        yourScore.visible = true;
+        //yourScore.anchor.set(0.5);
+        //yourScore.setText(&quot;TEST&quot;);
+        //yourScore.text = &quot;TEST&quot;;
+        scores1 = this.game.add.text(12*this.game.width/20, 8*this.game.height/20, &quot;15 saved&quot;, textStyle);
+        scores1.visible = true;
+        scores2 = this.game.add.text(12*this.game.width/20, 9.5*this.game.height/20, &quot;8 saved&quot;, textStyle);
+        scores2.visible = true;
+        scores3 = this.game.add.text(12*this.game.width/20, 11*this.game.height/20, &quot;3 saved&quot;, textStyle);
+        scores3.visible = true;
+
+	//Calls post and get methods
+        try {
+            this.game.globals.post(&quot;USR&quot;, score); //once users allowed to have login, will also store their username in the db
+            //for now leave the userName field so it can easily scale later
+            this.game.globals.get(this.game);
+        }
+        catch (err) {
+        }
+
+        replayButton.events.onInputDown.add(this.restart,this);
+    },
+    restart: function() {
+        this.game.state.start(&#x27;Title1&#x27;);
+    }
+};
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

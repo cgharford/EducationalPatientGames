@@ -1,3 +1,8 @@
+/**
+Server module
+@module nodeServer
+*/
+
 var http = require("http");
 var qs = require("querystring");
 var port = process.argv[2];  //pass the port number as first argument in the command line
@@ -67,6 +72,15 @@ var server = http.createServer(function(request, response) {
 server.listen(port);
 console.log("Server ready");
 
+/**
+ * Write records
+ * @method insertDocuments
+ * @param {} db
+ * @param {} collection
+ * @param {} data
+ * @param {} response
+ * @return 
+ */
 function insertDocuments(db, collection, data, response) {
     collection.insertOne(data, function(err, r) {
         assert.equal(null, err);
@@ -77,6 +91,14 @@ function insertDocuments(db, collection, data, response) {
     })
 }
 
+/**
+ * Retrieve records
+ * @method retrieveDocuments
+ * @param {} db
+ * @param {} collection
+ * @param {} response
+ * @return 
+ */
 function retrieveDocuments(db, collection, response) {
     var myDate = new Date();
     collection.find({date: (myDate.getMonth()+1) + " " + myDate.getDate() + " " + myDate.getFullYear()},

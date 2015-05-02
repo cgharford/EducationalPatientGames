@@ -1,11 +1,21 @@
 module.exports = {
 
+    /**
+     * Phaser preload function. Preloads assets needed for wrapper
+     * @method preload
+     * @return 
+     */
     preload: function () {
         //load images for all of the games here
         this.game.load.image("wrapper-bg", "assets/images/wrapper.jpg");
         this.game.load.image("new-game-thumb", "assets/images/new-game-thumbnail.jpg");
         this.game.load.image("UIP-thumb", "assets/images/UIP-thumbnail.jpg");
     },
+    /**
+     * Phaser create function. Adds images needed for wrapper
+     * @method create
+     * @return returns boolean true if image successfully loads, false otherwise
+     */
     create: function () {
 
         wrapperBg = this.add.sprite(1024, 768, 'wrapper-bg');
@@ -37,6 +47,11 @@ module.exports = {
         }
 
     },
+    /**
+     * Function to start next state of game, "Preload1"
+     * @method captainSafetySelect
+    
+     */
     captainSafetySelect: function () {
 
         this.game.state.start('Preload1');
