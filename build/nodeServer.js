@@ -3,6 +3,12 @@ Server module
 @module nodeServer
 */
 
+/**
+Server Class
+@class nodeServer
+@module nodeServer
+*/
+
 var http = require("http");
 var qs = require("querystring");
 var port = process.argv[2];  //pass the port number as first argument in the command line
@@ -75,10 +81,10 @@ console.log("Server ready");
 /**
  * Write records
  * @method insertDocuments
- * @param {} db
- * @param {} collection
- * @param {} data
- * @param {} response
+ * @param {} db the database to be inserted into
+ * @param {} collection the collection in the database
+ * @param {} data the data to be inserted
+ * @param {} response the response of the communication
  * @return 
  */
 function insertDocuments(db, collection, data, response) {
@@ -94,9 +100,9 @@ function insertDocuments(db, collection, data, response) {
 /**
  * Retrieve records
  * @method retrieveDocuments
- * @param {} db
- * @param {} collection
- * @param {} response
+ * @param {} db the database to be inserted into
+ * @param {} collection the collection in the database
+ * @param {} response the reponse of the communication
  * @return 
  */
 function retrieveDocuments(db, collection, response) {

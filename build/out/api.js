@@ -4,6 +4,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "HTTPClient",
         "boot",
         "game1",
+        "nodeServer",
         "preload1",
         "title1",
         "victory1",

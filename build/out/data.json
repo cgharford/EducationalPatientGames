@@ -67,7 +67,9 @@
             "modules": {
                 "nodeServer": 1
             },
-            "classes": {},
+            "classes": {
+                "nodeServer": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -108,12 +110,14 @@
         "nodeServer": {
             "name": "nodeServer",
             "submodules": {},
-            "classes": {},
+            "classes": {
+                "nodeServer": 1
+            },
             "fors": {},
             "namespaces": {},
             "tag": "module",
             "file": "nodeServer.js",
-            "line": 1,
+            "line": 6,
             "description": "Server module"
         }
     },
@@ -195,6 +199,20 @@
             "file": "boot.js",
             "line": 2,
             "description": "boot class. The boot object, boot state of the game"
+        },
+        "nodeServer": {
+            "name": "nodeServer",
+            "shortname": "nodeServer",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "nodeServer",
+            "namespace": "",
+            "file": "nodeServer.js",
+            "line": 6,
+            "description": "Server Class"
         },
         "wrapper": {
             "name": "wrapper",
@@ -624,58 +642,58 @@
         },
         {
             "file": "nodeServer.js",
-            "line": 75,
+            "line": 81,
             "description": "Write records",
             "itemtype": "method",
             "name": "insertDocuments",
             "params": [
                 {
                     "name": "db",
-                    "description": ""
+                    "description": "the database to be inserted into"
                 },
                 {
                     "name": "collection",
-                    "description": ""
+                    "description": "the collection in the database"
                 },
                 {
                     "name": "data",
-                    "description": ""
+                    "description": "the data to be inserted"
                 },
                 {
                     "name": "response",
-                    "description": ""
+                    "description": "the response of the communication"
                 }
             ],
             "return": {
                 "description": ""
             },
-            "class": "wrapper",
+            "class": "nodeServer",
             "module": "nodeServer"
         },
         {
             "file": "nodeServer.js",
-            "line": 94,
+            "line": 100,
             "description": "Retrieve records",
             "itemtype": "method",
             "name": "retrieveDocuments",
             "params": [
                 {
                     "name": "db",
-                    "description": ""
+                    "description": "the database to be inserted into"
                 },
                 {
                     "name": "collection",
-                    "description": ""
+                    "description": "the collection in the database"
                 },
                 {
                     "name": "response",
-                    "description": ""
+                    "description": "the reponse of the communication"
                 }
             ],
             "return": {
                 "description": ""
             },
-            "class": "wrapper",
+            "class": "nodeServer",
             "module": "nodeServer"
         },
         {

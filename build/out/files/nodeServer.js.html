@@ -41,6 +41,7 @@
                                 <li><a href="../classes/boot.html">boot</a></li>
                                 <li><a href="../classes/game1.html">game1</a></li>
                                 <li><a href="../classes/HTTPClient.html">HTTPClient</a></li>
+                                <li><a href="../classes/nodeServer.html">nodeServer</a></li>
                                 <li><a href="../classes/preload1.html">preload1</a></li>
                                 <li><a href="../classes/title1.html">title1</a></li>
                                 <li><a href="../classes/victory1.html">victory1</a></li>
@@ -89,6 +90,12 @@
     <pre class="code prettyprint linenums">
 /**
 Server module
+@module nodeServer
+*/
+
+/**
+Server Class
+@class nodeServer
 @module nodeServer
 */
 
@@ -164,10 +171,10 @@ console.log(&quot;Server ready&quot;);
 /**
  * Write records
  * @method insertDocuments
- * @param {} db
- * @param {} collection
- * @param {} data
- * @param {} response
+ * @param {} db the database to be inserted into
+ * @param {} collection the collection in the database
+ * @param {} data the data to be inserted
+ * @param {} response the response of the communication
  * @return 
  */
 function insertDocuments(db, collection, data, response) {
@@ -183,9 +190,9 @@ function insertDocuments(db, collection, data, response) {
 /**
  * Retrieve records
  * @method retrieveDocuments
- * @param {} db
- * @param {} collection
- * @param {} response
+ * @param {} db the database to be inserted into
+ * @param {} collection the collection in the database
+ * @param {} response the reponse of the communication
  * @return 
  */
 function retrieveDocuments(db, collection, response) {
