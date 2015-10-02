@@ -15,6 +15,7 @@ module.exports = {
         this.game.load.image("wrapper-bg", "assets/images/wrapper.jpg");
         this.game.load.image("new-game-thumb", "assets/images/new-game-thumbnail.jpg");
         this.game.load.image("UIP-thumb", "assets/images/UIP-thumbnail.jpg");
+        this.game.load.image("game2-thumbnail", "assets/images/game2-thumbnail.jpg");
     },
     /**
      * Phaser create function. Adds images needed for wrapper
@@ -36,9 +37,12 @@ module.exports = {
         uipImage.inputEnabled = true;
         uipImage.events.onInputDown.add(this.captainSafetySelect, this);
 
-        var ngImageA = this.game.add.sprite(this.game.width / 6, this.game.height / 2, "new-game-thumb");
-        ngImageA.anchor.set(.5);
-        ngImageA.scale.setTo(.7, .7);
+        var game2Image = this.game.add.sprite(this.game.width / 6, this.game.height / 2, "game2-thumbnail");
+        game2Image.anchor.set(.5);
+        game2Image.scale.setTo(.7, .7);
+        game2Image.inputEnabled = true;
+        game2Image.events.onInputDown.add(this.game2Start, this);
+
 
 
         var ngImageB = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "new-game-thumb");
@@ -60,6 +64,11 @@ module.exports = {
     captainSafetySelect: function () {
 
         this.game.state.start('Preload1');
+    },
+
+    //
+    game2Start : function(){
+        this.game.state.start('Preload2');
     }
 
 }
