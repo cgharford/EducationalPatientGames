@@ -5,7 +5,6 @@ module.exports = {
   *@class wrapper
   *@module game
   */
-  */
     /**
      * Phaser preload function. Preloads assets needed for wrapper
      * @method preload

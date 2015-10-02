@@ -46,6 +46,7 @@ module.exports = {
             this.game.globals.get(this.game);
         }
         catch (err) {
+            console.error(err);
         }
 
         replayButton.events.onInputDown.add(this.restart,this);

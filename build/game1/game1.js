@@ -11,6 +11,7 @@ module.exports = {
      *   
      */
     create: function() {
+        this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         firstRateIncrease = false;
         secondRateIncrease = false;
@@ -197,6 +198,9 @@ module.exports = {
             }
 
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+                if(!currentChild.safe){
+                    this.multiplier = 1;
+                }
                 currentChild.kill();
             }
 
@@ -212,6 +216,9 @@ module.exports = {
             }
             // Ensure kill of screen sprites
             if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+                if(!currentChild.safe){
+                    this.multiplier = 1;
+                }
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
             }
 
@@ -235,6 +242,7 @@ module.exports = {
        // }
 
         // Show error msg for 500ms and set to visible
+        this.multiplier = 1;
         errorTextTimer = this.game.time.now + 500;
         errorText.visible = true;
         successText.visible = false;
@@ -252,7 +260,11 @@ module.exports = {
      *   
      */
     onUnsafeClick: function(sprite) {
-        score += 1;
+
+        score += 10 * this.multiplier;
+        if(this.multiplier !== 20){
+            this.multiplier ++;
+        }
         good_sound.play();
         var safeChild;
         var newImage;
@@ -499,6 +511,7 @@ module.exports = {
      *   
      */
     createShifter: function(x, y, newDirection, warning, randomShift) {
+        console.log('Create Shifter Fired!')
         //redsquare used as a placeholder for an invisible sprite image
         shifter = directionShifters.create(0, 0, "redsquare");
         shifter.visible = false;
