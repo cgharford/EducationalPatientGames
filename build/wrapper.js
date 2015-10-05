@@ -12,10 +12,10 @@ module.exports = {
      */
     preload: function () {
         //load images for all of the games here
-        this.game.load.image("wrapper-bg", "assets/images/wrapper.jpg");
-        this.game.load.image("new-game-thumb", "assets/images/new-game-thumbnail.jpg");
-        this.game.load.image("UIP-thumb", "assets/images/UIP-thumbnail.jpg");
-        this.game.load.image("game2-thumbnail", "assets/images/game2-thumbnail.jpg");
+        this.game.load.image("wrapper-bg", "assets/general/images/wrapper.jpg");
+        this.game.load.image("new-game-thumb", "assets/general/images/new-game-thumbnail.jpg");
+        this.game.load.image("UIP-thumb", "assets/general/images/UIP-thumbnail.jpg");
+        this.game.load.image("game2-thumbnail", "assets/general/images/game2-thumbnail.jpg");
     },
     /**
      * Phaser create function. Adds images needed for wrapper
@@ -49,7 +49,7 @@ module.exports = {
         ngImageB.anchor.set(.5);
         ngImageB.scale.setTo(.7, .7);
 
-        if (uipImage !== null && ngImageA !== null && ngImageB !== null) {
+        if (uipImage !== null && game2Image !== null && ngImageB !== null) {
             return true;
         } else {
             return false;

@@ -7651,21 +7651,21 @@ module.exports = {
      *   
      */
     preload: function() {
-        this.game.load.image('play button', './assets/images/UIP-play-button.png');
-        this.game.load.image('title page bg', './assets/images/UIP-title.jpg');
-        this.game.load.image('park', './assets/images/park-bg.jpg');
-        this.game.load.image('instructions', 'assets/images/instructions.jpg');
-        this.game.load.image('redsquare', './assets/images/redsquare.png');
-        this.game.load.audio('bad_sound', './assets/audio/bad-sound.wav', true);
-		this.game.load.audio('good_sound', './assets/audio/good_sound.wav', true);
-        this.game.load.spritesheet('safe', './assets/images/spritesheets/safe-biker-red.png', 80, 80);
-        this.game.load.spritesheet('unsafe', './assets/images/spritesheets/unsafe-biker-red.png', 80, 80);
-		this.game.load.spritesheet('safeSkate', './assets/images/spritesheets/safe-skater.png', 90, 90);
-		this.game.load.spritesheet('unsafeSkate', './assets/images/spritesheets/unsafe-skater.png', 90, 90);
-		this.game.load.spritesheet('safeATV', './assets/images/spritesheets/safe-atv-rider.png', 90, 90);
-		this.game.load.spritesheet('unsafeATV', './assets/images/spritesheets/unsafe-atv-rider.png', 90, 90);
-        this.game.load.image('replay button', './assets/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/images/UIP-victory.jpg');
+        this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
+        this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
+        this.game.load.image('park', './assets/game1/images/park-bg.jpg');
+        this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
+        this.game.load.image('redsquare', './assets/game1/images/redsquare.png');
+        this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
+		this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
+        this.game.load.spritesheet('safe', './assets/game1/images/spritesheets/safe-biker-red.png', 80, 80);
+        this.game.load.spritesheet('unsafe', './assets/game1/images/spritesheets/unsafe-biker-red.png', 80, 80);
+		this.game.load.spritesheet('safeSkate', './assets/game1/images/spritesheets/safe-skater.png', 90, 90);
+		this.game.load.spritesheet('unsafeSkate', './assets/game1/images/spritesheets/unsafe-skater.png', 90, 90);
+		this.game.load.spritesheet('safeATV', './assets/game1/images/spritesheets/safe-atv-rider.png', 90, 90);
+		this.game.load.spritesheet('unsafeATV', './assets/game1/images/spritesheets/unsafe-atv-rider.png', 90, 90);
+        this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
+        this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.jpg');
 
     },
 	
@@ -8505,10 +8505,10 @@ module.exports = {
      */
     preload: function () {
         //load images for all of the games here
-        this.game.load.image("wrapper-bg", "assets/images/wrapper.jpg");
-        this.game.load.image("new-game-thumb", "assets/images/new-game-thumbnail.jpg");
-        this.game.load.image("UIP-thumb", "assets/images/UIP-thumbnail.jpg");
-        this.game.load.image("game2-thumbnail", "assets/images/game2-thumbnail.jpg");
+        this.game.load.image("wrapper-bg", "assets/general/images/wrapper.jpg");
+        this.game.load.image("new-game-thumb", "assets/general/images/new-game-thumbnail.jpg");
+        this.game.load.image("UIP-thumb", "assets/general/images/UIP-thumbnail.jpg");
+        this.game.load.image("game2-thumbnail", "assets/general/images/game2-thumbnail.jpg");
     },
     /**
      * Phaser create function. Adds images needed for wrapper
@@ -8542,7 +8542,7 @@ module.exports = {
         ngImageB.anchor.set(.5);
         ngImageB.scale.setTo(.7, .7);
 
-        if (uipImage !== null && ngImageA !== null && ngImageB !== null) {
+        if (uipImage !== null && game2Image !== null && ngImageB !== null) {
             return true;
         } else {
             return false;
