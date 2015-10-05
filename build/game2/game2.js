@@ -16,11 +16,11 @@ module.exports = {
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
-        park = this.add.sprite(1024, 768, 'park');
-        park.x = 0;
-        park.y = 0;
-        park.height = this.game.height;
-        park.width = this.game.width;
+        background = this.add.sprite(1024, 768, 'lake');
+        background.x = 0;
+        background.y = 0;
+        background.height = this.game.height;
+        background.width = this.game.width;
 
         //
         unsafeChildren = this.game.add.group();
