@@ -25,18 +25,18 @@ module.exports = {
         replayButton.inputEnabled = true;
 
         textStyle = {font: "48px Arial", fill: "#ffffff", align: "center"};
-        var yourScore = this.game.add.text(431, 172, score + " saved", textStyle);
+        var yourScore = this.game.add.text(431, 172, score + " points", textStyle);
         yourScore.x = 12*this.game.width/20;
         yourScore.y = 6.5*this.game.height/20;
         yourScore.visible = true;
         //yourScore.anchor.set(0.5);
         //yourScore.setText("TEST");
         //yourScore.text = "TEST";
-        scores1 = this.game.add.text(12*this.game.width/20, 8*this.game.height/20, "15 saved", textStyle);
+        scores1 = this.game.add.text(12*this.game.width/20, 8*this.game.height/20, "150 points", textStyle);
         scores1.visible = true;
-        scores2 = this.game.add.text(12*this.game.width/20, 9.5*this.game.height/20, "8 saved", textStyle);
+        scores2 = this.game.add.text(12*this.game.width/20, 9.5*this.game.height/20, "80 points", textStyle);
         scores2.visible = true;
-        scores3 = this.game.add.text(12*this.game.width/20, 11*this.game.height/20, "3 saved", textStyle);
+        scores3 = this.game.add.text(12*this.game.width/20, 11*this.game.height/20, "30 points", textStyle);
         scores3.visible = true;
 
 	//Calls post and get methods
