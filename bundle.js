@@ -7033,21 +7033,28 @@ module.exports = {
         successText.visible = false;
         successText.anchor.set(0.5);
 
-        //  Place score and timer in lower left hand corner
+
+
+        //  Place score and timer in upper left hand corner
         scoreText = this.game.add.text(60, this.game.width / 50, 'Score: ' + score, {
             fill: '#666699'
         });
-        clockText = this.game.add.text(120 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
+        clockText = this.game.add.text(200 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
             fill: '#666699'
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
         // Allow game to be paused
-        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
+        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width/50, "Pause", {
             fill: '#666699'
         });
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
+
+        multiplierText = this.game.add.text(300 + scoreText.width + pause.width + clockText.width, 
+            this.game.width/50, 'x' + this.multiplier, {
+                fill: '#666699'
+            });
 
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
@@ -7134,7 +7141,8 @@ module.exports = {
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
-        victoryText.text = 'Congratulations your score is ' + score + '!'
+        victoryText.text = 'Congratulations your score is ' + score + '!';
+        multiplierText.text = 'x' + this.multiplier;
 
         // If error/success text were visible for 500ms, hide them
         if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
@@ -8469,7 +8477,7 @@ module.exports = {
         //yourScore.text = "TEST";
         scores1 = this.game.add.text(12*this.game.width/20, 8*this.game.height/20, "150 points", textStyle);
         scores1.visible = true;
-        scores2 = this.game.add.text(12*this.game.width/20, 9.5*this.game.height/20, "80 point", textStyle);
+        scores2 = this.game.add.text(12*this.game.width/20, 9.5*this.game.height/20, "80 points", textStyle);
         scores2.visible = true;
         scores3 = this.game.add.text(12*this.game.width/20, 11*this.game.height/20, "30 points", textStyle);
         scores3.visible = true;
