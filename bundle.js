@@ -91,13 +91,13 @@ game.state.add('Wrapper', require('./wrapper.js'));
 game.state.start('Boot');
 },{"./boot.js":1,"./game1/game1.js":3,"./game1/preload1.js":4,"./game1/title1.js":5,"./game1/victory1.js":6,"./game2/game2.js":7,"./game2/preload2.js":8,"./game2/title2.js":9,"./game2/victory2.js":10,"./wrapper.js":11}],3:[function(require,module,exports){
 module.exports = {
-  /**
-  *Game1 class. The game1 object, primary state of the game, handles all actual gameplay.
+    /**
+    *Game1 class. The game1 object, primary state of the game, handles all actual gameplay.
   
-  *@class game1
+    *@class game1
   
-  */
-   /**
+    */
+    /**
      * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.  
      * @method create
      *   
@@ -117,12 +117,12 @@ module.exports = {
         //
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-
-        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick, this.game, this.bmd);
+        //startx, starty, direction, group, spriteName, listener, path, pi)
+        this.createChild(unsafeChildren, 'unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
         // Alternate Path
-		
+
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
         // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
         /*
@@ -167,14 +167,14 @@ module.exports = {
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
         // Allow game to be paused
-        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width/50, "Pause", {
+        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
             fill: '#666699'
         });
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
-        multiplierText = this.game.add.text(300 + scoreText.width + pause.width + clockText.width, 
-            this.game.width/50, 'x' + this.multiplier, {
+        multiplierText = this.game.add.text(300 + scoreText.width + pause.width + clockText.width,
+            this.game.width / 50, 'x' + this.multiplier, {
                 fill: '#666699'
             });
 
@@ -214,7 +214,7 @@ module.exports = {
     //phaser update function
     /**
      * Functionality called every time game updates. Moves sprites, checks collision, updates time
-	 *Precondition: Game created and exists
+     *Precondition: Game created and exists
      * @method update
      *   
      */
@@ -223,7 +223,6 @@ module.exports = {
         if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
             bad_sound.play();
             this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
 
             firstRateIncrease = true;
         }
@@ -231,17 +230,16 @@ module.exports = {
         if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
             bad_sound.play();
             this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
             secondRateIncrease = true;
 
         }
         //also increase movement speed at 2/3 and 1/3 time
         if (timeRemaining <= (maxTime / 3)) {
             for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 3;
+                unsafeChildren.children[i].urgency = 7;
             }
             for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 3;
+                safeChildren.children[i].urgency = 7;
             }
         } else if (timeRemaining <= (2 * (maxTime / 3))) {
             for (var i = 0; i < unsafeChildren.children.length; i++) {
@@ -283,7 +281,7 @@ module.exports = {
             }
 
             if (currentChild.position.x > this.game.width) {
-                if(!currentChild.safe){
+                if (!currentChild.safe) {
                     this.multiplier = 1;
                 }
                 currentChild.kill();
@@ -301,7 +299,7 @@ module.exports = {
             }
             // Ensure kill of screen sprites
             if (currentChild.position.x > this.game.width) {
-                if(!currentChild.safe){
+                if (!currentChild.safe) {
                     this.multiplier = 1;
                 }
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
@@ -310,11 +308,68 @@ module.exports = {
         }
     },
 
+    generatePath: function() {
+        var game = this.game
+        generateXPoint = function(sect) {
+            switch (sect) {
+                case 0:
+                    return game.rnd.between(-10, 0);
+                case 1:
+                    return game.rnd.between(0, game.width / 7);
+                case 2:
+                    return game.rnd.between(game.width / 7, (game.width * 2) / 7);
+                case 3:
+                    return game.rnd.between((game.width * 2) / 7, (game.width * 3) / 7);
+                case 4:
+                    return game.rnd.between((game.width * 3) / 7, (game.width * 4) / 7);
+                case 5:
+                    return game.rnd.between((game.width * 4) / 7, (game.width * 5) / 7);
+                case 6:
+                    return game.rnd.between((game.width * 5) / 7, (game.width * 6) / 7);
+                case 7:
+                    return game.rnd.between((game.width * 6) / 7, (game.width * 7) / 7);
+                case 8:
+                    return game.rnd.between((game.width * 7) / 7, (game.width * 8) / 7);
+                default:
+                    console.log('error in gen x point');
+            }
+        };
+        generateYPoint = function(sect) {
+            return game.rnd.between((game.height / 2.5), (game.height * 9) / 10);
+        };
+        var yPoints = [];
+        var xPoints = [];
+        for (var i = 0; i <= 8; i++) {
+            yPoints.push(generateYPoint(i));
+            xPoints.push(generateXPoint(i));
+        }
+        var pathPts = {
+            'y': yPoints,
+            'x': xPoints
+        };
+
+        interpolatePaths = function(pathPts, game) {
+            x = 1 / game.width;
+            var truePath = [];
+            for (var i = 0; i <= 1; i += x) {
+                var px = game.math.catmullRomInterpolation(pathPts.x, i);
+                var py = game.math.catmullRomInterpolation(pathPts.y, i);
+                truePath.push({
+                    'x': px,
+                    'y': py
+                });
+            }
+            return truePath;
+        }
+
+        return interpolatePaths(pathPts, game);
+    },
+
     // Clicking a sprite being safe
     /**
      * Called when clicking an already safe sprite, gives warning message
-	*Precondition: Sprite exists and is safe
-	*Postcondition: Sprite exists and is still safe
+     *Precondition: Sprite exists and is safe
+     *Postcondition: Sprite exists and is still safe
      * @method onSafeClick Function to execute when safe sprite is clicked
      * @param {} sprite Sprite object that is being clicked
      *   
@@ -322,9 +377,9 @@ module.exports = {
     onSafeClick: function(sprite) {
 
         // No longer Decrement score - client requested no negative feedback for clicking a good child sprite
-       // if (score > 0) {
-           // score -= 1;
-       // }
+        // if (score > 0) {
+        // score -= 1;
+        // }
 
         // Show error msg for 500ms and set to visible
         this.multiplier = 1;
@@ -335,17 +390,16 @@ module.exports = {
     },
 
     // Clicking a sprite being unsafe
-	//creates a child to replace old child with to "put helmet on child"
+    //creates a child to replace old child with to "put helmet on child"
     /**
      *  make an unsafe child sprite into a safe child sprite after being clicked
-	 *Precondition: Sprite exists and is unsafe
-	 *Postcondition: Sprite is replaced by safe sprite
+     *Precondition: Sprite exists and is unsafe
+     *Postcondition: Sprite is replaced by safe sprite
      * @method onUnsafeClick Function to be executed when an unsafe sprite is clicked
      * @param {} sprite Sprite object that is being clicked
      *   
      */
     onUnsafeClick: function(sprite) {
-
         score += 10 * this.multiplier;
         if(this.multiplier !== 20){
             this.multiplier ++;
@@ -359,7 +413,7 @@ module.exports = {
             newImage = 'safeSkate';
         else if (sprite.key == 'unsafeATV')
             newImage = 'safeATV';
-        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick, this.game, this.bmd);
+        safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
         successText.visible = true;
@@ -368,7 +422,7 @@ module.exports = {
 
     /**
      * Called when player "wins" the game
-	 *Postcondition: game is now in victory1 state
+     *Postcondition: game is now in victory1 state
      * @method victory
      *   
      */
@@ -421,7 +475,7 @@ module.exports = {
 
     /**
      * Modifies the clock time of the game
-	 *Postcondition: timeRemaining is one less
+     *Postcondition: timeRemaining is one less
      * @method updateTime
      *   
      */
@@ -432,7 +486,7 @@ module.exports = {
     //function to pick a random sprite from the 3 safe and 3 unsafe sprites
     /**
      * function to pick a random sprite from the 3 safe and 3 unsafe sprites. Gives x,y coordinate and direction to move in
-	 *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
+     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
      * @method createRandomChild
      * @param {} startx x coordinate
      * @param {} starty y coordinate
@@ -470,15 +524,15 @@ module.exports = {
             }
             listener = this.onSafeClick;
         }
-        this.createChild(startx, starty, direction, group, spriteName, listener, this.game, this.bmd);
+        this.createChild(group, spriteName, listener, this.generatePath(), 0);
 
     },
 
     //function to create a child, called by create random child
     /**
      * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
-	 *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
-	 *Postcondition: Group size is increased by one
+     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
+     *Postcondition: Group size is increased by one
      * @method createChild
      * @param {} startx x coordinate
      * @param {} starty y coordinate
@@ -488,20 +542,19 @@ module.exports = {
      * @param {} listener function to be executed when sprite is clicked
      *   
      */
-    createChild: function(startx, starty, direction, group, spriteName, listener, game, bmd) {
+    createChild: function(group, spriteName, listener, path, pi) {
         var child;
         //initialize properties
         child = group.create(0, 0, spriteName);
         child.inputEnabled = true;
         child.events.onInputDown.add(listener, this);
-        child.pi = 0;
+        child.pi = pi;
         child.urgency = 1;
         child.anchor.set(0.5);
-        child.position.x = startx;
-        child.position.y = starty;
-
-        child.direction = direction;
-        child.game = game
+        child.path = path;
+        child.position.x = child.path[child.pi].x;
+        child.position.y = child.path[child.pi].y;
+        
 
         /*
                 1024 x 768
@@ -525,48 +578,6 @@ module.exports = {
                 water starts at 270 goes to 768
                 
         */
-        generateXPoint = function(sect){
-          switch(sect){
-            case 0: return game.rnd.between(-10, 0);
-            case 1: return game.rnd.between(0, game.width / 7);
-            case 2: return game.rnd.between(game.width/7, (game.width * 2) / 7);
-            case 3: return game.rnd.between((game.width * 2) / 7, (game.width * 3) / 7);
-            case 4: return game.rnd.between((game.width * 3) / 7, (game.width * 4) / 7);
-            case 5: return game.rnd.between((game.width * 4) / 7, (game.width * 5) / 7);
-            case 6: return game.rnd.between((game.width * 5) / 7, (game.width * 6) / 7);
-            case 7: return game.rnd.between((game.width * 6) / 7, (game.width * 7) / 7);
-            case 8: return game.rnd.between((game.width * 7) / 7, (game.width * 8) / 7);
-            default: console.log('error in gen x point');
-          }
-        };
-        generateYPoint = function(sect){
-            return game.rnd.between(game.height / 10, ((game.height * 9) / 10));
-        };
-        this.yPoints = [];
-        this.xPoints= [];
-        for(var i=0; i<=8; i++){
-            this.yPoints.push(generateYPoint(i));
-            this.xPoints.push(generateXPoint(i));
-        }
-        this.pathPts = {
-            'y' : this.yPoints,
-            'x' : this.xPoints
-        };
-
-        interpolatePaths = function(mode, pathPts, game, bmd){
-            x = 1 / game.width;
-            var truePath = [];
-            for(var i = 0; i <= 1; i+= x){
-                var px = game.math.catmullRomInterpolation(pathPts.x,i);
-                var py = game.math.catmullRomInterpolation(pathPts.y,i);
-                truePath.push({'x' : px, 'y': py});
-            }
-            return truePath;
-        }
-
-
-
-        child.truePath = interpolatePaths(0,this.pathPts, game, bmd);
 
         child.safe = false;
         //if creating a safe child
@@ -593,8 +604,8 @@ module.exports = {
             child.scale.x = scale;
             child.scale.y = scale;
         }
-        //initializing velocity to 1, adjusted as game time elapses
-        child.velocity = 1;
+
+
 
         /**
          * Makes sprite red
@@ -624,15 +635,20 @@ module.exports = {
         };
         /**
          * Tells a sprite object to move in its current direction
-		*Precondition: child has a valid direction to move in and a valid velocity to move by
+         *Precondition: child has a valid direction to move in and a valid velocity to move by
          * @method move
          *   
          */
         child.move = function() {
-                this.position.x = this.truePath[this.pi].x;
-                this.position.y = this.truePath[this.pi].y;
+            if (this.path[this.pi] == null) {
+                this.kill();
+                return;
+            } else {
+                this.position.x = this.path[this.pi].x;
+                this.position.y = this.path[this.pi].y;
                 this.pi += 1 * this.urgency;
-            };
+            }
+        };
 
     },
 
@@ -647,6 +663,7 @@ module.exports = {
     }
 
 };
+
 },{}],4:[function(require,module,exports){
 module.exports = {
 	  /**
@@ -767,16 +784,16 @@ module.exports = {
         yourScore.visible = true;
 
 
-        scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[0] + " points", textStyle);
+        scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[2] + " points", textStyle);
         scores1.visible = true;
         scores2 = this.game.add.text(12 * this.game.width / 20, 9.5 * this.game.height / 20, highScores[1] + " points", textStyle);
         scores2.visible = true;
-        scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[2] + " points", textStyle);
+        scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[0] + " points", textStyle);
         scores3.visible = true;
 
         highScores.push(score);
         highScores.sort();
-        highScores.pop(0);
+        highScores.splice(0, 1);
         Cookies.set('high_scores_game1', highScores);
 
         replayButton.events.onInputDown.add(this.restart, this);
@@ -815,7 +832,7 @@ module.exports = {
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
         //startx, starty, direction, group, spriteName, listener, path, pi)
-        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
+        this.createChild(unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
         // Alternate Path
@@ -833,7 +850,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 10;
+        timeRemaining = 60;
         maxTime = timeRemaining
         textStyle = {
             font: '35px Arial',
@@ -920,7 +937,6 @@ module.exports = {
         if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
             bad_sound.play();
             this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
 
             firstRateIncrease = true;
         }
@@ -928,7 +944,6 @@ module.exports = {
         if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
             bad_sound.play();
             this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
             secondRateIncrease = true;
 
         }
@@ -1111,7 +1126,7 @@ module.exports = {
             newImage = 'boy_boater_safe'
         else if (sprite.key == 'girl_boater_unsafe')
             newImage = 'girl_boater_safe';
-        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
+        safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
         successText.visible = true;
@@ -1218,7 +1233,7 @@ module.exports = {
             }
             listener = this.onSafeClick;
         }
-        this.createChild(startx, starty, direction, group, spriteName, listener, this.generatePath(), 0);
+        this.createChild(group, spriteName, listener, this.generatePath(), 0);
 
     },
 
@@ -1236,7 +1251,7 @@ module.exports = {
      * @param {} listener function to be executed when sprite is clicked
      *   
      */
-    createChild: function(startx, starty, direction, group, spriteName, listener, path, pi) {
+    createChild: function(group, spriteName, listener, path, pi) {
         var child;
         //initialize properties
         child = group.create(0, 0, spriteName);
@@ -1245,10 +1260,10 @@ module.exports = {
         child.pi = pi;
         child.urgency = 1;
         child.anchor.set(0.5);
-        child.position.x = startx;
-        child.position.y = starty;
         child.path = path;
-        child.direction = direction;
+        child.position.x = child.path[child.pi].x;
+        child.position.y = child.path[child.pi].y;
+        
 
         /*
                 1024 x 768
@@ -1484,9 +1499,7 @@ module.exports = {
         replayButton.events.onInputDown.add(this.restart, this);
         highScores.push(score);
         highScores.sort();
-        console.log(highScores);
         highScores.splice(0, 1);
-        console.log(highScores);
         Cookies.set('high_scores_game2', highScores);
     },
     restart: function() {

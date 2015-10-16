@@ -26,7 +26,7 @@ module.exports = {
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
         //startx, starty, direction, group, spriteName, listener, path, pi)
-        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
+        this.createChild(unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
         // Alternate Path
@@ -44,7 +44,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 10;
+        timeRemaining = 60;
         maxTime = timeRemaining
         textStyle = {
             font: '35px Arial',
@@ -131,7 +131,6 @@ module.exports = {
         if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
             bad_sound.play();
             this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
 
             firstRateIncrease = true;
         }
@@ -139,7 +138,6 @@ module.exports = {
         if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
             bad_sound.play();
             this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            this.startSpawn(3, 0, (this.game.height / 4), "down-right");
             secondRateIncrease = true;
 
         }
@@ -322,7 +320,7 @@ module.exports = {
             newImage = 'boy_boater_safe'
         else if (sprite.key == 'girl_boater_unsafe')
             newImage = 'girl_boater_safe';
-        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
+        safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
         successText.visible = true;
@@ -429,7 +427,7 @@ module.exports = {
             }
             listener = this.onSafeClick;
         }
-        this.createChild(startx, starty, direction, group, spriteName, listener, this.generatePath(), 0);
+        this.createChild(group, spriteName, listener, this.generatePath(), 0);
 
     },
 
@@ -447,7 +445,7 @@ module.exports = {
      * @param {} listener function to be executed when sprite is clicked
      *   
      */
-    createChild: function(startx, starty, direction, group, spriteName, listener, path, pi) {
+    createChild: function(group, spriteName, listener, path, pi) {
         var child;
         //initialize properties
         child = group.create(0, 0, spriteName);
@@ -456,10 +454,10 @@ module.exports = {
         child.pi = pi;
         child.urgency = 1;
         child.anchor.set(0.5);
-        child.position.x = startx;
-        child.position.y = starty;
         child.path = path;
-        child.direction = direction;
+        child.position.x = child.path[child.pi].x;
+        child.position.y = child.path[child.pi].y;
+        
 
         /*
                 1024 x 768
