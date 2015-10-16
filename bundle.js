@@ -6976,7 +6976,7 @@ module.exports = {
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
-        park = this.add.sprite(1024, 768, 'park');
+        park = this.add.sprite(this.game.height, this.game.width, 'park');
         park.x = 0;
         park.y = 0;
         park.height = this.game.height;
@@ -7367,6 +7367,7 @@ module.exports = {
         child.anchor.set(0.5);
         child.position.x = startx;
         child.position.y = starty;
+
         child.direction = direction;
         child.game = game
 
@@ -7447,10 +7448,19 @@ module.exports = {
             child.scale.x = child.scale.x * -1;
             //name, frames, fps, boolean for loop (true means plays more than once)
             child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+            scale = (this.game.width / 15) / 90;
+            child.scale.x = scale;
+            child.scale.y = scale;
         } else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
+            scale = (this.game.width / 15) / 90;
             child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
+            child.scale.x = scale;
+            child.scale.y = scale;
         } else if (spriteName == 'safeATV' || spriteName == 'unsafeATV') {
+            scale = (this.game.width / 15) / 90;
             child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
+            child.scale.x = scale;
+            child.scale.y = scale;
         }
         //initializing velocity to 1, adjusted as game time elapses
         child.velocity = 1;
