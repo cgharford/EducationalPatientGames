@@ -11,7 +11,7 @@ module.exports = {
      * @return 
      */
     create: function() {
-        var titleBg = this.add.sprite(1024, 768, 'title page bg');
+        var titleBg = this.add.sprite(this.game.width, this.game.height, 'title page bg');
         titleBg.x = 0;
         titleBg.y = 0;
         titleBg.height = this.game.height;

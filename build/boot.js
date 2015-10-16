@@ -10,7 +10,7 @@ module.exports = {
              * 
              */
             init: function () {
-
+                //this.JQuery.cookie('high_scores', [150, 80, 10])
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 this.scale.setMinMax(480, 260, 1024, 768);
                 this.scale.pageAlignHorizontally = true;

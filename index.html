@@ -1,60 +1,31 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="description" content="Trauma prevention game">
     <meta name="keywords" content="UNC, Hospital, Trauma, Prevention, Game">
     <meta name="author" content="Jonathan Jefferson, Aaron Brown, Jared Beckham, Devin Beauchamp, Cassidy Helms">
-
     <title>Trauma Games</title>
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
-<!--<link type="text/css" rel="stylesheet" href="css/style.css">
-
-    --><script type = "text/javascript" src = "./js/libs/phaser.js"></script>
-    <script type = "text/javascript" src = "./bundle.js"></script>
-    <script>
-        //(function() {
-			
-			//alert(window.innerWidth + "  " + window.innerHeight);
-			
-
-        //});
-    </script>
-
+    <script type="text/javascript" src="./js/libs/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/libs/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./js/libs/jquery.cookie.js"></script>
+    <script type="text/javascript" src="./js/libs/phaser.js"></script>
+    <script type="text/javascript" src="./bundle.js"></script>
 </head>
+
 <body>
-
-<div id='orientation' style="display:none;">
-    <div class="alert alert-danger" role="alert">
-        <span class="sr-only">Error:</span>
-        Flip your device, please!
+    <div id='orientation' style="display:none;">
+        <div class="alert alert-danger" role="alert">
+            <span class="sr-only">Error:</span> Flip your device, please!
+        </div>
     </div>
-</div>
-
-<!-- <div id="textDiv">
-    <!-- where the scores will go
-</div>
-<script>
-    function httpGet(theUrl)
-    {
-        var xmlHttp = null;
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.open( "GET", theUrl, false );
-        xmlHttp.send( null );
-        return xmlHttp.responseText;
-    }
-    var div = document.getElementById("textDiv");
-    div.textContent = httpGet("localhost:3131");
-    }
-</script> -->
-
-<div id="game-container"></div>
-
-<script type = "text/javascript" src = "./js/libs/jquery.min.js"></script>
-<script type = "text/javascript" src = "./js/libs/bootstrap.min.js"></script>
-
+    <div id="game-container"></div>
 </body>
+<footer>
+    <h2> This Game Uses Cookies. By playing this game you consent to the usage of cookies for the sole purpose of storing your high scores. </h2>
+</footer>
+
 </html>

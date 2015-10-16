@@ -448,7 +448,7 @@ module.exports = {
           }
         };
         generateYPoint = function(sect){
-            return game.rnd.between(100, (game.height - 100));
+            return game.rnd.between(game.height / 10, ((game.height * 9) / 10));
         };
         this.yPoints = [];
         this.xPoints= [];
@@ -485,11 +485,10 @@ module.exports = {
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
         if (spriteName == 'safe' || spriteName == 'unsafe') {
-            child.scale.x = child.scale.x * -1;
             //name, frames, fps, boolean for loop (true means plays more than once)
             child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
             scale = (this.game.width / 15) / 90;
-            child.scale.x = scale;
+            child.scale.x = scale * -1;
             child.scale.y = scale;
         } else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
             scale = (this.game.width / 15) / 90;

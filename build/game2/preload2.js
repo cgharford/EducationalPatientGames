@@ -16,15 +16,12 @@ module.exports = {
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('lake', './assets/game2/images/background.png');
         this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
-        this.game.load.image('redsquare', './assets/game1/images/redsquare.png');
         this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
-        this.game.load.spritesheet('safe', './assets/game1/images/spritesheets/safe-biker-red.png', 80, 80);
-        this.game.load.spritesheet('unsafe', './assets/game1/images/spritesheets/unsafe-biker-red.png', 80, 80);
-        this.game.load.spritesheet('safeSkate', './assets/game1/images/spritesheets/safe-skater.png', 90, 90);
-        this.game.load.spritesheet('unsafeSkate', './assets/game1/images/spritesheets/unsafe-skater.png', 90, 90);
-        this.game.load.spritesheet('safeATV', './assets/game1/images/spritesheets/safe-atv-rider.png', 90, 90);
-        this.game.load.spritesheet('unsafeATV', './assets/game1/images/spritesheets/unsafe-atv-rider.png', 90, 90);
+        this.game.load.spritesheet('girl_boater_safe', './assets/game2/images/spritesheets/safe_boat_girl.png', 120, 112);
+        this.game.load.spritesheet('girl_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_girl.png', 120, 107);
+        this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
+        this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 124, 112);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.jpg');
 

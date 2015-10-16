@@ -16,7 +16,6 @@ module.exports = {
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('park', './assets/game1/images/park-bg.jpg');
         this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
-        this.game.load.image('redsquare', './assets/game1/images/redsquare.png');
         this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
 		this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
         this.game.load.spritesheet('safe', './assets/game1/images/spritesheets/safe-biker-red.png', 80, 80);
