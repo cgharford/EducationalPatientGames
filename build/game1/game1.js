@@ -16,26 +16,19 @@ module.exports = {
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
-        //park = this.add.sprite(1024, 768, 'park');
-        this.bmd = null;
-        this.game.stage.backgroundColor = '#000000';
-        this.bmd = this.game.add.bitmapData(this.game.width, this.game.height);
-        this.bmd.addToWorld();
-        //park.x = 0;
-        //park.y = 0;
-        //park.height = this.game.height;
-        //park.width = this.game.width;
+        park = this.add.sprite(1024, 768, 'park');
+        park.x = 0;
+        park.y = 0;
+        park.height = this.game.height;
+        park.width = this.game.width;
 
         //
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-        directionShifters = this.game.add.group();
-
 
         this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick, this.game, this.bmd);
         //We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
-        this.startSpawn(3, 0, (this.game.height / 4), "right")
         // Alternate Path
 		
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
@@ -153,27 +146,22 @@ module.exports = {
         //also increase movement speed at 2/3 and 1/3 time
         if (timeRemaining <= (maxTime / 3)) {
             for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].velocity = 3;
+                unsafeChildren.children[i].urgency = 3;
             }
             for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].velocity = 3;
+                safeChildren.children[i].urgency = 3;
             }
         } else if (timeRemaining <= (2 * (maxTime / 3))) {
             for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].velocity = 2;
+                unsafeChildren.children[i].urgency = 2;
 
             }
             for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].velocity = 2;
+                safeChildren.children[i].urgency = 2;
             }
 
 
         }
-
-
-        // On overlap of children and invisible objects (function) shift direction
-        this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
-        this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
@@ -202,7 +190,7 @@ module.exports = {
 
             }
 
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+            if (currentChild.position.x > this.game.width) {
                 if(!currentChild.safe){
                     this.multiplier = 1;
                 }
@@ -220,7 +208,7 @@ module.exports = {
 
             }
             // Ensure kill of screen sprites
-            if (currentChild.position.x > this.game.width || currentChild.position.x < 0 || currentChild.position.y > this.game.height || currentChild.position.y < 0) {
+            if (currentChild.position.x > this.game.width) {
                 if(!currentChild.safe){
                     this.multiplier = 1;
                 }
@@ -414,6 +402,8 @@ module.exports = {
         child = group.create(0, 0, spriteName);
         child.inputEnabled = true;
         child.events.onInputDown.add(listener, this);
+        child.pi = 0;
+        child.urgency = 1;
         child.anchor.set(0.5);
         child.position.x = startx;
         child.position.y = starty;
@@ -444,7 +434,7 @@ module.exports = {
         */
         generateXPoint = function(sect){
           switch(sect){
-            case 0: return game.rnd.between(-50, 0);
+            case 0: return game.rnd.between(-10, 0);
             case 1: return game.rnd.between(0, game.width / 7);
             case 2: return game.rnd.between(game.width/7, (game.width * 2) / 7);
             case 3: return game.rnd.between((game.width * 2) / 7, (game.width * 3) / 7);
@@ -457,7 +447,7 @@ module.exports = {
           }
         };
         generateYPoint = function(sect){
-            return game.rnd.between(0, (game.height));
+            return game.rnd.between(100, (game.height - 100));
         };
         this.yPoints = [];
         this.xPoints= [];
@@ -472,35 +462,34 @@ module.exports = {
 
         interpolatePaths = function(mode, pathPts, game, bmd){
             x = 1 / game.width;
+            var truePath = [];
             for(var i = 0; i <= 1; i+= x){
                 var px = game.math.catmullRomInterpolation(pathPts.x,i);
                 var py = game.math.catmullRomInterpolation(pathPts.y,i);
-
-                bmd.rect(px, py, 1, 1,'rgba(0, 255, 0, 0.5)');
+                truePath.push({'x' : px, 'y': py});
             }
+            return truePath;
         }
 
-        interpolatePaths(0,this.pathPts, game, bmd);
+
+
+        child.truePath = interpolatePaths(0,this.pathPts, game, bmd);
 
         child.safe = false;
         //if creating a safe child
         if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV') {
             child.safe = true;
         }
-        //if moving right, must flip the sprite image so it looks correct
-        if (child.direction == "right" || child.direction == "down-right" || child.direction == "up-right")
-            child.scale.x = child.scale.x * -1;
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
         if (spriteName == 'safe' || spriteName == 'unsafe') {
+            child.scale.x = child.scale.x * -1;
             //name, frames, fps, boolean for loop (true means plays more than once)
             child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
         } else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
-            child.scale.x = child.scale.x * -1;
             child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
         } else if (spriteName == 'safeATV' || spriteName == 'unsafeATV') {
-            child.scale.x = child.scale.x * -1;
             child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
         }
         //initializing velocity to 1, adjusted as game time elapses
@@ -539,32 +528,11 @@ module.exports = {
          *   
          */
         child.move = function() {
+                this.position.x = this.truePath[this.pi].x;
+                this.position.y = this.truePath[this.pi].y;
+                this.pi += 1 * this.urgency;
+            };
 
-            if (this.direction === "up") {
-                this.position.y -= this.velocity;
-            } else if (this.direction === "down") {
-                this.position.y += this.velocity;
-            } else if (this.direction === "left") {
-                this.position.x -= this.velocity;
-            } else if (this.direction === "right") {
-                this.position.x += this.velocity;
-            } else if (this.direction == "up-right") {
-                this.position.x += this.velocity;
-                this.position.y -= this.velocity;
-            } else if (this.direction == "up-left") {
-                this.position.x -= this.velocity;
-                this.position.y -= this.velocity;
-
-            } else if (this.direction == "down-left") {
-                this.position.x -= this.velocity;
-                this.position.y += this.velocity;
-            } else if (this.direction == "down-right") {
-                this.position.x += this.velocity;
-                this.position.y += this.velocity;
-
-            }
-
-        };
     },
 
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
