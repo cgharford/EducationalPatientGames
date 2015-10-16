@@ -32,12 +32,6 @@ module.exports = {
         //We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
         this.startSpawn(3, 0, (this.game.height / 4), "down-right")
-        this.createShifter(11 * (this.game.width / 12), this.game.height / 8, "down", false, false);
-        this.createShifter(11 * (this.game.width / 12), 23 * this.game.height / 24, "left", false, false);
-        this.createShifter(this.game.width / 7, 5 * this.game.height / 10, "right", false, false);
-        this.createShifter(5 * this.game.width / 9, 4 * this.game.height / 8, "up-right", false, false);
-        this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
-        this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
 
         // Alternate Path
 		
@@ -166,10 +160,6 @@ module.exports = {
 
         }
 
-
-        // On overlap of children and invisible objects (function) shift direction
-        this.game.physics.arcade.overlap(unsafeChildren, directionShifters, this.shiftDirection);
-        this.game.physics.arcade.overlap(safeChildren, directionShifters, this.shiftDirection);
 
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
@@ -497,67 +487,6 @@ module.exports = {
             }
 
         };
-    },
-    //creates a shifter sprite, which will change the direction of any player sprite it collides with
-    /**
-     * creates a shifter sprite at (x, y), which will change the direction of any player sprite it collides with. Warning flag if turns sprite red
-	 *Precondition: x,y are valid positive integers, and newDirection is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right". 
-     * @method createShifter
-     * @param {} x x coordinate
-     * @param {} y y coordinate
-     * @param {} newDirection Direction the shifter will force sprites to move. May be "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
-     * @param {} warning boolean value whether a sprite will turn red when passing through the shifter
-     * @param {} randomShift boolean value whether shifter will randomly choose direction
-     *   
-     */
-    createShifter: function(x, y, newDirection, warning, randomShift) {
-        console.log('Create Shifter Fired!')
-        //redsquare used as a placeholder for an invisible sprite image
-        shifter = directionShifters.create(0, 0, "redsquare");
-        shifter.visible = false;
-        shifter.warningFlag = warning;
-        shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
-        shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);	
-        shifter.anchor.set(.5);
-        shifter.position.x = x;
-        shifter.position.y = y;
-        shifter.direction = newDirection;
-        shifter.scale.x = (window.innerWidth * window.devicePixelRatio * .0004);
-        shifter.scale.y = (window.innerHeight * window.devicePixelRatio * .0004);
-        shifter.randomShift = randomShift;
-
-        this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
-
-    },
-
-    //shifts the direction of a sprite based on the direction of the shifter 
-    /**
-     * shifts the direction of a sprite based on the direction of the shifter 
-	 *Precondition: sprite and shifter both have valid directions
-     * @method shiftDirection
-     * @param {} sprite
-     * @param {} shifter
-     *   
-     */
-    shiftDirection: function(sprite, shifter) {
-        if (shifter.warningFlag == true && sprite.safe == false) {
-            sprite.startRed();
-        }
-        if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")) {
-            sprite.scale.x = sprite.scale.x * -1;
-        } else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")) {
-            sprite.scale.x = sprite.scale.x * -1;
-        } else sprite.scale.x = sprite.scale.x;
-
-        sprite.direction = shifter.direction;
-
-        var randNum = Math.round(Math.random() * (100));
-
-        if (!(shifter.randomShift == true) && randNum < 50) {
-            sprite.direction = shifter.direction;
-        } else {
-            sprite.direction = sprite.direction;
-        }
     },
 
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children

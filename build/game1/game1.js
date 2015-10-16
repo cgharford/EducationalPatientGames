@@ -16,11 +16,15 @@ module.exports = {
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
-        park = this.add.sprite(1024, 768, 'park');
-        park.x = 0;
-        park.y = 0;
-        park.height = this.game.height;
-        park.width = this.game.width;
+        //park = this.add.sprite(1024, 768, 'park');
+        this.bmd = null;
+        this.game.stage.backgroundColor = '#000000';
+        this.bmd = this.game.add.bitmapData(this.game.width, this.game.height);
+        this.bmd.addToWorld();
+        //park.x = 0;
+        //park.y = 0;
+        //park.height = this.game.height;
+        //park.width = this.game.width;
 
         //
         unsafeChildren = this.game.add.group();
@@ -28,17 +32,10 @@ module.exports = {
         directionShifters = this.game.add.group();
 
 
-        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick);
+        this.createChild(this.game.width, (this.game.height / 8), "left", unsafeChildren, 'unsafe', this.onUnsafeClick, this.game, this.bmd);
         //We can create spawn points wherever we want so the sprites start on paths etc.
         this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
-        this.startSpawn(3, 0, (this.game.height / 4), "down-right")
-        this.createShifter(11 * (this.game.width / 12), this.game.height / 8, "down", false, false);
-        this.createShifter(11 * (this.game.width / 12), 23 * this.game.height / 24, "left", false, false);
-        this.createShifter(this.game.width / 7, 5 * this.game.height / 10, "right", false, false);
-        this.createShifter(5 * this.game.width / 9, 4 * this.game.height / 8, "up-right", false, false);
-        this.createShifter(6.8 * this.game.width / 10, this.game.height / 4, "up-left", true, false);
-        this.createShifter(2 * (this.game.width / 12), 23 * this.game.height / 24, "left", true, false);
-
+        this.startSpawn(3, 0, (this.game.height / 4), "right")
         // Alternate Path
 		
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
@@ -282,7 +279,7 @@ module.exports = {
             newImage = 'safeSkate';
         else if (sprite.key == 'unsafeATV')
             newImage = 'safeATV';
-        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick);
+        safeChild = this.createChild(sprite.position.x, sprite.position.y, sprite.direction, safeChildren, newImage, this.onSafeClick, this.game, this.bmd);
         errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
         successText.visible = true;
@@ -393,8 +390,7 @@ module.exports = {
             }
             listener = this.onSafeClick;
         }
-
-        this.createChild(startx, starty, direction, group, spriteName, listener);
+        this.createChild(startx, starty, direction, group, spriteName, listener, this.game, this.bmd);
 
     },
 
@@ -408,11 +404,11 @@ module.exports = {
      * @param {} starty y coordinate
      * @param {} direction direction the child will move in
      * @param {} group group the child will belong to
-     * @param {} spriteName name of the sprite the child will use
+     * @param {} spriteName name of the sprite the child will1  use
      * @param {} listener function to be executed when sprite is clicked
      *   
      */
-    createChild: function(startx, starty, direction, group, spriteName, listener) {
+    createChild: function(startx, starty, direction, group, spriteName, listener, game, bmd) {
         var child;
         //initialize properties
         child = group.create(0, 0, spriteName);
@@ -422,6 +418,70 @@ module.exports = {
         child.position.x = startx;
         child.position.y = starty;
         child.direction = direction;
+        child.game = game
+
+        /*
+                1024 x 768
+                random point within 6 sections of x / y
+                X ranges:
+                    0.      0 -> 169 
+                    1.      170 -> 340
+                    2.      341 -> 511
+                    3.      512 -> 682
+                    4.      683 -> 853
+                    5.      854 -> 1024
+                Y ranges:
+                    0.      0   -> 128
+                    1.      128 -> 256
+                    2.      256 -> 384
+                    3.      384 -> 512
+                    4.      512 -> 640
+                    5.      640 -> 768
+                
+
+                water starts at 270 goes to 768
+                
+        */
+        generateXPoint = function(sect){
+          switch(sect){
+            case 0: return game.rnd.between(-50, 0);
+            case 1: return game.rnd.between(0, game.width / 7);
+            case 2: return game.rnd.between(game.width/7, (game.width * 2) / 7);
+            case 3: return game.rnd.between((game.width * 2) / 7, (game.width * 3) / 7);
+            case 4: return game.rnd.between((game.width * 3) / 7, (game.width * 4) / 7);
+            case 5: return game.rnd.between((game.width * 4) / 7, (game.width * 5) / 7);
+            case 6: return game.rnd.between((game.width * 5) / 7, (game.width * 6) / 7);
+            case 7: return game.rnd.between((game.width * 6) / 7, (game.width * 7) / 7);
+            case 8: return game.rnd.between((game.width * 7) / 7, (game.width * 8) / 7);
+            default: console.log('error in gen x point');
+          }
+        };
+        generateYPoint = function(sect){
+            return game.rnd.between(0, (game.height));
+        };
+        this.yPoints = [];
+        this.xPoints= [];
+        for(var i=0; i<=8; i++){
+            this.yPoints.push(generateYPoint(i));
+            this.xPoints.push(generateXPoint(i));
+        }
+        this.pathPts = {
+            'y' : this.yPoints,
+            'x' : this.xPoints
+        };
+
+        interpolatePaths = function(mode, pathPts, game, bmd){
+            x = 1 / game.width;
+            for(var i = 0; i <= 1; i+= x){
+                var px = game.math.catmullRomInterpolation(pathPts.x,i);
+                var py = game.math.catmullRomInterpolation(pathPts.y,i);
+
+                bmd.rect(px, py, 1, 1,'rgba(0, 255, 0, 0.5)');
+            }
+        }
+
+        interpolatePaths(0,this.pathPts, game, bmd);
+
         child.safe = false;
         //if creating a safe child
         if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV') {
@@ -505,67 +565,6 @@ module.exports = {
             }
 
         };
-    },
-    //creates a shifter sprite, which will change the direction of any player sprite it collides with
-    /**
-     * creates a shifter sprite at (x, y), which will change the direction of any player sprite it collides with. Warning flag if turns sprite red
-	 *Precondition: x,y are valid positive integers, and newDirection is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right". 
-     * @method createShifter
-     * @param {} x x coordinate
-     * @param {} y y coordinate
-     * @param {} newDirection Direction the shifter will force sprites to move. May be "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
-     * @param {} warning boolean value whether a sprite will turn red when passing through the shifter
-     * @param {} randomShift boolean value whether shifter will randomly choose direction
-     *   
-     */
-    createShifter: function(x, y, newDirection, warning, randomShift) {
-        console.log('Create Shifter Fired!')
-        //redsquare used as a placeholder for an invisible sprite image
-        shifter = directionShifters.create(0, 0, "redsquare");
-        shifter.visible = false;
-        shifter.warningFlag = warning;
-        shifter.width = window.innerWidth * window.devicePixelRatio * .0004;
-        shifter.height = (window.innerWidth * window.devicePixelRatio * .0004);	
-        shifter.anchor.set(.5);
-        shifter.position.x = x;
-        shifter.position.y = y;
-        shifter.direction = newDirection;
-        shifter.scale.x = (window.innerWidth * window.devicePixelRatio * .0004);
-        shifter.scale.y = (window.innerHeight * window.devicePixelRatio * .0004);
-        shifter.randomShift = randomShift;
-
-        this.game.physics.enable(shifter, Phaser.Physics.ARCADE, true);
-
-    },
-
-    //shifts the direction of a sprite based on the direction of the shifter 
-    /**
-     * shifts the direction of a sprite based on the direction of the shifter 
-	 *Precondition: sprite and shifter both have valid directions
-     * @method shiftDirection
-     * @param {} sprite
-     * @param {} shifter
-     *   
-     */
-    shiftDirection: function(sprite, shifter) {
-        if (shifter.warningFlag == true && sprite.safe == false) {
-            sprite.startRed();
-        }
-        if ((sprite.direction == "left" || sprite.direction == "up-left" || sprite.direction == "down-left") && (shifter.direction == "right" || shifter.direction == "up-right" || shifter.direction == "down-right")) {
-            sprite.scale.x = sprite.scale.x * -1;
-        } else if ((sprite.direction == "right" || sprite.direction == "up-right" || sprite.direction == "down-right") && (shifter.direction == "left" || shifter.direction == "up-left" || shifter.direction == "down-left")) {
-            sprite.scale.x = sprite.scale.x * -1;
-        } else sprite.scale.x = sprite.scale.x;
-
-        sprite.direction = shifter.direction;
-
-        var randNum = Math.round(Math.random() * (100));
-
-        if (!(shifter.randomShift == true) && randNum < 50) {
-            sprite.direction = shifter.direction;
-        } else {
-            sprite.direction = sprite.direction;
-        }
     },
 
     //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
