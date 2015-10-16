@@ -12,8 +12,8 @@ module.exports = {
      * @return 
      */
     create: function() {
-        //highScores = Cookies.getJSON('high_scores')
-        highScores = [150, 80, 10];
+        highScores = Cookies.getJSON('high_scores_game2');
+        //highScores = [150, 80, 10];
         var victoryBg = this.add.sprite(this.game.width, this.game.height, 'victory page bg');
         victoryBg.x = 0;
         victoryBg.y = 0;
@@ -36,19 +36,18 @@ module.exports = {
         yourScore.visible = true;
 
 
-        scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[0] + " points", textStyle);
+        scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[2] + " points", textStyle);
         scores1.visible = true;
         scores2 = this.game.add.text(12 * this.game.width / 20, 9.5 * this.game.height / 20, highScores[1] + " points", textStyle);
         scores2.visible = true;
-        scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[2] + " points", textStyle);
+        scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[0] + " points", textStyle);
         scores3.visible = true;
 
         replayButton.events.onInputDown.add(this.restart, this);
-
-        //highScores.push(score);
-        //highScore.sort();
-        //highScore.pop();
-        //Cookies.set('high_scores', highScores);
+        highScores.push(score);
+        highScores.sort();
+        highScores.splice(0, 1);
+        Cookies.set('high_scores_game2', highScores);
     },
     restart: function() {
         this.game.state.start('Wrapper');

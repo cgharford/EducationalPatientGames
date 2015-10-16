@@ -44,7 +44,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 60;
+        timeRemaining = 10;
         maxTime = timeRemaining
         textStyle = {
             font: '35px Arial',
@@ -543,9 +543,14 @@ module.exports = {
          *   
          */
         child.move = function() {
-            this.position.x = this.path[this.pi].x;
-            this.position.y = this.path[this.pi].y;
-            this.pi += 1 * this.urgency;
+            if (this.path[this.pi] == null) {
+                this.kill();
+                return;
+            } else {
+                this.position.x = this.path[this.pi].x;
+                this.position.y = this.path[this.pi].y;
+                this.pi += 1 * this.urgency;
+            }
         };
 
     },

@@ -11,7 +11,8 @@ module.exports = {
              * 
              */
             init: function () {
-                //this.JQuery.cookie('high_scores', [150, 80, 10])
+                Cookies.set('high_scores_game2', [0, 0, 0]);
+                Cookies.set('high_scores_game1', [0,0,0]);
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 this.scale.setMinMax(480, 260, 1024, 768);
                 this.scale.pageAlignHorizontally = true;
@@ -742,8 +743,8 @@ module.exports = {
      * @return 
      */
     create: function() {
-        //highScores = Cookies.getJSON('high_scores')
-        highScores = [150, 80, 10];
+        highScores = Cookies.getJSON('high_scores_game1')
+        //highScores = [150, 80, 10];
         var victoryBg = this.add.sprite(this.game.width, this.game.height, 'victory page bg');
         victoryBg.x = 0;
         victoryBg.y = 0;
@@ -775,8 +776,8 @@ module.exports = {
 
         highScores.push(score);
         highScores.sort();
-        highScores.pop();
-        //Cookies.set('high_scores', highScores);
+        highScores.pop(0);
+        Cookies.set('high_scores_game1', highScores);
 
         replayButton.events.onInputDown.add(this.restart, this);
     },
@@ -832,7 +833,7 @@ module.exports = {
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
-        timeRemaining = 60;
+        timeRemaining = 10;
         maxTime = timeRemaining
         textStyle = {
             font: '35px Arial',
@@ -1331,9 +1332,14 @@ module.exports = {
          *   
          */
         child.move = function() {
-            this.position.x = this.path[this.pi].x;
-            this.position.y = this.path[this.pi].y;
-            this.pi += 1 * this.urgency;
+            if (this.path[this.pi] == null) {
+                this.kill();
+                return;
+            } else {
+                this.position.x = this.path[this.pi].x;
+                this.position.y = this.path[this.pi].y;
+                this.pi += 1 * this.urgency;
+            }
         };
 
     },
@@ -1444,8 +1450,8 @@ module.exports = {
      * @return 
      */
     create: function() {
-        //highScores = Cookies.getJSON('high_scores')
-        highScores = [150, 80, 10];
+        highScores = Cookies.getJSON('high_scores_game2');
+        //highScores = [150, 80, 10];
         var victoryBg = this.add.sprite(this.game.width, this.game.height, 'victory page bg');
         victoryBg.x = 0;
         victoryBg.y = 0;
@@ -1468,19 +1474,20 @@ module.exports = {
         yourScore.visible = true;
 
 
-        scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[0] + " points", textStyle);
+        scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[2] + " points", textStyle);
         scores1.visible = true;
         scores2 = this.game.add.text(12 * this.game.width / 20, 9.5 * this.game.height / 20, highScores[1] + " points", textStyle);
         scores2.visible = true;
-        scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[2] + " points", textStyle);
+        scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[0] + " points", textStyle);
         scores3.visible = true;
 
         replayButton.events.onInputDown.add(this.restart, this);
-
-        //highScores.push(score);
-        //highScore.sort();
-        //highScore.pop();
-        //Cookies.set('high_scores', highScores);
+        highScores.push(score);
+        highScores.sort();
+        console.log(highScores);
+        highScores.splice(0, 1);
+        console.log(highScores);
+        Cookies.set('high_scores_game2', highScores);
     },
     restart: function() {
         this.game.state.start('Wrapper');
