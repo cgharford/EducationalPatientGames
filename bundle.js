@@ -1392,10 +1392,10 @@ module.exports = {
         this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
         this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
-        this.game.load.spritesheet('girl_boater_safe', './assets/game2/images/spritesheets/safe_boat_girl.png', 120, 112);
-        this.game.load.spritesheet('girl_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_girl.png', 120, 107);
+        this.game.load.spritesheet('girl_boater_safe', './assets/game2/images/spritesheets/safe_boat_girl.png', 108, 115);
+        this.game.load.spritesheet('girl_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_girl.png', 108, 115);
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
-        this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 124, 112);
+        this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.jpg');
 
