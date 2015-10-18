@@ -260,8 +260,8 @@ module.exports = {
             x = 1 / game.width;
             var truePath = [];
             for (var i = 0; i <= 1; i += x) {
-                var px = game.math.catmullRomInterpolation(pathPts.x, i);
-                var py = game.math.catmullRomInterpolation(pathPts.y, i);
+                var px = game.math.bezierInerpolation(pathPts.x, i);
+                var py = game.math.bezierInerpolation(pathPts.y, i);
                 truePath.push({
                     'x': px,
                     'y': py
