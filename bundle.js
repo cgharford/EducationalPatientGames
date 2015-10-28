@@ -352,8 +352,8 @@ module.exports = {
             x = 1 / game.width;
             var truePath = [];
             for (var i = 0; i <= 1; i += x) {
-                var px = game.math.bezierInerpolation(pathPts.x, i);
-                var py = game.math.bezierInerpolation(pathPts.y, i);
+                var px = game.math.bezierInterpolation(pathPts.x, i);
+                var py = game.math.bezierInterpolation(pathPts.y, i);
                 truePath.push({
                     'x': px,
                     'y': py
@@ -957,11 +957,11 @@ module.exports = {
             }
         } else if (timeRemaining <= (2 * (maxTime / 3))) {
             for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 2;
+                unsafeChildren.children[i].urgency = 4;
 
             }
             for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 2;
+                safeChildren.children[i].urgency = 4;
             }
 
 

@@ -151,11 +151,11 @@ module.exports = {
             }
         } else if (timeRemaining <= (2 * (maxTime / 3))) {
             for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 2;
+                unsafeChildren.children[i].urgency = 4;
 
             }
             for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 2;
+                safeChildren.children[i].urgency = 4;
             }
 
 
