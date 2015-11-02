@@ -854,43 +854,26 @@ module.exports = {
         maxTime = timeRemaining
         textStyle = {
             font: '35px Arial',
-            fill: '#666699',
+            fill: '#FFFFFF',
             align: 'right',
             wordWrap: false
         };
 
-        // Add error message for clicking incorrectly
-        errorText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'Dude, what?', textStyle);
-        errorText.visible = false;
-        errorText.anchor.set(0.5);
-
-        // Add success message for clicking correctly
-        successText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'You saved me!', textStyle);
-        successText.visible = false;
-        successText.anchor.set(0.5);
-
-
-
         //  Place score and timer in upper left hand corner
-        scoreText = this.game.add.text(60, this.game.width / 50, 'Score: ' + score, {
-            fill: '#666699'
+        scoreText = this.game.add.text(500, this.game.width / 50, 'Score: ' + score, {
+            fill: '#FFFFFF'
         });
-        clockText = this.game.add.text(200 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
-            fill: '#666699'
+        clockText = this.game.add.text(700 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
+            fill: '#FFFFFF'
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
         // Allow game to be paused
-        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
-            fill: '#666699'
+        pause = this.game.add.text(880 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
+            fill: '#FFFFFF'
         });
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
-
-        multiplierText = this.game.add.text(300 + scoreText.width + pause.width + clockText.width,
-            this.game.width / 50, 'x' + this.multiplier, {
-                fill: '#666699'
-            });
 
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
@@ -971,13 +954,6 @@ module.exports = {
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
         victoryText.text = 'Congratulations your score is ' + score + '!';
-        multiplierText.text = 'x' + this.multiplier;
-
-        // If error/success text were visible for 500ms, hide them
-        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
-            errorText.visible = false;
-        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
-            successText.visible = false;
 
         // If timer runs out, show victory
         if (timeRemaining <= 0) {
@@ -1097,10 +1073,6 @@ module.exports = {
 
         // Show error msg for 500ms and set to visible
         this.multiplier = 1;
-        errorTextTimer = this.game.time.now + 500;
-        errorText.visible = true;
-        successText.visible = false;
-
     },
 
     // Clicking a sprite being unsafe
@@ -1127,7 +1099,6 @@ module.exports = {
         else if (sprite.key == 'girl_boater_unsafe')
             newImage = 'girl_boater_safe';
         safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
-        errorText.visible = false;
         successTextTimer = this.game.time.now + 500;
         successText.visible = true;
         sprite.kill();
@@ -1143,8 +1114,6 @@ module.exports = {
         safeChildren.forEach(function(child) {
             child.kill();
         });
-        errorText.visible = false;
-        successText.visible = false;
         victoryText.visible = true;
         //change to victory state
         this.game.state.start("Victory2", true, false, score);
