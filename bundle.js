@@ -817,6 +817,7 @@ module.exports = {
      *   
      */
     create: function() {
+        this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         firstRateIncrease = false;
@@ -849,7 +850,7 @@ module.exports = {
         good_sound = this.add.audio('good_sound');
 
         // Score starts at 0, timer starts at 60 seconds
-        score = 0;
+        this.score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
         textStyle = {
@@ -860,13 +861,24 @@ module.exports = {
         };
 
         //  Place score and timer in upper left hand corner
-        scoreText = this.game.add.text(500, this.game.width / 50, 'Score: ' + score, {
+        scoreText = this.game.add.text(500, this.game.width / 50, 'Score: ' + this.score, {
             fill: '#FFFFFF'
         });
         clockText = this.game.add.text(700 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
             fill: '#FFFFFF'
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
+        this.game.time.events.loop(Phaser.Timer.SECOND * 5, function() {
+            var speed = this.urgency + 1;
+            for (var i = 0; i < unsafeChildren.children.length; i++) {
+                unsafeChildren.children[i].urgency = speed;
+            }
+            for (var i = 0; i < safeChildren.children.length; i++) {
+                safeChildren.children[i].urgency =speed;
+            }
+            this.urgency += 1;
+        }, this);
 
         // Allow game to be paused
         pause = this.game.add.text(880 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
@@ -882,7 +894,7 @@ module.exports = {
         this.game.input.onDown.add(this.unpauseGame, this);
 
         // On time out, show score
-        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
+        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + this.score + '!', textStyle);
         victoryText.visible = false;
         victoryText.anchor.set(0.5);
         this.pauseGame();
@@ -930,30 +942,11 @@ module.exports = {
             secondRateIncrease = true;
 
         }
-        //also increase movement speed at 2/3 and 1/3 time
-        if (timeRemaining <= (maxTime / 3)) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 7;
-            }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 7;
-            }
-        } else if (timeRemaining <= (2 * (maxTime / 3))) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 4;
-
-            }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 4;
-            }
-
-
-        }
 
         // Update score, timer, and victory texts with new values
-        scoreText.text = 'Score: ' + score;
+        scoreText.text = 'Score: ' + this.score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
-        victoryText.text = 'Congratulations your score is ' + score + '!';
+        victoryText.text = 'Congratulations your score is ' + this.score + '!';
 
         // If timer runs out, show victory
         if (timeRemaining <= 0) {
@@ -971,9 +964,8 @@ module.exports = {
             }
 
             if (currentChild.position.x > this.game.width) {
-                if (!currentChild.safe) {
-                    this.multiplier = 1;
-                }
+                this.multiplier = 1;
+                unsafeChildren.remove(currentChild);
                 currentChild.kill();
             }
 
@@ -989,10 +981,10 @@ module.exports = {
             }
             // Ensure kill of screen sprites
             if (currentChild.position.x > this.game.width) {
-                if (!currentChild.safe) {
-                    this.multiplier = 1;
-                }
+                this.multiplier += 1;
+                this.score += 10 * this.multiplier;
                 currentChild.kill(); //weird stuff still happening with killing offscreen?
+                safeChildren.remove(currentChild);
             }
 
         }
@@ -1087,7 +1079,7 @@ module.exports = {
      */
     onUnsafeClick: function(sprite) {
 
-        score += 10 * this.multiplier;
+        this.score += 10 * this.multiplier;
         if (this.multiplier !== 20) {
             this.multiplier++;
         }
@@ -1099,8 +1091,6 @@ module.exports = {
         else if (sprite.key == 'girl_boater_unsafe')
             newImage = 'girl_boater_safe';
         safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
-        successTextTimer = this.game.time.now + 500;
-        successText.visible = true;
         sprite.kill();
     },
 
@@ -1116,7 +1106,7 @@ module.exports = {
         });
         victoryText.visible = true;
         //change to victory state
-        this.game.state.start("Victory2", true, false, score);
+        this.game.state.start("Victory2", true, false, this.score);
     },
     /**
      * Function for placing random children -- NO LONGER USED BUT MAINTAINED FOR FUTURE
@@ -1227,12 +1217,12 @@ module.exports = {
         child.inputEnabled = true;
         child.events.onInputDown.add(listener, this);
         child.pi = pi;
-        child.urgency = 1;
+        child.urgency = this.urgency;
         child.anchor.set(0.5);
         child.path = path;
         child.position.x = child.path[child.pi].x;
         child.position.y = child.path[child.pi].y;
-        
+
 
         /*
                 1024 x 768
