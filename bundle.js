@@ -1356,7 +1356,7 @@ module.exports = {
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
         this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/game1/images/UIP-victory2.png');
+        this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg');
 
     },
 	
