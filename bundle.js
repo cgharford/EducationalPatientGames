@@ -835,7 +835,7 @@ module.exports = {
         //startx, starty, direction, group, spriteName, listener, path, pi)
         this.createChild(unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //We can create spawn points wherever we want so the sprites start on paths etc.
-        this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
+        this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
         // Alternate Path
 
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
@@ -931,14 +931,14 @@ module.exports = {
         //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
         if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
             bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
+            this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
 
             firstRateIncrease = true;
         }
 
         if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
             bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
+            this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
             secondRateIncrease = true;
 
         }
@@ -1356,7 +1356,7 @@ module.exports = {
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
         this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg');
+        this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg     ');
 
     },
 	
