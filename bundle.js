@@ -1348,7 +1348,7 @@ module.exports = {
         this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('lake', './assets/game2/images/background.png');
-        this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
+        this.game.load.image('instructions', './assets/game2/images/happys_class2.png');
         this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
         this.game.load.spritesheet('girl_boater_safe', './assets/game2/images/spritesheets/safe_boat_girl.png', 108, 115);
@@ -1356,7 +1356,7 @@ module.exports = {
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
         this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.jpg');
+        this.game.load.image('victory page bg', './assets/game1/images/UIP-victory2.png');
 
     },
 	
@@ -1484,7 +1484,7 @@ module.exports = {
         this.game.load.image("wrapper-bg", "assets/general/images/wrapper.jpg");
         this.game.load.image("new-game-thumb", "assets/general/images/new-game-thumbnail.jpg");
         this.game.load.image("UIP-thumb", "assets/general/images/UIP-thumbnail.jpg");
-        this.game.load.image("game2-thumbnail", "assets/general/images/game2-thumbnail.jpg");
+        this.game.load.image("game2-thumbnail", "assets/game2/images/UIP-thumbnail.jpg");
     },
     /**
      * Phaser create function. Adds images needed for wrapper
