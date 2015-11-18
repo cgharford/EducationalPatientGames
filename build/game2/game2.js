@@ -42,6 +42,8 @@ module.exports = {
 
         //Add funky negative sound and positive sound
         good_sound = this.add.audio('good_sound');
+        bad_sound = this.add.audio('bad_sound');
+        game_over = this.add.audio('game_over')
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
@@ -158,6 +160,7 @@ module.exports = {
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
                 this.lives -= 1;
+                bad_sound.play();
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
             }
@@ -298,6 +301,7 @@ module.exports = {
             child.kill();
         });
         victoryText.visible = true;
+        game_over.play();
         //change to victory state
         this.game.state.start("Victory2", true, false, score);
     },

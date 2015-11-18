@@ -848,6 +848,8 @@ module.exports = {
 
         //Add funky negative sound and positive sound
         good_sound = this.add.audio('good_sound');
+        bad_sound = this.add.audio('bad_sound');
+        game_over = this.add.audio('game_over')
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
@@ -964,6 +966,7 @@ module.exports = {
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
                 this.lives -= 1;
+                bad_sound.play();
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
             }
@@ -1104,6 +1107,7 @@ module.exports = {
             child.kill();
         });
         victoryText.visible = true;
+        game_over.play();
         //change to victory state
         this.game.state.start("Victory2", true, false, score);
     },
@@ -1348,8 +1352,9 @@ module.exports = {
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('lake', './assets/game2/images/background.png');
         this.game.load.image('instructions', './assets/game2/images/happys_class2.png');
-        this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
+        this.game.load.audio('bad_sound', './assets/game2/audio/lost_life.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
+        this.game.load.audio('game_over', './assets/game2/audio/game_over.wav', true);
         this.game.load.spritesheet('girl_boater_safe', './assets/game2/images/spritesheets/safe_boat_girl.png', 108, 115);
         this.game.load.spritesheet('girl_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_girl.png', 108, 115);
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
