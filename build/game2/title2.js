@@ -16,6 +16,9 @@ module.exports = {
         titleBg.y = 0;
         titleBg.height = this.game.height;
         titleBg.width = this.game.width;
+        background_music = this.add.audio('background_music');
+        background_music.play();
+
 
         var playButton = this.game.add.sprite(319, 160, 'play button');
         playButton.x = this.game.width - 319;
