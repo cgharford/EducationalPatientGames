@@ -16,6 +16,7 @@ module.exports = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         firstRateIncrease = false;
         secondRateIncrease = false;
+        this.lives = 3;
         //Add background
         park = this.add.sprite(this.game.height, this.game.width, 'lake');
         park.x = 0;
@@ -140,7 +141,7 @@ module.exports = {
         victoryText.text = 'Congratulations your score is ' + score + '!';
 
         // If timer runs out, show victory
-        if (timeRemaining <= 0) {
+        if (timeRemaining <= 0 || this.lives == 0) {
             this.victory();
         }
 
@@ -156,6 +157,7 @@ module.exports = {
 
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
+                this.lives -= 1;
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
             }

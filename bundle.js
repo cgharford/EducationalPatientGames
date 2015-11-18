@@ -822,6 +822,7 @@ module.exports = {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         firstRateIncrease = false;
         secondRateIncrease = false;
+        this.lives = 3;
         //Add background
         park = this.add.sprite(this.game.height, this.game.width, 'lake');
         park.x = 0;
@@ -846,7 +847,6 @@ module.exports = {
          */
 
         //Add funky negative sound and positive sound
-        bad_sound = this.add.audio('bad_sound');
         good_sound = this.add.audio('good_sound');
 
         // Score starts at 0, timer starts at 60 seconds
@@ -930,14 +930,12 @@ module.exports = {
     update: function() {
         //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
         if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
-            bad_sound.play();
             this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
 
             firstRateIncrease = true;
         }
 
         if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
-            bad_sound.play();
             this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
             secondRateIncrease = true;
 
@@ -949,7 +947,7 @@ module.exports = {
         victoryText.text = 'Congratulations your score is ' + score + '!';
 
         // If timer runs out, show victory
-        if (timeRemaining <= 0) {
+        if (timeRemaining <= 0 || this.lives == 0) {
             this.victory();
         }
 
@@ -965,6 +963,7 @@ module.exports = {
 
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
+                this.lives -= 1;
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
             }
