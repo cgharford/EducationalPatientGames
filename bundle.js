@@ -849,7 +849,7 @@ module.exports = {
         //Add funky negative sound and positive sound
         good_sound = this.add.audio('good_sound');
         bad_sound = this.add.audio('bad_sound');
-        game_over = this.add.audio('game_over')
+        game_over = this.add.audio('game_over');
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
@@ -1361,6 +1361,7 @@ module.exports = {
         this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg     ');
+        this.game.load.audio('background_music', './assets/game2/audio/dumb_ways_to_die.mp3');
 
     },
 	
@@ -1392,6 +1393,9 @@ module.exports = {
         titleBg.y = 0;
         titleBg.height = this.game.height;
         titleBg.width = this.game.width;
+        background_music = this.add.audio('background_music');
+        background_music.play();
+
 
         var playButton = this.game.add.sprite(319, 160, 'play button');
         playButton.x = this.game.width - 319;

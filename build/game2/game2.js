@@ -43,7 +43,7 @@ module.exports = {
         //Add funky negative sound and positive sound
         good_sound = this.add.audio('good_sound');
         bad_sound = this.add.audio('bad_sound');
-        game_over = this.add.audio('game_over')
+        game_over = this.add.audio('game_over');
 
         // Score starts at 0, timer starts at 60 seconds
         score = 0;
