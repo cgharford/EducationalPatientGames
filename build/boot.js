@@ -10,13 +10,14 @@ module.exports = {
              * 
              */
             init: function () {
+                //Set high score cookies
                 Cookies.set('high_scores_game2', [0, 0, 0]);
                 Cookies.set('high_scores_game1', [0,0,0]);
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 this.scale.setMinMax(480, 260, 1024, 768);
                 this.scale.pageAlignHorizontally = true;
                 this.scale.pageAlignVertically = true;
-
+                //oritentation forcing.
                 if (!(this.game.device.desktop)){
                     this.scale.forceOrientation(true, false);
                     this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);

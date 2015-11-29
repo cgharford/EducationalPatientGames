@@ -11,13 +11,14 @@ module.exports = {
              * 
              */
             init: function () {
+                //Set high score cookies
                 Cookies.set('high_scores_game2', [0, 0, 0]);
                 Cookies.set('high_scores_game1', [0,0,0]);
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 this.scale.setMinMax(480, 260, 1024, 768);
                 this.scale.pageAlignHorizontally = true;
                 this.scale.pageAlignVertically = true;
-
+                //oritentation forcing.
                 if (!(this.game.device.desktop)){
                     this.scale.forceOrientation(true, false);
                     this.scale.enterIncorrectOrientation.add(this.enterIncorrectOrientation, this);
@@ -67,6 +68,7 @@ Game module which consists of all game states and client side functionality
 */
 var w = window.innerWidth * window.devicePixelRatio, h = window.innerHeight * window.devicePixelRatio;
 
+//create a phaser game that will be everything we use
 var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h,Phaser.CANVAS, "game-container");
 
 game.globals = {
@@ -75,9 +77,7 @@ game.globals = {
 };
 
 
-
-//todo: later we can add an intermediate state which will serve as the wrapper and allow users to select
-//which game they want to play, then start the preload state of that particular game
+//load all states that exist in the game.
 game.state.add('Preload1',require('./game1/preload1.js'));
 game.state.add("Title1",require('./game1/title1.js'));
 game.state.add("Game1",require('./game1/game1.js'));
@@ -88,6 +88,7 @@ game.state.add("Game2",require('./game2/game2.js'));
 game.state.add("Victory2",require('./game2/victory2.js'));
 game.state.add('Boot', require('./boot.js'));
 game.state.add('Wrapper', require('./wrapper.js'));
+//start game in boot state.
 game.state.start('Boot');
 },{"./boot.js":1,"./game1/game1.js":3,"./game1/preload1.js":4,"./game1/title1.js":5,"./game1/victory1.js":6,"./game2/game2.js":7,"./game2/preload2.js":8,"./game2/title2.js":9,"./game2/victory2.js":10,"./wrapper.js":11}],3:[function(require,module,exports){
 module.exports = {
@@ -219,37 +220,54 @@ module.exports = {
      *   
      */
     update: function() {
-        //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
-        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
-            bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
+       // Update score, timer, and victory texts with new values
+        scoreText.text = 'Score: ' + score;
+        clockText.text = 'Time Remaining: ' + timeRemaining;
+        victoryText.text = 'Congratulations your score is ' + score + '!';
 
-            firstRateIncrease = true;
+        // If timer runs out, show victory or if we have no lives
+        if (timeRemaining <= 0 || this.lives == 0) {
+            this.victory();
         }
 
-        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
-            bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            secondRateIncrease = true;
+        // For each child alive, move and animate
+        // For each child off screen, kill sprite
+        for (var i = 0; i < unsafeChildren.children.length; i++) {
+            var currentChild = unsafeChildren.children[i];
+            if (currentChild.alive) {
+                currentChild.move();
+                currentChild.animations.play('row');
+
+            }
+
+            if (currentChild.position.x > this.game.width) {
+                this.multiplier = 1;
+                this.lives -= 1;
+                bad_sound.play();
+                unsafeChildren.remove(currentChild);
+                currentChild.kill();
+            }
 
         }
-        //also increase movement speed at 2/3 and 1/3 time
-        if (timeRemaining <= (maxTime / 3)) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 7;
-            }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 7;
-            }
-        } else if (timeRemaining <= (2 * (maxTime / 3))) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 2;
+        // For each child alive, move and animate
+        // For each child off screen, kill sprite
+        for (var i = 0; i < safeChildren.children.length; i++) {
+            var currentChild = safeChildren.children[i];
+            if (currentChild.alive) {
+                currentChild.move();
+                currentChild.animations.play('row');
 
             }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 2;
+            // Ensure kill of screen sprites
+            if (currentChild.position.x > this.game.width) {
+                score += 10 * this.multiplier;
+                if (this.multiplier < 20)
+                {
+                    this.multiplier += 1;
+                }
+                currentChild.kill(); 
+                safeChildren.remove(currentChild);
             }
-
 
         }
 
@@ -375,17 +393,7 @@ module.exports = {
      *   
      */
     onSafeClick: function(sprite) {
-
-        // No longer Decrement score - client requested no negative feedback for clicking a good child sprite
-        // if (score > 0) {
-        // score -= 1;
-        // }
-
-        // Show error msg for 500ms and set to visible
         this.multiplier = 1;
-        errorTextTimer = this.game.time.now + 500;
-        errorText.visible = true;
-        successText.visible = false;
 
     },
 
@@ -530,17 +538,16 @@ module.exports = {
 
     //function to create a child, called by create random child
     /**
-     * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
+     * function to create a child, called by create random child. Gives x y coordinates, 
+      direction to move in, group belongs to, name of image, and function to call when clicked
      *Postcondition: Group size is increased by one
      * @method createChild
-     * @param {} startx x coordinate
-     * @param {} starty y coordinate
      * @param {} direction direction the child will move in
      * @param {} group group the child will belong to
      * @param {} spriteName name of the sprite the child will1  use
      * @param {} listener function to be executed when sprite is clicked
-     *   
+     * @param {} path the path to be used for motion
+     * @param {} pi the value that we keep incrementing to move down our path
      */
     createChild: function(group, spriteName, listener, path, pi) {
         var child;
@@ -555,29 +562,6 @@ module.exports = {
         child.position.x = child.path[child.pi].x;
         child.position.y = child.path[child.pi].y;
         
-
-        /*
-                1024 x 768
-                random point within 6 sections of x / y
-                X ranges:
-                    0.      0 -> 169 
-                    1.      170 -> 340
-                    2.      341 -> 511
-                    3.      512 -> 682
-                    4.      683 -> 853
-                    5.      854 -> 1024
-                Y ranges:
-                    0.      0   -> 128
-                    1.      128 -> 256
-                    2.      256 -> 384
-                    3.      384 -> 512
-                    4.      512 -> 640
-                    5.      640 -> 768
-                
-
-                water starts at 270 goes to 768
-                
-        */
 
         child.safe = false;
         //if creating a safe child
@@ -683,8 +667,9 @@ module.exports = {
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('park', './assets/game1/images/park-bg.jpg');
         this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
-        this.game.load.audio('bad_sound', './assets/general/audio/bad-sound.wav', true);
-		this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
+        this.game.load.audio('bad_sound', './assets/game2/audio/lost_life.wav', true);
+        this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
+        this.game.load.audio('game_over', './assets/game2/audio/game_over.wav', true);;
         this.game.load.spritesheet('safe', './assets/game1/images/spritesheets/safe-biker-red.png', 80, 80);
         this.game.load.spritesheet('unsafe', './assets/game1/images/spritesheets/unsafe-biker-red.png', 80, 80);
 		this.game.load.spritesheet('safeSkate', './assets/game1/images/spritesheets/safe-skater.png', 90, 90);
@@ -806,9 +791,9 @@ module.exports = {
 },{}],7:[function(require,module,exports){
 module.exports = {
     /**
-    *Game1 class. The game1 object, primary state of the game, handles all actual gameplay.
+    *Game2 class. The game1 object, primary state of the game, handles all actual gameplay.
   
-    *@class game1
+    *@class game2
   
     */
     /**
@@ -820,8 +805,6 @@ module.exports = {
         this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        firstRateIncrease = false;
-        secondRateIncrease = false;
         this.lives = 3;
         //Add background
         park = this.add.sprite(this.game.height, this.game.width, 'lake');
@@ -830,21 +813,12 @@ module.exports = {
         park.height = this.game.height;
         park.width = this.game.width;
 
-        //
+        //two groups - safe children and unsafe children.
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-        //startx, starty, direction, group, spriteName, listener, path, pi)
         this.createChild(unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
-        //We can create spawn points wherever we want so the sprites start on paths etc.
+        //spawner that spawns a person every 3 seconds
         this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-        // Alternate Path
-
-        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
-        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
-        /*
-         This will allow to check num of living unsafe children to see if offscreen are killed
-         this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
-         */
 
         //Add funky negative sound and positive sound
         good_sound = this.add.audio('good_sound');
@@ -855,6 +829,7 @@ module.exports = {
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
+        //universal text styling
         textStyle = {
             font: '35px Arial',
             fill: '#FFFFFF',
@@ -869,8 +844,10 @@ module.exports = {
         clockText = this.game.add.text(700 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
             fill: '#FFFFFF'
         });
+        //update the time score every second
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
+        //every 5 seconds, speed up the children
         this.game.time.events.loop(Phaser.Timer.SECOND * 5, function() {
             var speed = this.urgency + 1;
             for (var i = 0; i < unsafeChildren.children.length; i++) {
@@ -889,6 +866,7 @@ module.exports = {
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
+        //add instructions info picture
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
 
@@ -930,25 +908,12 @@ module.exports = {
      *   
      */
     update: function() {
-        //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
-        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
-            this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
-
-            firstRateIncrease = true;
-        }
-
-        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
-            this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
-            secondRateIncrease = true;
-
-        }
-
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
         victoryText.text = 'Congratulations your score is ' + score + '!';
 
-        // If timer runs out, show victory
+        // If timer runs out, show victory or if we have no lives
         if (timeRemaining <= 0 || this.lives == 0) {
             this.victory();
         }
@@ -983,9 +948,12 @@ module.exports = {
             }
             // Ensure kill of screen sprites
             if (currentChild.position.x > this.game.width) {
-                this.multiplier += 1;
                 score += 10 * this.multiplier;
-                currentChild.kill(); //weird stuff still happening with killing offscreen?
+                if (this.multiplier < 20)
+                {
+                    this.multiplier += 1;
+                }
+                currentChild.kill(); 
                 safeChildren.remove(currentChild);
             }
 
@@ -994,6 +962,12 @@ module.exports = {
 
     generatePath: function() {
         var game = this.game
+
+        /*
+            generate a random x coordinate
+            within 6 sections of the visible screen
+            and two off-screen sections 
+        */
         generateXPoint = function(sect) {
             switch (sect) {
                 case 0:
@@ -1018,20 +992,30 @@ module.exports = {
                     console.log('error in gen x point');
             }
         };
+        /*
+            generate a random y coordinate
+            within the visible bounds of the screen
+        */
         generateYPoint = function(sect) {
             return game.rnd.between((game.height / 2.5), (game.height * 9) / 10);
         };
+
+
         var yPoints = [];
         var xPoints = [];
+        //create a list of x, y pairs
         for (var i = 0; i <= 8; i++) {
             yPoints.push(generateYPoint(i));
             xPoints.push(generateXPoint(i));
         }
+        //define those lists in object with 
+        //properties y and x
         var pathPts = {
             'y': yPoints,
             'x': xPoints
         };
-
+        //interpolate the paths of the object itself to get a path
+        //this is all done in accordance to phaser tutorials.
         interpolatePaths = function(pathPts, game) {
             x = 1 / game.width;
             var truePath = [];
@@ -1097,8 +1081,8 @@ module.exports = {
     },
 
     /**
-     * Called when player "wins" the game
-     *Postcondition: game is now in victory1 state
+     * Called when player wins the game or loses
+     *Postcondition: game is now in victory2 state
      * @method victory
      *   
      */
@@ -1158,10 +1142,10 @@ module.exports = {
         timeRemaining -= 1;
     },
 
-    //function to pick a random sprite from the 3 safe and 3 unsafe sprites
+    //function to pick a random sprite from the 2 safe and 2 unsafe sprites
     /**
-     * function to pick a random sprite from the 3 safe and 3 unsafe sprites. Gives x,y coordinate and direction to move in
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
+     * function to pick a random sprite from the 2 safe and 2 unsafe sprites. Gives x,y coordinate and direction to move in
+     *Precondition: startx, starty are valid positive integers, and direction is unnecessary - should be removed and cleaned up.
      * @method createRandomChild
      * @param {} startx x coordinate
      * @param {} starty y coordinate
@@ -1201,17 +1185,16 @@ module.exports = {
 
     //function to create a child, called by create random child
     /**
-     * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
+     * function to create a child, called by create random child. Gives x y coordinates, 
+      direction to move in, group belongs to, name of image, and function to call when clicked
      *Postcondition: Group size is increased by one
      * @method createChild
-     * @param {} startx x coordinate
-     * @param {} starty y coordinate
      * @param {} direction direction the child will move in
      * @param {} group group the child will belong to
      * @param {} spriteName name of the sprite the child will1  use
      * @param {} listener function to be executed when sprite is clicked
-     *   
+     * @param {} path the path to be used for motion
+     * @param {} pi the value that we keep incrementing to move down our path
      */
     createChild: function(group, spriteName, listener, path, pi) {
         var child;
@@ -1223,57 +1206,28 @@ module.exports = {
         child.urgency = this.urgency;
         child.anchor.set(0.5);
         child.path = path;
+        //set the position to somewhere on our path
         child.position.x = child.path[child.pi].x;
         child.position.y = child.path[child.pi].y;
 
-
-        /*
-                1024 x 768
-                random point within 6 sections of x / y
-                X ranges:
-                    0.      0 -> 169 
-                    1.      170 -> 340
-                    2.      341 -> 511
-                    3.      512 -> 682
-                    4.      683 -> 853
-                    5.      854 -> 1024
-                Y ranges:
-                    0.      0   -> 128
-                    1.      128 -> 256
-                    2.      256 -> 384
-                    3.      384 -> 512
-                    4.      512 -> 640
-                    5.      640 -> 768
-                
-
-                water starts at 270 goes to 768
-                
-        */
 
         child.safe = false;
         //if creating a safe child
         if (spriteName == 'boy_boater_safe' || spriteName == 'girl_boater_safe') {
             child.safe = true;
         }
+        //enable physics on this object
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
-        if (spriteName == 'boy_boater_safe' || spriteName == 'boy_boater_unsafe') {
-            //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
-            scaleX = (this.game.width / 15) / 115;
-            scaleY = (this.game.width / 15) / 120;
-            child.scale.x = scaleX;
-            child.scale.y = scaleY;
-        } else if (spriteName == 'girl_boater_safe' || spriteName == 'girl_boater_unsafe') {
-            //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
-            scaleX = (this.game.width / 15) / 115;
-            scaleY = (this.game.width / 15) / 120;
-            child.scale.x = scaleX;
-            child.scale.y = scaleY;
-        }
-
+        
+        //animation and scale setup
+        //name, frames, fps, boolean for loop (true means plays more than once)
+        child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
+        scaleX = (this.game.width / 15) / 115;
+        scaleY = (this.game.width / 15) / 120;
+        child.scale.x = scaleX;
+        child.scale.y = scaleY;
 
 
         /**
@@ -1319,16 +1273,6 @@ module.exports = {
             }
         };
 
-    },
-
-    //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-    /**
-     * Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-     * @method announceLiving
-     *   
-     */
-    announceLiving: function() {
-        alert(this.unsafeChildren.countLiving());
     }
 
 };
@@ -1336,9 +1280,9 @@ module.exports = {
 },{}],8:[function(require,module,exports){
 module.exports = {
 	  /**
-  *preload1 class. The preload object, first state of the game, preloads all necessary assets
+  *preload2 class. The preload object, first state of the game, preloads all necessary assets
   
-  *@class preload1
+  *@class preload2
   
   */
   
@@ -1377,9 +1321,9 @@ module.exports = {
 },{}],9:[function(require,module,exports){
 module.exports = {
 	  /**
-  *title1 class. The title1 object, just displays title screen
+  *title2 class. The title1 object, just displays title screen
   
-  *@class title1
+  *@class title2
   */
   
      /**
@@ -1393,10 +1337,11 @@ module.exports = {
         titleBg.y = 0;
         titleBg.height = this.game.height;
         titleBg.width = this.game.width;
+        //load and play blackground music
         background_music = this.add.audio('background_music');
         background_music.play();
 
-
+        //create a play button
         var playButton = this.game.add.sprite(319, 160, 'play button');
         playButton.x = this.game.width - 319;
         playButton.y = this.game.height - 160;
@@ -1420,9 +1365,9 @@ module.exports = {
 },{}],10:[function(require,module,exports){
 module.exports = {
     /**
-  *Victory1 class. The victory1 object, final state of the game
+  *Victory2 class. The victory1 object, final state of the game
   
-  *@class victory1
+  *@class victory2
   
   */
 
@@ -1432,30 +1377,36 @@ module.exports = {
      * @return 
      */
     create: function() {
+        //get the cookie for high scores.
         highScores = Cookies.getJSON('high_scores_game2');
-        //highScores = [150, 80, 10];
+
+        //background of the victory screen
         var victoryBg = this.add.sprite(this.game.width, this.game.height, 'victory page bg');
         victoryBg.x = 0;
         victoryBg.y = 0;
         victoryBg.height = this.game.height;
         victoryBg.width = this.game.width;
 
+        //replay button
         var replayButton = this.game.add.sprite(513, 63, 'replay button');
         replayButton.x = 12 * this.game.width / 20;
         replayButton.y = 14.5 * this.game.height / 20;
         replayButton.inputEnabled = true;
 
+        //universal styling
         textStyle = {
             font: "48px Arial",
             fill: "#ffffff",
             align: "center"
         };
+
+        //The player's score for this game displayed on the screen
         var yourScore = this.game.add.text(431, 172, score + " points", textStyle);
         yourScore.x = 12 * this.game.width / 20;
         yourScore.y = 6.5 * this.game.height / 20;
         yourScore.visible = true;
 
-
+        //Display the 3 highest scores that were given by the cookies.
         scores1 = this.game.add.text(12 * this.game.width / 20, 8 * this.game.height / 20, highScores[2] + " points", textStyle);
         scores1.visible = true;
         scores2 = this.game.add.text(12 * this.game.width / 20, 9.5 * this.game.height / 20, highScores[1] + " points", textStyle);
@@ -1463,12 +1414,18 @@ module.exports = {
         scores3 = this.game.add.text(12 * this.game.width / 20, 11 * this.game.height / 20, highScores[0] + " points", textStyle);
         scores3.visible = true;
 
+        //add an input function to the replay menut to send back to the wrapper
         replayButton.events.onInputDown.add(this.restart, this);
+
+        //push out the lowest score.
         highScores.push(score);
         highScores.sort();
         highScores.splice(0, 1);
+        //store the three highest scores
         Cookies.set('high_scores_game2', highScores);
     },
+
+    //move to state wrapper.
     restart: function() {
         this.game.state.start('Wrapper');
     }
@@ -1478,6 +1435,7 @@ module.exports = {
 module.exports = {
 	/**
   *wrapper class. The wrapper object, first displayed screen
+  the main menu screen
   
   *@class wrapper
   *@module game
@@ -1500,20 +1458,24 @@ module.exports = {
      * @return returns boolean true if image successfully loads, false otherwise
      */
     create: function () {
-
+        //create the background of the wrapper of the game's height and width
         wrapperBg = this.add.sprite(1024, 768, 'wrapper-bg');
         wrapperBg.x = 0;
         wrapperBg.y = 0;
         wrapperBg.height = this.game.height;
         wrapperBg.width = this.game.width;
 
-
+        //create the thumbnail for the first game and enable functionality to move to next game
         var uipImage = this.game.add.sprite(this.game.width / 2, this.game.height / 2, "UIP-thumb");
         uipImage.anchor.set(.5);
+        //scale of the image, x, y
         uipImage.scale.setTo(.7, .7);
+        //allow input
         uipImage.inputEnabled = true;
+        //do something on click
         uipImage.events.onInputDown.add(this.captainSafetySelect, this);
 
+        //create the thumbnail for the second game and enable functionality to move to next game
         var game2Image = this.game.add.sprite(this.game.width / 6, this.game.height / 2, "game2-thumbnail");
         game2Image.anchor.set(.5);
         game2Image.scale.setTo(.7, .7);
@@ -1521,7 +1483,7 @@ module.exports = {
         game2Image.events.onInputDown.add(this.game2Start, this);
 
 
-
+        //a blank image for a new game slot - no functionality because it shouldn't do anything
         var ngImageB = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "new-game-thumb");
         ngImageB.anchor.set(.5);
         ngImageB.scale.setTo(.7, .7);
@@ -1543,7 +1505,7 @@ module.exports = {
         this.game.state.start('Preload1');
     },
 
-    //
+    //function that starts the game 2 state, preload.
     game2Start : function(){
         this.game.state.start('Preload2');
     }

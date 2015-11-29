@@ -1,8 +1,8 @@
 module.exports = {
 	  /**
-  *title1 class. The title1 object, just displays title screen
+  *title2 class. The title1 object, just displays title screen
   
-  *@class title1
+  *@class title2
   */
   
      /**
@@ -16,10 +16,11 @@ module.exports = {
         titleBg.y = 0;
         titleBg.height = this.game.height;
         titleBg.width = this.game.width;
+        //load and play blackground music
         background_music = this.add.audio('background_music');
         background_music.play();
 
-
+        //create a play button
         var playButton = this.game.add.sprite(319, 160, 'play button');
         playButton.x = this.game.width - 319;
         playButton.y = this.game.height - 160;

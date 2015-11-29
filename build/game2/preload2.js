@@ -1,8 +1,8 @@
 module.exports = {
 	  /**
-  *preload1 class. The preload object, first state of the game, preloads all necessary assets
+  *preload2 class. The preload object, first state of the game, preloads all necessary assets
   
-  *@class preload1
+  *@class preload2
   
   */
   
