@@ -28,7 +28,7 @@ module.exports = {
         //startx, starty, direction, group, spriteName, listener, path, pi)
         this.createChild(unsafeChildren, 'unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //We can create spawn points wherever we want so the sprites start on paths etc.
-        this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
+        this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
         // Alternate Path
 
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
@@ -81,11 +81,6 @@ module.exports = {
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
-        multiplierText = this.game.add.text(300 + scoreText.width + pause.width + clockText.width,
-            this.game.width / 50, 'x' + this.multiplier, {
-                fill: '#666699'
-            });
-
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
 
@@ -127,37 +122,54 @@ module.exports = {
      *   
      */
     update: function() {
-        //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
-        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
-            bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
+       // Update score, timer, and victory texts with new values
+        scoreText.text = 'Score: ' + score;
+        clockText.text = 'Time Remaining: ' + timeRemaining;
+        victoryText.text = 'Congratulations your score is ' + score + '!';
 
-            firstRateIncrease = true;
+        // If timer runs out, show victory or if we have no lives
+        if (timeRemaining <= 0 || this.lives == 0) {
+            this.victory();
         }
 
-        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
-            bad_sound.play();
-            this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-            secondRateIncrease = true;
+        // For each child alive, move and animate
+        // For each child off screen, kill sprite
+        for (var i = 0; i < unsafeChildren.children.length; i++) {
+            var currentChild = unsafeChildren.children[i];
+            if (currentChild.alive) {
+                currentChild.move();
+                currentChild.animations.play('row');
+
+            }
+
+            if (currentChild.position.x > this.game.width) {
+                this.multiplier = 1;
+                this.lives -= 1;
+                bad_sound.play();
+                unsafeChildren.remove(currentChild);
+                currentChild.kill();
+            }
 
         }
-        //also increase movement speed at 2/3 and 1/3 time
-        if (timeRemaining <= (maxTime / 3)) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 7;
-            }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 7;
-            }
-        } else if (timeRemaining <= (2 * (maxTime / 3))) {
-            for (var i = 0; i < unsafeChildren.children.length; i++) {
-                unsafeChildren.children[i].urgency = 2;
+        // For each child alive, move and animate
+        // For each child off screen, kill sprite
+        for (var i = 0; i < safeChildren.children.length; i++) {
+            var currentChild = safeChildren.children[i];
+            if (currentChild.alive) {
+                currentChild.move();
+                currentChild.animations.play('row');
 
             }
-            for (var i = 0; i < safeChildren.children.length; i++) {
-                safeChildren.children[i].urgency = 2;
+            // Ensure kill of screen sprites
+            if (currentChild.position.x > this.game.width) {
+                score += 10 * this.multiplier;
+                if (this.multiplier < 20)
+                {
+                    this.multiplier += 1;
+                }
+                currentChild.kill(); 
+                safeChildren.remove(currentChild);
             }
-
 
         }
 
@@ -165,13 +177,7 @@ module.exports = {
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
         victoryText.text = 'Congratulations your score is ' + score + '!';
-        multiplierText.text = 'x' + this.multiplier;
 
-        // If error/success text were visible for 500ms, hide them
-        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
-            errorText.visible = false;
-        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
-            successText.visible = false;
 
         // If timer runs out, show victory
         if (timeRemaining <= 0) {
@@ -283,17 +289,7 @@ module.exports = {
      *   
      */
     onSafeClick: function(sprite) {
-
-        // No longer Decrement score - client requested no negative feedback for clicking a good child sprite
-        // if (score > 0) {
-        // score -= 1;
-        // }
-
-        // Show error msg for 500ms and set to visible
         this.multiplier = 1;
-        errorTextTimer = this.game.time.now + 500;
-        errorText.visible = true;
-        successText.visible = false;
 
     },
 
@@ -438,17 +434,16 @@ module.exports = {
 
     //function to create a child, called by create random child
     /**
-     * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
+     * function to create a child, called by create random child. Gives x y coordinates, 
+      direction to move in, group belongs to, name of image, and function to call when clicked
      *Postcondition: Group size is increased by one
      * @method createChild
-     * @param {} startx x coordinate
-     * @param {} starty y coordinate
      * @param {} direction direction the child will move in
      * @param {} group group the child will belong to
      * @param {} spriteName name of the sprite the child will1  use
      * @param {} listener function to be executed when sprite is clicked
-     *   
+     * @param {} path the path to be used for motion
+     * @param {} pi the value that we keep incrementing to move down our path
      */
     createChild: function(group, spriteName, listener, path, pi) {
         var child;
@@ -463,29 +458,6 @@ module.exports = {
         child.position.x = child.path[child.pi].x;
         child.position.y = child.path[child.pi].y;
         
-
-        /*
-                1024 x 768
-                random point within 6 sections of x / y
-                X ranges:
-                    0.      0 -> 169 
-                    1.      170 -> 340
-                    2.      341 -> 511
-                    3.      512 -> 682
-                    4.      683 -> 853
-                    5.      854 -> 1024
-                Y ranges:
-                    0.      0   -> 128
-                    1.      128 -> 256
-                    2.      256 -> 384
-                    3.      384 -> 512
-                    4.      512 -> 640
-                    5.      640 -> 768
-                
-
-                water starts at 270 goes to 768
-                
-        */
 
         child.safe = false;
         //if creating a safe child

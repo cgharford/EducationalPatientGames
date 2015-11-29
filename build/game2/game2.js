@@ -1,8 +1,8 @@
 module.exports = {
     /**
-    *Game1 class. The game1 object, primary state of the game, handles all actual gameplay.
+    *Game2 class. The game1 object, primary state of the game, handles all actual gameplay.
   
-    *@class game1
+    *@class game2
   
     */
     /**
@@ -14,8 +14,6 @@ module.exports = {
         this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        firstRateIncrease = false;
-        secondRateIncrease = false;
         this.lives = 3;
         //Add background
         park = this.add.sprite(this.game.height, this.game.width, 'lake');
@@ -24,21 +22,12 @@ module.exports = {
         park.height = this.game.height;
         park.width = this.game.width;
 
-        //
+        //two groups - safe children and unsafe children.
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-        //startx, starty, direction, group, spriteName, listener, path, pi)
         this.createChild(unsafeChildren, 'boy_boater_unsafe', this.onUnsafeClick, this.generatePath(), 0);
-        //We can create spawn points wherever we want so the sprites start on paths etc.
+        //spawner that spawns a person every 3 seconds
         this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-        // Alternate Path
-
-        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
-        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
-        /*
-         This will allow to check num of living unsafe children to see if offscreen are killed
-         this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
-         */
 
         //Add funky negative sound and positive sound
         good_sound = this.add.audio('good_sound');
@@ -49,6 +38,7 @@ module.exports = {
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
+        //universal text styling
         textStyle = {
             font: '35px Arial',
             fill: '#FFFFFF',
@@ -63,8 +53,10 @@ module.exports = {
         clockText = this.game.add.text(700 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
             fill: '#FFFFFF'
         });
+        //update the time score every second
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
+        //every 5 seconds, speed up the children
         this.game.time.events.loop(Phaser.Timer.SECOND * 5, function() {
             var speed = this.urgency + 1;
             for (var i = 0; i < unsafeChildren.children.length; i++) {
@@ -83,6 +75,7 @@ module.exports = {
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
+        //add instructions info picture
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
 
@@ -124,25 +117,12 @@ module.exports = {
      *   
      */
     update: function() {
-        //check if time is 2/3 or 1/3 and create new spawns for faster spawn rate
-        if (timeRemaining == (2 * (maxTime / 3)) && firstRateIncrease == false) {
-            this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
-
-            firstRateIncrease = true;
-        }
-
-        if (timeRemaining == (maxTime / 3) && secondRateIncrease == false) {
-            this.startSpawn(1.5, this.game.width, (this.game.height / 8), "left");
-            secondRateIncrease = true;
-
-        }
-
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
         victoryText.text = 'Congratulations your score is ' + score + '!';
 
-        // If timer runs out, show victory
+        // If timer runs out, show victory or if we have no lives
         if (timeRemaining <= 0 || this.lives == 0) {
             this.victory();
         }
@@ -177,9 +157,12 @@ module.exports = {
             }
             // Ensure kill of screen sprites
             if (currentChild.position.x > this.game.width) {
-                this.multiplier += 1;
                 score += 10 * this.multiplier;
-                currentChild.kill(); //weird stuff still happening with killing offscreen?
+                if (this.multiplier < 20)
+                {
+                    this.multiplier += 1;
+                }
+                currentChild.kill(); 
                 safeChildren.remove(currentChild);
             }
 
@@ -188,6 +171,12 @@ module.exports = {
 
     generatePath: function() {
         var game = this.game
+
+        /*
+            generate a random x coordinate
+            within 6 sections of the visible screen
+            and two off-screen sections 
+        */
         generateXPoint = function(sect) {
             switch (sect) {
                 case 0:
@@ -212,20 +201,30 @@ module.exports = {
                     console.log('error in gen x point');
             }
         };
+        /*
+            generate a random y coordinate
+            within the visible bounds of the screen
+        */
         generateYPoint = function(sect) {
             return game.rnd.between((game.height / 2.5), (game.height * 9) / 10);
         };
+
+
         var yPoints = [];
         var xPoints = [];
+        //create a list of x, y pairs
         for (var i = 0; i <= 8; i++) {
             yPoints.push(generateYPoint(i));
             xPoints.push(generateXPoint(i));
         }
+        //define those lists in object with 
+        //properties y and x
         var pathPts = {
             'y': yPoints,
             'x': xPoints
         };
-
+        //interpolate the paths of the object itself to get a path
+        //this is all done in accordance to phaser tutorials.
         interpolatePaths = function(pathPts, game) {
             x = 1 / game.width;
             var truePath = [];
@@ -291,8 +290,8 @@ module.exports = {
     },
 
     /**
-     * Called when player "wins" the game
-     *Postcondition: game is now in victory1 state
+     * Called when player wins the game or loses
+     *Postcondition: game is now in victory2 state
      * @method victory
      *   
      */
@@ -352,10 +351,10 @@ module.exports = {
         timeRemaining -= 1;
     },
 
-    //function to pick a random sprite from the 3 safe and 3 unsafe sprites
+    //function to pick a random sprite from the 2 safe and 2 unsafe sprites
     /**
-     * function to pick a random sprite from the 3 safe and 3 unsafe sprites. Gives x,y coordinate and direction to move in
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
+     * function to pick a random sprite from the 2 safe and 2 unsafe sprites. Gives x,y coordinate and direction to move in
+     *Precondition: startx, starty are valid positive integers, and direction is unnecessary - should be removed and cleaned up.
      * @method createRandomChild
      * @param {} startx x coordinate
      * @param {} starty y coordinate
@@ -395,17 +394,16 @@ module.exports = {
 
     //function to create a child, called by create random child
     /**
-     * function to create a child, called by create random child. Gives x y coordinates, direction to move in, group belongs to, name of image, and function to call when clicked
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right" group is a valid child group, spriteName is a valid sprite, and listener is a valid function call
+     * function to create a child, called by create random child. Gives x y coordinates, 
+      direction to move in, group belongs to, name of image, and function to call when clicked
      *Postcondition: Group size is increased by one
      * @method createChild
-     * @param {} startx x coordinate
-     * @param {} starty y coordinate
      * @param {} direction direction the child will move in
      * @param {} group group the child will belong to
      * @param {} spriteName name of the sprite the child will1  use
      * @param {} listener function to be executed when sprite is clicked
-     *   
+     * @param {} path the path to be used for motion
+     * @param {} pi the value that we keep incrementing to move down our path
      */
     createChild: function(group, spriteName, listener, path, pi) {
         var child;
@@ -417,57 +415,28 @@ module.exports = {
         child.urgency = this.urgency;
         child.anchor.set(0.5);
         child.path = path;
+        //set the position to somewhere on our path
         child.position.x = child.path[child.pi].x;
         child.position.y = child.path[child.pi].y;
 
-
-        /*
-                1024 x 768
-                random point within 6 sections of x / y
-                X ranges:
-                    0.      0 -> 169 
-                    1.      170 -> 340
-                    2.      341 -> 511
-                    3.      512 -> 682
-                    4.      683 -> 853
-                    5.      854 -> 1024
-                Y ranges:
-                    0.      0   -> 128
-                    1.      128 -> 256
-                    2.      256 -> 384
-                    3.      384 -> 512
-                    4.      512 -> 640
-                    5.      640 -> 768
-                
-
-                water starts at 270 goes to 768
-                
-        */
 
         child.safe = false;
         //if creating a safe child
         if (spriteName == 'boy_boater_safe' || spriteName == 'girl_boater_safe') {
             child.safe = true;
         }
+        //enable physics on this object
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
-        if (spriteName == 'boy_boater_safe' || spriteName == 'boy_boater_unsafe') {
-            //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
-            scaleX = (this.game.width / 15) / 115;
-            scaleY = (this.game.width / 15) / 120;
-            child.scale.x = scaleX;
-            child.scale.y = scaleY;
-        } else if (spriteName == 'girl_boater_safe' || spriteName == 'girl_boater_unsafe') {
-            //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
-            scaleX = (this.game.width / 15) / 115;
-            scaleY = (this.game.width / 15) / 120;
-            child.scale.x = scaleX;
-            child.scale.y = scaleY;
-        }
-
+        
+        //animation and scale setup
+        //name, frames, fps, boolean for loop (true means plays more than once)
+        child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
+        scaleX = (this.game.width / 15) / 115;
+        scaleY = (this.game.width / 15) / 120;
+        child.scale.x = scaleX;
+        child.scale.y = scaleY;
 
 
         /**
@@ -513,16 +482,6 @@ module.exports = {
             }
         };
 
-    },
-
-    //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-    /**
-     * Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-     * @method announceLiving
-     *   
-     */
-    announceLiving: function() {
-        alert(this.unsafeChildren.countLiving());
     }
 
 };
