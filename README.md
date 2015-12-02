@@ -187,7 +187,9 @@ function create(){
 
 function update(){
   /*
-  This is called once a tick - it should define how the game changes at each moment. For example, in game 1 and game 2, it     defines the movement of each character along with creating spawners at certain intervals of time. 
+  This is called once a tick - it should define how the game changes at each moment. 
+  For example, in game 1 and game 2, it defines the movement of each character along 
+  with creating spawners at certain intervals of time. 
   */
 }
 
