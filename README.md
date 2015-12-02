@@ -28,8 +28,7 @@ Navigation
 Description <a id="sect1"></a>
 ----
 
-###TODO: FILL IN DESCRIPTION
-
+A game created at the behest of UNC hospitals to encourage safe standards such as wearing a lifejacket every time your on the water, or wearing a helmet every time you ride.
 
 Documentation<a id="doc"></a>
 ----
