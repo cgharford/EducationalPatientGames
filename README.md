@@ -216,9 +216,9 @@ Game Installation and Setup <a id="game-install"></a>
 
 ####Dependencies: <a id="req"></a>
 
-*node.js/npm (nodejs.org)
-*browserify/npm
-*Phaser 2.3.0 (phaser.io) [included]
+* node.js/npm (nodejs.org)
+* browserify/npm
+* Phaser 2.3.0 (phaser.io) [included]
 
 ===
 
