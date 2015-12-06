@@ -17,8 +17,8 @@ module.exports = {
         titleBg.height = this.game.height;
         titleBg.width = this.game.width;
         //load and play blackground music
-        background_music = this.add.audio('background_music');
-        background_music.play();
+/*        background_music = this.add.audio('background_music');
+        background_music.play();*/
 
         //create a play button
         var playButton = this.game.add.sprite(319, 160, 'play button');
