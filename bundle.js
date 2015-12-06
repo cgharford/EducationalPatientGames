@@ -104,8 +104,10 @@ module.exports = {
      *   
      */
     create: function() {
+        this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.lives = 3;
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
@@ -130,12 +132,20 @@ module.exports = {
          This will allow to check num of living unsafe children to see if offscreen are killed
          this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
          */
-
+        this.life_sprite_2 = this.add.sprite(this.game.width - 230, this.game.height - 90, 'life');
+        this.life_sprite_2.scale.setTo(0.15, 0.15);
+        this.life_sprite_1 = this.add.sprite(this.game.width - 345,  this.game.height - 90, 'life');
+        this.life_sprite_1.scale.setTo(0.15, 0.15);
+        this.life_sprite_3 = this.add.sprite(this.game.width - 115, this.game.height - 90, 'life');
+        this.life_sprite_3.scale.setTo(0.15, 0.15);
         //Add funky negative sound and positive sound
         bad_sound = this.add.audio('bad_sound');
         good_sound = this.add.audio('good_sound');
+        game_over = this.add.audio('game_over');
 
         // Score starts at 0, timer starts at 60 seconds
+
+
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
@@ -166,6 +176,18 @@ module.exports = {
             fill: '#666699'
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
+        //every 5 seconds, speed up the children
+        this.game.time.events.loop(Phaser.Timer.SECOND * 5, function() {
+            var speed = this.urgency + 1;
+            for (var i = 0; i < unsafeChildren.children.length; i++) {
+                unsafeChildren.children[i].urgency = speed;
+            }
+            for (var i = 0; i < safeChildren.children.length; i++) {
+                safeChildren.children[i].urgency =speed;
+            }
+            this.urgency += 1;
+        }, this);
 
         // Allow game to be paused
         pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
@@ -238,6 +260,15 @@ module.exports = {
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
                 this.lives -= 1;
+                if(this.lives == 2){
+                    this.life_sprite_1.kill();
+                }
+                else if (this.lives == 1){
+                    this.life_sprite_2.kill();
+                }
+                else if (this.lives == 0){
+                    this.life_sprite_3.kill();
+                }
                 bad_sound.play();
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
@@ -427,6 +458,7 @@ module.exports = {
         safeChildren.forEach(function(child) {
             child.kill();
         });
+        game_over.play();
         errorText.visible = false;
         successText.visible = false;
         victoryText.visible = true;
@@ -656,9 +688,9 @@ module.exports = {
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('park', './assets/game1/images/park-bg.jpg');
         this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
-        this.game.load.audio('bad_sound', './assets/game2/audio/lost_life.wav', true);
+        this.game.load.audio('bad_sound', './assets/general/audio/lost_life.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
-        this.game.load.audio('game_over', './assets/game2/audio/game_over.wav', true);;
+        this.game.load.audio('game_over', './assets/general/audio/game_over.wav', true);;
         this.game.load.spritesheet('safe', './assets/game1/images/spritesheets/safe-biker-red.png', 80, 80);
         this.game.load.spritesheet('unsafe', './assets/game1/images/spritesheets/unsafe-biker-red.png', 80, 80);
 		this.game.load.spritesheet('safeSkate', './assets/game1/images/spritesheets/safe-skater.png', 90, 90);
@@ -667,6 +699,7 @@ module.exports = {
 		this.game.load.spritesheet('unsafeATV', './assets/game1/images/spritesheets/unsafe-atv-rider.png', 90, 90);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.jpg');
+        this.game.load.image('life', './assets/game2/images/life_ring.png');
 
     },
 	
@@ -1302,17 +1335,17 @@ module.exports = {
         this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
         this.game.load.image('lake', './assets/game2/images/background.png');
         this.game.load.image('instructions', './assets/game2/images/happys_class2.png');
-        this.game.load.audio('bad_sound', './assets/game2/audio/lost_life.wav', true);
+        this.game.load.audio('bad_sound', './assets/general/audio/lost_life.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
-        this.game.load.audio('game_over', './assets/game2/audio/game_over.wav', true);
+        this.game.load.audio('game_over', './assets/general/audio/game_over.wav', true);
         this.game.load.spritesheet('girl_boater_safe', './assets/game2/images/spritesheets/safe_boat_girl.png', 108, 115);
         this.game.load.spritesheet('girl_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_girl.png', 108, 115);
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
         this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg     ');
-        this.game.load.audio('background_music', './assets/game2/audio/dumb_ways_to_die.mp3');
-        this.game.load.image('life', './assets/game2/images/life_ring.png')
+        //this.game.load.audio('background_music', './assets/general/audio/dumb_ways_to_die.mp3');
+        this.game.load.image('life', './assets/game2/images/life_ring.png');
 
     },
 	
@@ -1345,8 +1378,8 @@ module.exports = {
         titleBg.height = this.game.height;
         titleBg.width = this.game.width;
         //load and play blackground music
-        background_music = this.add.audio('background_music');
-        background_music.play();
+/*        background_music = this.add.audio('background_music');
+        background_music.play();*/
 
         //create a play button
         var playButton = this.game.add.sprite(319, 160, 'play button');

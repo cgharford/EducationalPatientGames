@@ -11,8 +11,10 @@ module.exports = {
      *   
      */
     create: function() {
+        this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.lives = 3;
         firstRateIncrease = false;
         secondRateIncrease = false;
         //Add background
@@ -46,8 +48,11 @@ module.exports = {
         //Add funky negative sound and positive sound
         bad_sound = this.add.audio('bad_sound');
         good_sound = this.add.audio('good_sound');
+        game_over = this.add.audio('game_over');
 
         // Score starts at 0, timer starts at 60 seconds
+
+
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
@@ -78,6 +83,18 @@ module.exports = {
             fill: '#666699'
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
+
+        //every 5 seconds, speed up the children
+        this.game.time.events.loop(Phaser.Timer.SECOND * 5, function() {
+            var speed = this.urgency + 1;
+            for (var i = 0; i < unsafeChildren.children.length; i++) {
+                unsafeChildren.children[i].urgency = speed;
+            }
+            for (var i = 0; i < safeChildren.children.length; i++) {
+                safeChildren.children[i].urgency =speed;
+            }
+            this.urgency += 1;
+        }, this);
 
         // Allow game to be paused
         pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
@@ -348,6 +365,7 @@ module.exports = {
         safeChildren.forEach(function(child) {
             child.kill();
         });
+        game_over.play();
         errorText.visible = false;
         successText.visible = false;
         victoryText.visible = true;
