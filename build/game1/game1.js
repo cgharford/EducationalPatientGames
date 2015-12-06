@@ -37,7 +37,12 @@ module.exports = {
          This will allow to check num of living unsafe children to see if offscreen are killed
          this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
          */
-
+        this.life_sprite_2 = this.add.sprite(this.game.width - 230, this.game.height - 90, 'life');
+        this.life_sprite_2.scale.setTo(0.15, 0.15);
+        this.life_sprite_1 = this.add.sprite(this.game.width - 345,  this.game.height - 90, 'life');
+        this.life_sprite_1.scale.setTo(0.15, 0.15);
+        this.life_sprite_3 = this.add.sprite(this.game.width - 115, this.game.height - 90, 'life');
+        this.life_sprite_3.scale.setTo(0.15, 0.15);
         //Add funky negative sound and positive sound
         bad_sound = this.add.audio('bad_sound');
         good_sound = this.add.audio('good_sound');
@@ -145,6 +150,15 @@ module.exports = {
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
                 this.lives -= 1;
+                if(this.lives == 2){
+                    this.life_sprite_1.kill();
+                }
+                else if (this.lives == 1){
+                    this.life_sprite_2.kill();
+                }
+                else if (this.lives == 0){
+                    this.life_sprite_3.kill();
+                }
                 bad_sound.play();
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
