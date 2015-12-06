@@ -121,7 +121,7 @@ module.exports = {
         //startx, starty, direction, group, spriteName, listener, path, pi)
         this.createChild(unsafeChildren, 'unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //We can create spawn points wherever we want so the sprites start on paths etc.
-        this.startSpawn(6, this.game.width, (this.game.height / 8), "left");
+        this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
         // Alternate Path
 
         // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
@@ -173,11 +173,6 @@ module.exports = {
         });
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
-
-        multiplierText = this.game.add.text(300 + scoreText.width + pause.width + clockText.width,
-            this.game.width / 50, 'x' + this.multiplier, {
-                fill: '#666699'
-            });
 
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
@@ -275,13 +270,7 @@ module.exports = {
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
         victoryText.text = 'Congratulations your score is ' + score + '!';
-        multiplierText.text = 'x' + this.multiplier;
 
-        // If error/success text were visible for 500ms, hide them
-        if ((errorText.visible === true) && (this.game.time.now > errorTextTimer))
-            errorText.visible = false;
-        if ((successText.visible === true) && (this.game.time.now > successTextTimer))
-            successText.visible = false;
 
         // If timer runs out, show victory
         if (timeRemaining <= 0) {
@@ -813,6 +802,14 @@ module.exports = {
         park.height = this.game.height;
         park.width = this.game.width;
 
+
+        this.life_sprite_2 = this.add.sprite(this.game.width - 230, this.game.height - 90, 'life');
+        this.life_sprite_2.scale.setTo(0.15, 0.15);
+        this.life_sprite_1 = this.add.sprite(this.game.width - 345,  this.game.height - 90, 'life');
+        this.life_sprite_1.scale.setTo(0.15, 0.15);
+        this.life_sprite_3 = this.add.sprite(this.game.width - 115, this.game.height - 90, 'life');
+        this.life_sprite_3.scale.setTo(0.15, 0.15);
+
         //two groups - safe children and unsafe children.
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
@@ -931,6 +928,15 @@ module.exports = {
             if (currentChild.position.x > this.game.width) {
                 this.multiplier = 1;
                 this.lives -= 1;
+                if(this.lives == 2){
+                    this.life_sprite_1.kill();
+                }
+                else if (this.lives == 1){
+                    this.life_sprite_2.kill();
+                }
+                else if (this.lives == 0){
+                    this.life_sprite_3.kill();
+                }
                 bad_sound.play();
                 unsafeChildren.remove(currentChild);
                 currentChild.kill();
@@ -1306,6 +1312,7 @@ module.exports = {
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg     ');
         this.game.load.audio('background_music', './assets/game2/audio/dumb_ways_to_die.mp3');
+        this.game.load.image('life', './assets/game2/images/life_ring.png')
 
     },
 	
