@@ -15,6 +15,11 @@ Navigation
       2. [Game.js](#doc-b-b-b)
       3. [Title.js](#doc-b-b-c)
       4. [Victory.js](#doc-b-b-d)
+  3. [Design Decisions](#doc-c)
+    1. [Spawning](#doc-c-a)
+    2. [Scoring](#doc-c-b)
+    3. [Lives](#doc-c-c)
+    4. [Optimal Gameplay Environment](#doc-c-d)
 2. [Game Installation](#game-install)
   1. [Prerequisites and Dependencies](#req)
   2. [Running the Game](#run)
@@ -213,6 +218,47 @@ function create() {
 ```
 
 ===
+
+Design Decisions <a id="doc-c"></a>
+----
+
+####Spawning: <a id="doc-c-a"></a>
+
+Sprites spawn from the left side of the screen at set time intervals.  It is helpful to think of an entity (a spawner) as the "creator" of Sprites that appear on the screen.  Initially (as soon as the game begins), there is one spawner creating Sprites at a rate of 1 Sprite every 3 seconds.  (Note that spawn times are predictable; not random within an interval).  After 20 seconds of gameplay, an additional spawner is added that creates a Sprite every 1.5 seconds.  This operates in tandem with the original spawner, meaning a total of 3 Sprites appear ever 3 seconds (1 from the first spawner and 2 from the second spawner).  After 20 more seconds, a third spawner is added that also generates a Sprite every 1.5 seconds.  Thus, for the remainder of the game, 5 Sprites spawn every 3 seconds.  
+
+Sprites begin at a random location along the left side of the screen, and move in a randomly-generated bezier path to the right side of the screen.  The speed at which Sprites move increments by 1 unit every 5 seconds.  While the units of speed are arbitrary, the speed value must be a whole number.  We have found that incrementing by 1 unit every 5 seconds allows for a smooth, linear speed-up while ensuring that the game does not become overwhelming during the last few seconds. 
+
+Sprites and spawning behaves the same way for both the Helmet Safety and the Water Safety levels.
+
+===
+
+####Scoring: <a id="doc-c-b"></a>
+
+Players get points for clicking on unsafe Sprites or not clicking on already-safe Sprites.  The specific number of points awarded depends on the player's current score multiplier.  
+
+Initially the multiplier is equal to 0.  When the user clicks on an unsafe Sprite or allows a safe Sprite to exit the screen, he/she receives points equal to 10 times the current multiplier value, and the multiplier increments by 1.  
+
+Once the multiplier reaches 20, it is no longer incremented.  This is the maximum possible value of the score multiplier.
+
+If the player clicks on an already-safe Sprite or allows an unsafe Sprite to exit the screen, the score multiplier resets to 1.  
+
+===
+
+####Lives: <a id="doc-c-c"></a>
+
+Players begin each game with three lives.  These are represented by throwable flotation devices (Water Safety) or band aids (Helmet Safety) in the bottom righthand corner of the screen.  
+
+If an unsafe Sprite exits the screen, the player loses a life.  Upon losing all three lives, the game immediately ends, and the player is taken to the game over/high score screen.
+
+=== 
+
+####Optimal Gameplay Environment: <a id="doc-c-d"></a>
+
+We have found that the game renders best on very high resolution screens.  The game itself is more entertaining and gameplay is much more feasible on touch screen devices.  We recommend Chrome or Firefox as browsers on which to play the game.
+
+
+===
+
 
 Game Installation and Setup <a id="game-install"></a>
 ----
