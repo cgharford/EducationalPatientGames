@@ -299,9 +299,9 @@ module.exports = {
         var safeChild;
         var newImage;
         if (sprite.key == 'bike_unsafe')
-            newImage = 'bike_safe'
-/*        else if (sprite.key == 'girl_boater_unsafe')
-            newImage = 'girl_boater_safe';*/
+            newImage = 'bike_safe';
+        else if (sprite.key == 'bike_unsafe_alt')
+            newImage = 'bike_safe_alt';
         safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
         sprite.kill();
     },
@@ -387,22 +387,22 @@ module.exports = {
         if (randomNum > .35) {
 
             group = unsafeChildren;
-            //if (randomNum > .5 && randomNum < .7) {
+            if (randomNum > .5 && randomNum < .7) {
                 spriteName = 'bike_unsafe';
-            //} else {
-             //   spriteName = 'girl_boater_unsafe';
-            //}
+            } else {
+               spriteName = 'bike_unsafe_alt';
+            }
             listener = this.onUnsafeClick;
         }
 
         //else safe
         else {
             group = safeChildren;
-            //if (randomNum > .2 && randomNum < .35) {
+            if (randomNum > .2 && randomNum < .35) {
                 spriteName = 'bike_safe';
-            //} else {
-                //spriteName = 'girl_boater_safe';
-            //}
+            } else {
+                spriteName = 'bike_safe_alt';
+            }
             listener = this.onSafeClick;
         }
         this.createChild(group, spriteName, listener, this.generatePath(), 0);
@@ -439,7 +439,7 @@ module.exports = {
 
         child.safe = false;
         //if creating a safe child
-        if (spriteName == 'bike_safe'){ //|| spriteName == 'girl_boater_safe') {
+        if (spriteName == 'bike_safe') || spriteName == 'bike_safe_alt') {
             child.safe = true;
         }
         //enable physics on this object
