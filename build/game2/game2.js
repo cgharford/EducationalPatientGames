@@ -131,7 +131,7 @@ module.exports = {
         victoryText.text = 'Congratulations!  Your score is ' + score + '.';
 
         // If timer runs out, show victory or if we have no lives
-        if (timeRemaining <= 0 || this.lives == 0) {
+        if (timeRemaining <= 0 || this.lives <= 0) {
             this.victory();
         }
 
@@ -292,7 +292,7 @@ module.exports = {
     onUnsafeClick: function(sprite) {
 
         score += 10 * this.multiplier;
-        if (this.multiplier !== 20) {
+        if (this.multiplier < 20) {
             this.multiplier++;
         }
         good_sound.play();

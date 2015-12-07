@@ -224,7 +224,7 @@ module.exports = {
         victoryText.text = 'Congratulations your score is ' + score + '!';
 
         // If timer runs out, show victory or if we have no lives
-        if (timeRemaining <= 0 || this.lives == 0) {
+        if (timeRemaining <= 0 || this.lives <= 0) {
             this.victory();
         }
 
@@ -385,7 +385,7 @@ module.exports = {
     onUnsafeClick: function(sprite) {
 
         score += 10 * this.multiplier;
-        if (this.multiplier !== 20) {
+        if (this.multiplier < 20) {
             this.multiplier++;
         }
         good_sound.play();
@@ -409,7 +409,7 @@ module.exports = {
         safeChildren.forEach(function(child) {
             child.kill();
         });
-        victoryText.visible = true;
+     //    victoryText.visible = true;
         game_over.play();
         //change to victory state
         this.game.state.start("Victory2", true, false, score);
@@ -620,8 +620,8 @@ module.exports = {
         this.game.load.audio('game_over', './assets/general/audio/game_over.wav', true);;
         this.game.load.spritesheet('bike_safe', './assets/game1/images/spritesheets/bike_safe.png', 108, 115);
         this.game.load.spritesheet('bike_unsafe', './assets/game1/images/spritesheets/bike_unsafe.png', 108, 115);
-        this.game.load.spritesheet('bike_safe_alt', './assets/game21/images/spritesheets/bike_safe.png', 108, 115);
-        this.game.load.spritesheet('bike_unsafe_alt', './assets/game1/images/spritesheets/bike_unsafe.png', 108, 115);
+        this.game.load.spritesheet('bike_safe_alt', './assets/game21/images/spritesheets/bike_safe2.png', 108, 115);
+        this.game.load.spritesheet('bike_unsafe_alt', './assets/game1/images/spritesheets/bike_unsafe2.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.png');
         this.game.load.image('life', './assets/game1/images/bike_life.png');
@@ -934,7 +934,7 @@ module.exports = {
         victoryText.text = 'Congratulations!  Your score is ' + score + '.';
 
         // If timer runs out, show victory or if we have no lives
-        if (timeRemaining <= 0 || this.lives == 0) {
+        if (timeRemaining <= 0 || this.lives <= 0) {
             this.victory();
         }
 
@@ -1095,7 +1095,7 @@ module.exports = {
     onUnsafeClick: function(sprite) {
 
         score += 10 * this.multiplier;
-        if (this.multiplier !== 20) {
+        if (this.multiplier < 20) {
             this.multiplier++;
         }
         good_sound.play();
