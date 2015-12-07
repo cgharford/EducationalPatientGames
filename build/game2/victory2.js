@@ -24,8 +24,8 @@ module.exports = {
 
         //replay button
         var replayButton = this.game.add.sprite(513, 63, 'replay button');
-        replayButton.x = 12 * this.game.width / 20;
-        replayButton.y = 14.5 * this.game.height / 20;
+        replayButton.x = (944 * this.game.width / 1024) - 513;
+        replayButton.y = (590 * this.game.height / 768) - 63;
         replayButton.inputEnabled = true;
 
         //universal styling
