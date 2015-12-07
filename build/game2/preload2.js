@@ -13,7 +13,7 @@ module.exports = {
      */
     preload: function() {
         this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
-        this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
+        this.game.load.image('title page bg', './assets/general/images/UIP-title_poss.jpeg');
         this.game.load.image('lake', './assets/game2/images/background.png');
         this.game.load.image('instructions', './assets/game2/images/happys_class2.png');
         this.game.load.audio('bad_sound', './assets/general/audio/lost_life.wav', true);
@@ -24,8 +24,7 @@ module.exports = {
         this.game.load.spritesheet('boy_boater_safe', './assets/game2/images/spritesheets/safe_boat_boy.png', 108, 115);
         this.game.load.spritesheet('boy_boater_unsafe', './assets/game2/images/spritesheets/unsafe_boat_boy.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg     ');
-        //this.game.load.audio('background_music', './assets/general/audio/dumb_ways_to_die.mp3');
+        this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg');
         this.game.load.image('life', './assets/game2/images/life_ring.png');
 
     },

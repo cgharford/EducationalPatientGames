@@ -13,21 +13,17 @@ module.exports = {
      */
     preload: function() {
         this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
-        this.game.load.image('title page bg', './assets/game1/images/UIP-title.jpg');
-        this.game.load.image('park', './assets/game1/images/park-bg.jpg');
-        this.game.load.image('instructions', './assets/game1/images/instructions.jpg');
+        this.game.load.image('title page bg',  './assets/general/images/UIP-title_poss.jpeg');
+        this.game.load.image('bg', './assets/game1/images/park_background.png');
+        this.game.load.image('instructions', './assets/game1/images/instructions.png');
         this.game.load.audio('bad_sound', './assets/general/audio/lost_life.wav', true);
         this.game.load.audio('good_sound', './assets/general/audio/good_sound.wav', true);
         this.game.load.audio('game_over', './assets/general/audio/game_over.wav', true);;
-        this.game.load.spritesheet('safe', './assets/game1/images/spritesheets/safe-biker-red.png', 80, 80);
-        this.game.load.spritesheet('unsafe', './assets/game1/images/spritesheets/unsafe-biker-red.png', 80, 80);
-		this.game.load.spritesheet('safeSkate', './assets/game1/images/spritesheets/safe-skater.png', 90, 90);
-		this.game.load.spritesheet('unsafeSkate', './assets/game1/images/spritesheets/unsafe-skater.png', 90, 90);
-		this.game.load.spritesheet('safeATV', './assets/game1/images/spritesheets/safe-atv-rider.png', 90, 90);
-		this.game.load.spritesheet('unsafeATV', './assets/game1/images/spritesheets/unsafe-atv-rider.png', 90, 90);
+        this.game.load.spritesheet('bike_safe', './assets/game1/images/spritesheets/bike_safe.png', 108, 115);
+        this.game.load.spritesheet('bike_unsafe', './assets/game1/images/spritesheets/bike_unsafe.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
-        this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.jpg');
-        this.game.load.image('life', './assets/game2/images/life_ring.png');
+        this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.png');
+        this.game.load.image('life', './assets/game1/images/bike_life.png');
 
     },
 	

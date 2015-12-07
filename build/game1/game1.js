@@ -1,8 +1,8 @@
 module.exports = {
     /**
-    *Game1 class. The game1 object, primary state of the game, handles all actual gameplay.
+    *Game2 class. The game1 object, primary state of the game, handles all actual gameplay.
   
-    *@class game1
+    *@class game2
   
     */
     /**
@@ -15,73 +15,53 @@ module.exports = {
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.lives = 3;
-        firstRateIncrease = false;
-        secondRateIncrease = false;
         //Add background
-        park = this.add.sprite(this.game.height, this.game.width, 'park');
+        park = this.add.sprite(this.game.height, this.game.width, 'bg');
         park.x = 0;
         park.y = 0;
         park.height = this.game.height;
         park.width = this.game.width;
 
-        //
+
+        this.life_sprite_2 = this.add.sprite(this.game.width - 230, this.game.height - 110, 'life');
+        this.life_sprite_2.scale.setTo(0.15, 0.15);
+        this.life_sprite_1 = this.add.sprite(this.game.width - 345,  this.game.height - 110, 'life');
+        this.life_sprite_1.scale.setTo(0.15, 0.15);
+        this.life_sprite_3 = this.add.sprite(this.game.width - 115, this.game.height - 110, 'life');
+        this.life_sprite_3.scale.setTo(0.15, 0.15);
+
+        //two groups - safe children and unsafe children.
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-        //startx, starty, direction, group, spriteName, listener, path, pi)
-        this.createChild(unsafeChildren, 'unsafe', this.onUnsafeClick, this.generatePath(), 0);
-        //We can create spawn points wherever we want so the sprites start on paths etc.
+        this.createChild(unsafeChildren, 'bike_safe', this.onUnsafeClick, this.generatePath(), 0);
+        //spawner that spawns a person every 3 seconds
         this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
-        // Alternate Path
 
-        // this.createShifter(6 * (this.game.width / 12), 23 * this.game.height / 24, "up-left", false, true);
-        // this.createShifter(4 * this.game.width / 12, 4.7 * this.game.height / 9, "left", true, false);
-        /*
-         This will allow to check num of living unsafe children to see if offscreen are killed
-         this.game.time.events.loop(Phaser.Timer.SECOND * 3, this.announceLiving);
-         */
-        this.life_sprite_2 = this.add.sprite(this.game.width - 230, this.game.height - 90, 'life');
-        this.life_sprite_2.scale.setTo(0.15, 0.15);
-        this.life_sprite_1 = this.add.sprite(this.game.width - 345,  this.game.height - 90, 'life');
-        this.life_sprite_1.scale.setTo(0.15, 0.15);
-        this.life_sprite_3 = this.add.sprite(this.game.width - 115, this.game.height - 90, 'life');
-        this.life_sprite_3.scale.setTo(0.15, 0.15);
         //Add funky negative sound and positive sound
-        bad_sound = this.add.audio('bad_sound');
         good_sound = this.add.audio('good_sound');
+        bad_sound = this.add.audio('bad_sound');
         game_over = this.add.audio('game_over');
 
         // Score starts at 0, timer starts at 60 seconds
-
-
         score = 0;
         timeRemaining = 60;
         maxTime = timeRemaining
+        //universal text styling
         textStyle = {
             font: '35px Arial',
-            fill: '#666699',
+            fill: '#FFFFFF',
             align: 'right',
             wordWrap: false
         };
 
-        // Add error message for clicking incorrectly
-        errorText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'Dude, what?', textStyle);
-        errorText.visible = false;
-        errorText.anchor.set(0.5);
-
-        // Add success message for clicking correctly
-        successText = this.game.add.text(this.game.width - 200, this.game.width / 50, 'You saved me!', textStyle);
-        successText.visible = false;
-        successText.anchor.set(0.5);
-
-
-
         //  Place score and timer in upper left hand corner
-        scoreText = this.game.add.text(60, this.game.width / 50, 'Score: ' + score, {
-            fill: '#666699'
+        scoreText = this.game.add.text(500, this.game.width / 50, 'Score: ' + score, {
+            fill: '#FFFFFF'
         });
-        clockText = this.game.add.text(200 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
-            fill: '#666699'
+        clockText = this.game.add.text(700 + scoreText.width, this.game.width / 50, 'Time Remaining: ' + timeRemaining, {
+            fill: '#FFFFFF'
         });
+        //update the time score every second
         this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTime, this);
 
         //every 5 seconds, speed up the children
@@ -97,12 +77,13 @@ module.exports = {
         }, this);
 
         // Allow game to be paused
-        pause = this.game.add.text(240 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
-            fill: '#666699'
+        pause = this.game.add.text(880 + scoreText.width + clockText.width, this.game.width / 50, "Pause", {
+            fill: '#FFFFFF'
         });
         pause.inputEnabled = true;
         pause.events.onInputDown.add(this.pauseGame, this);
 
+        //add instructions info picture
         instructions = this.add.image((this.game.width / 2) - 1024 / 2, (this.game.height / 2) - 768 / 2, 'instructions');
         instructions.visible = false;
 
@@ -144,7 +125,7 @@ module.exports = {
      *   
      */
     update: function() {
-       // Update score, timer, and victory texts with new values
+        // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
         victoryText.text = 'Congratulations your score is ' + score + '!';
@@ -203,58 +184,16 @@ module.exports = {
             }
 
         }
-
-        // Update score, timer, and victory texts with new values
-        scoreText.text = 'Score: ' + score;
-        clockText.text = 'Time Remaining: ' + timeRemaining;
-        victoryText.text = 'Congratulations your score is ' + score + '!';
-
-
-        // If timer runs out, show victory
-        if (timeRemaining <= 0) {
-            this.victory();
-        }
-
-        // For each child alive, move and animate
-        // For each child off screen, kill sprite
-        for (var i = 0; i < unsafeChildren.children.length; i++) {
-            var currentChild = unsafeChildren.children[i];
-            if (currentChild.alive) {
-                currentChild.move();
-                currentChild.animations.play('ride');
-
-            }
-
-            if (currentChild.position.x > this.game.width) {
-                if (!currentChild.safe) {
-                    this.multiplier = 1;
-                }
-                currentChild.kill();
-            }
-
-        }
-        // For each child alive, move and animate
-        // For each child off screen, kill sprite
-        for (var i = 0; i < safeChildren.children.length; i++) {
-            var currentChild = safeChildren.children[i];
-            if (currentChild.alive) {
-                currentChild.move();
-                currentChild.animations.play('ride');
-
-            }
-            // Ensure kill of screen sprites
-            if (currentChild.position.x > this.game.width) {
-                if (!currentChild.safe) {
-                    this.multiplier = 1;
-                }
-                currentChild.kill(); //weird stuff still happening with killing offscreen?
-            }
-
-        }
     },
 
     generatePath: function() {
         var game = this.game
+
+        /*
+            generate a random x coordinate
+            within 6 sections of the visible screen
+            and two off-screen sections 
+        */
         generateXPoint = function(sect) {
             switch (sect) {
                 case 0:
@@ -279,20 +218,30 @@ module.exports = {
                     console.log('error in gen x point');
             }
         };
+        /*
+            generate a random y coordinate
+            within the visible bounds of the screen
+        */
         generateYPoint = function(sect) {
             return game.rnd.between((game.height / 2.5), (game.height * 9) / 10);
         };
+
+
         var yPoints = [];
         var xPoints = [];
+        //create a list of x, y pairs
         for (var i = 0; i <= 8; i++) {
             yPoints.push(generateYPoint(i));
             xPoints.push(generateXPoint(i));
         }
+        //define those lists in object with 
+        //properties y and x
         var pathPts = {
             'y': yPoints,
             'x': xPoints
         };
-
+        //interpolate the paths of the object itself to get a path
+        //this is all done in accordance to phaser tutorials.
         interpolatePaths = function(pathPts, game) {
             x = 1 / game.width;
             var truePath = [];
@@ -320,8 +269,14 @@ module.exports = {
      *   
      */
     onSafeClick: function(sprite) {
-        this.multiplier = 1;
 
+        // No longer Decrement score - client requested no negative feedback for clicking a good child sprite
+        // if (score > 0) {
+        // score -= 1;
+        // }
+
+        // Show error msg for 500ms and set to visible
+        this.multiplier = 1;
     },
 
     // Clicking a sprite being unsafe
@@ -335,29 +290,25 @@ module.exports = {
      *   
      */
     onUnsafeClick: function(sprite) {
+
         score += 10 * this.multiplier;
-        if(this.multiplier !== 20){
-            this.multiplier ++;
+        if (this.multiplier !== 20) {
+            this.multiplier++;
         }
         good_sound.play();
         var safeChild;
         var newImage;
-        if (sprite.key == 'unsafe')
-            newImage = 'safe'
-        else if (sprite.key == 'unsafeSkate')
-            newImage = 'safeSkate';
-        else if (sprite.key == 'unsafeATV')
-            newImage = 'safeATV';
+        if (sprite.key == 'bike_unsafe')
+            newImage = 'bike_safe'
+/*        else if (sprite.key == 'girl_boater_unsafe')
+            newImage = 'girl_boater_safe';*/
         safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
-        errorText.visible = false;
-        successTextTimer = this.game.time.now + 500;
-        successText.visible = true;
         sprite.kill();
     },
 
     /**
-     * Called when player "wins" the game
-     *Postcondition: game is now in victory1 state
+     * Called when player wins the game or loses
+     *Postcondition: game is now in victory2 state
      * @method victory
      *   
      */
@@ -365,12 +316,10 @@ module.exports = {
         safeChildren.forEach(function(child) {
             child.kill();
         });
-        game_over.play();
-        errorText.visible = false;
-        successText.visible = false;
         victoryText.visible = true;
+        game_over.play();
         //change to victory state
-        this.game.state.start("Victory1", true, false, score);
+        this.game.state.start("Victory2", true, false, score);
     },
     /**
      * Function for placing random children -- NO LONGER USED BUT MAINTAINED FOR FUTURE
@@ -388,7 +337,7 @@ module.exports = {
             child.anchor.set(0.5);
             child.position.x = this.game.world.randomX;
             child.position.y = this.game.world.randomY;
-            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
+            child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
         }
         group.setAll('outOfBoundsKill', true);
     },
@@ -419,10 +368,10 @@ module.exports = {
         timeRemaining -= 1;
     },
 
-    //function to pick a random sprite from the 3 safe and 3 unsafe sprites
+    //function to pick a random sprite from the 2 safe and 2 unsafe sprites
     /**
-     * function to pick a random sprite from the 3 safe and 3 unsafe sprites. Gives x,y coordinate and direction to move in
-     *Precondition: startx, starty are valid positive integers, and direction is "up" "down" "left" "right" "up-left" "up-right" "down-left" "down-right"
+     * function to pick a random sprite from the 2 safe and 2 unsafe sprites. Gives x,y coordinate and direction to move in
+     *Precondition: startx, starty are valid positive integers, and direction is unnecessary - should be removed and cleaned up.
      * @method createRandomChild
      * @param {} startx x coordinate
      * @param {} starty y coordinate
@@ -438,26 +387,22 @@ module.exports = {
         if (randomNum > .35) {
 
             group = unsafeChildren;
-            if (randomNum > .5 && randomNum < .7) {
-                spriteName = 'unsafe';
-            } else if (randomNum > .7) {
-                spriteName = 'unsafeSkate';
-            } else {
-                spriteName = 'unsafeATV';
-            }
+            //if (randomNum > .5 && randomNum < .7) {
+                spriteName = 'bike_unsafe';
+            //} else {
+             //   spriteName = 'girl_boater_unsafe';
+            //}
             listener = this.onUnsafeClick;
         }
 
         //else safe
         else {
             group = safeChildren;
-            if (randomNum > .2 && randomNum < .35) {
-                spriteName = 'safe';
-            } else if (randomNum > .1) {
-                spriteName = 'safeSkate';
-            } else {
-                spriteName = 'safeATV';
-            }
+            //if (randomNum > .2 && randomNum < .35) {
+                spriteName = 'bike_safe';
+            //} else {
+                //spriteName = 'girl_boater_safe';
+            //}
             listener = this.onSafeClick;
         }
         this.createChild(group, spriteName, listener, this.generatePath(), 0);
@@ -484,39 +429,31 @@ module.exports = {
         child.inputEnabled = true;
         child.events.onInputDown.add(listener, this);
         child.pi = pi;
-        child.urgency = 1;
+        child.urgency = this.urgency;
         child.anchor.set(0.5);
         child.path = path;
+        //set the position to somewhere on our path
         child.position.x = child.path[child.pi].x;
         child.position.y = child.path[child.pi].y;
-        
+
 
         child.safe = false;
         //if creating a safe child
-        if (spriteName == 'safeSkate' || spriteName == 'safe' || spriteName == 'safeATV') {
+        if (spriteName == 'bike_safe'){ //|| spriteName == 'girl_boater_safe') {
             child.safe = true;
         }
+        //enable physics on this object
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
-        if (spriteName == 'safe' || spriteName == 'unsafe') {
-            //name, frames, fps, boolean for loop (true means plays more than once)
-            child.animations.add('ride', [0, 1, 2, 3, 4], 4, true);
-            scale = (this.game.width / 15) / 90;
-            child.scale.x = scale * -1;
-            child.scale.y = scale;
-        } else if (spriteName == 'safeSkate' || spriteName == 'unsafeSkate') {
-            scale = (this.game.width / 15) / 90;
-            child.animations.add('ride', [0, 1, 2, 3, 4, 5], 5, true);
-            child.scale.x = scale;
-            child.scale.y = scale;
-        } else if (spriteName == 'safeATV' || spriteName == 'unsafeATV') {
-            scale = (this.game.width / 15) / 90;
-            child.animations.add('ride', [0, 1, 2, 3, 4, 5, 6, 7, 8], 8, true);
-            child.scale.x = scale;
-            child.scale.y = scale;
-        }
-
+        
+        //animation and scale setup
+        //name, frames, fps, boolean for loop (true means plays more than once)
+        child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
+        scaleX = (this.game.width / 15) / 115;
+        scaleY = (this.game.width / 15) / 120;
+        child.scale.x = scaleX;
+        child.scale.y = scaleY;
 
 
         /**
@@ -562,16 +499,6 @@ module.exports = {
             }
         };
 
-    },
-
-    //Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-    /**
-     * Function I was using to check what unsafe children were still alive to monitor killing the offscreen children
-     * @method announceLiving
-     *   
-     */
-    announceLiving: function() {
-        alert(this.unsafeChildren.countLiving());
     }
 
 };
