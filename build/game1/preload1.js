@@ -21,8 +21,8 @@ module.exports = {
         this.game.load.audio('game_over', './assets/general/audio/game_over.wav', true);;
         this.game.load.spritesheet('bike_safe', './assets/game1/images/spritesheets/bike_safe.png', 108, 115);
         this.game.load.spritesheet('bike_unsafe', './assets/game1/images/spritesheets/bike_unsafe.png', 108, 115);
-        this.game.load.spritesheet('bike_safe_alt', './assets/game21/images/spritesheets/bike_safe2.png', 108, 115);
-        this.game.load.spritesheet('bike_unsafe_alt', './assets/game1/images/spritesheets/bike_unsafe2.png', 108, 115);
+        this.game.load.spritesheet('bike_safe_alt', './assets/game1/images/spritesheets/bike_safe_alt.png', 108, 115);
+        this.game.load.spritesheet('bike_unsafe_alt', './assets/game1/images/spritesheets/bike_unsafe_alt.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.png');
         this.game.load.image('life', './assets/game1/images/bike_life.png');
