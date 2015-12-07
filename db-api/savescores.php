@@ -13,7 +13,7 @@ $seldb = mysql_select_db($db);
 if(isset($_POST['game']) && isset($_POST['score'])){
 
      //Lightly sanitize the GET's to prevent SQL injections and possible XSS attacks
-     $game = strip_tags(mysql_real_escape_string($_POST['game']));
+     $game = $_POST['game'];
      $score = strip_tags(mysql_real_escape_string($_POST['score']));
      if ($game == "water") {
           $sql = mysql_query("INSERT INTO `$db`.`water-scores` (`id`,`score`) VALUES ('0','$score');");
