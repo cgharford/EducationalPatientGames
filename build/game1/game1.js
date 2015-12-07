@@ -33,7 +33,7 @@ module.exports = {
         //two groups - safe children and unsafe children.
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-        this.createChild(unsafeChildren, 'bike_safe', this.onUnsafeClick, this.generatePath(), 0);
+        this.createChild(unsafeChildren, 'bike_unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //spawner that spawns a person every 3 seconds
         this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
 
@@ -439,7 +439,7 @@ module.exports = {
 
         child.safe = false;
         //if creating a safe child
-        if (spriteName == 'bike_safe') || spriteName == 'bike_safe_alt') {
+        if (spriteName == 'bike_safe' || spriteName == 'bike_safe_alt') {
             child.safe = true;
         }
         //enable physics on this object

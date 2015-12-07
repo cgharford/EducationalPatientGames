@@ -126,7 +126,7 @@ module.exports = {
         //two groups - safe children and unsafe children.
         unsafeChildren = this.game.add.group();
         safeChildren = this.game.add.group();
-        this.createChild(unsafeChildren, 'bike_safe', this.onUnsafeClick, this.generatePath(), 0);
+        this.createChild(unsafeChildren, 'bike_unsafe', this.onUnsafeClick, this.generatePath(), 0);
         //spawner that spawns a person every 3 seconds
         this.startSpawn(3, this.game.width, (this.game.height / 8), "left");
 
@@ -392,9 +392,9 @@ module.exports = {
         var safeChild;
         var newImage;
         if (sprite.key == 'bike_unsafe')
-            newImage = 'bike_safe'
-/*        else if (sprite.key == 'girl_boater_unsafe')
-            newImage = 'girl_boater_safe';*/
+            newImage = 'bike_safe';
+        else if (sprite.key == 'bike_unsafe_alt')
+            newImage = 'bike_safe_alt';
         safeChild = this.createChild(safeChildren, newImage, this.onSafeClick, sprite.path, sprite.pi);
         sprite.kill();
     },
@@ -480,22 +480,22 @@ module.exports = {
         if (randomNum > .35) {
 
             group = unsafeChildren;
-            //if (randomNum > .5 && randomNum < .7) {
+            if (randomNum > .5 && randomNum < .7) {
                 spriteName = 'bike_unsafe';
-            //} else {
-             //   spriteName = 'girl_boater_unsafe';
-            //}
+            } else {
+               spriteName = 'bike_unsafe_alt';
+            }
             listener = this.onUnsafeClick;
         }
 
         //else safe
         else {
             group = safeChildren;
-            //if (randomNum > .2 && randomNum < .35) {
+            if (randomNum > .2 && randomNum < .35) {
                 spriteName = 'bike_safe';
-            //} else {
-                //spriteName = 'girl_boater_safe';
-            //}
+            } else {
+                spriteName = 'bike_safe_alt';
+            }
             listener = this.onSafeClick;
         }
         this.createChild(group, spriteName, listener, this.generatePath(), 0);
@@ -532,7 +532,7 @@ module.exports = {
 
         child.safe = false;
         //if creating a safe child
-        if (spriteName == 'bike_safe'){ //|| spriteName == 'girl_boater_safe') {
+        if (spriteName == 'bike_safe' || spriteName == 'bike_safe_alt') {
             child.safe = true;
         }
         //enable physics on this object
@@ -620,6 +620,8 @@ module.exports = {
         this.game.load.audio('game_over', './assets/general/audio/game_over.wav', true);;
         this.game.load.spritesheet('bike_safe', './assets/game1/images/spritesheets/bike_safe.png', 108, 115);
         this.game.load.spritesheet('bike_unsafe', './assets/game1/images/spritesheets/bike_unsafe.png', 108, 115);
+        this.game.load.spritesheet('bike_safe_alt', './assets/game21/images/spritesheets/bike_safe.png', 108, 115);
+        this.game.load.spritesheet('bike_unsafe_alt', './assets/game1/images/spritesheets/bike_unsafe.png', 108, 115);
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game1/images/UIP-victory.png');
         this.game.load.image('life', './assets/game1/images/bike_life.png');
