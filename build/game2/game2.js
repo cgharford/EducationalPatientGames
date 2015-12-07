@@ -48,7 +48,7 @@ module.exports = {
         maxTime = timeRemaining
         //universal text styling
         textStyle = {
-            font: '35px Arial',
+            font: 'bold 50px Arial',
             fill: '#FFFFFF',
             align: 'right',
             wordWrap: false
@@ -91,7 +91,7 @@ module.exports = {
         this.game.input.onDown.add(this.unpauseGame, this);
 
         // On time out, show score
-        victoryText = this.game.add.text(this.game.width / 2, this.game.height / 2, 'Congratulations your score is ' + score + '!', textStyle);
+        victoryText = this.game.add.text(this.game.width / 2, (this.game.height / 2) + 25, 'Congratulations!  Your score is ' + score + '.', textStyle);
         victoryText.visible = false;
         victoryText.anchor.set(0.5);
         this.pauseGame();
@@ -128,7 +128,7 @@ module.exports = {
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
-        victoryText.text = 'Congratulations your score is ' + score + '!';
+        victoryText.text = 'Congratulations!  Your score is ' + score + '.';
 
         // If timer runs out, show victory or if we have no lives
         if (timeRemaining <= 0 || this.lives == 0) {
@@ -308,16 +308,24 @@ module.exports = {
 
     /**
      * Called when player wins the game or loses
-     *Postcondition: game is now in victory2 state
+     * Precondition: timeRemaining <= 0
+     * Postcondition: game is now in victory2 state
      * @method victory
      *   
      */
     victory: function() {
+    // Kill off each remaining child    
         safeChildren.forEach(function(child) {
             child.kill();
         });
-        victoryText.visible = true;
+    // Enforce that the Time Remaining: display says 0
+        timeRemaining = 0;
+
+    // Removed the following due to the fact that it was unnecessary
+    //    victoryText.visible = true;
+
         game_over.play();
+
         //change to victory state
         this.game.state.start("Victory2", true, false, score);
     },
