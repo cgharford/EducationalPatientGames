@@ -107,6 +107,8 @@ module.exports = {
         this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        firstRateIncrease = false;
+        secondRateIncrease = false;
         this.lives = 3;
         //Add background
         park = this.add.sprite(this.game.height, this.game.width, 'bg');
@@ -218,6 +220,16 @@ module.exports = {
      *   
      */
     update: function() {
+        // Check if time is 2/3 or 1/3 and create new spawners for faster spawn rate
+        if (timeRemaining <= (2 * (maxTime / 3)) && firstRateIncrease == false) {
+            this.startSpawn(1.5, this.game.width, (this.game.height/8), "left");
+            firstRateIncrease = true;
+        }
+        if (timeRemaining <= (maxTime/3) && secondRateIncrease == false) {
+            this.startSpawn(1.5, this.game.width, (this.game.height/8), "left");
+            secondRateIncrease = true;
+        }
+
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
@@ -817,6 +829,8 @@ module.exports = {
         this.urgency = 1;
         this.multiplier = 1;
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        firstRateIncrease = false;
+        secondRateIncrease = false;
         this.lives = 3;
         //Add background
         park = this.add.sprite(this.game.height, this.game.width, 'lake');
@@ -928,6 +942,16 @@ module.exports = {
      *   
      */
     update: function() {
+        // Check if time is 2/3 or 1/3 and create new spawners for faster spawn rate
+        if (timeRemaining <= (2 * (maxTime / 3)) && firstRateIncrease == false) {
+            this.startSpawn(1.5, this.game.width, (this.game.height/8), "left");
+            firstRateIncrease = true;
+        }
+        if (timeRemaining <= (maxTime/3) && secondRateIncrease == false) {
+            this.startSpawn(1.5, this.game.width, (this.game.height/8), "left");
+            secondRateIncrease = true;
+        }
+
         // Update score, timer, and victory texts with new values
         scoreText.text = 'Score: ' + score;
         clockText.text = 'Time Remaining: ' + timeRemaining;
