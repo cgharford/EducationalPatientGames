@@ -2,21 +2,21 @@ module.exports = {
 	/**
   *wrapper class. The wrapper object, first displayed screen
   the main menu screen
-  
+
   *@class wrapper
   *@module game
   */
     /**
      * Phaser preload function. Preloads assets needed for wrapper
      * @method preload
-     * @return 
+     * @return
      */
     preload: function () {
         //load images for all of the games here
         this.game.load.image("wrapper-bg", "assets/general/images/wrapper.jpg");
-        this.game.load.image("new-game-thumb", "assets/general/images/new-game-thumbnail.jpg");
         this.game.load.image("UIP-thumb", "assets/game1/images/UIP-thumbnail.jpg");
         this.game.load.image("game2-thumbnail", "assets/game2/images/UIP-thumbnail.jpg");
+        this.game.load.image("game3-thumbnail", "assets/game3/images/image1.jpg");
     },
     /**
      * Phaser create function. Adds images needed for wrapper
@@ -43,18 +43,20 @@ module.exports = {
 
         //create the thumbnail for the second game and enable functionality to move to next game
         var game2Image = this.game.add.sprite(this.game.width / 6, this.game.height / 2, "game2-thumbnail");
-        game2Image.anchor.set(.5);
+        game2Image.anchor.set(.7);
         game2Image.scale.setTo(.7, .7);
         game2Image.inputEnabled = true;
         game2Image.events.onInputDown.add(this.game2Start, this);
 
 
         //a blank image for a new game slot - no functionality because it shouldn't do anything
-        var ngImageB = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "new-game-thumb");
-        ngImageB.anchor.set(.5);
-        ngImageB.scale.setTo(.7, .7);
+        var game3Image = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "game3-thumbnail");
+        game3Image.anchor.set(.7);
+        game3Image.scale.setTo(.7, .7);
+        game3Image.inputEnabled = true;
+        game3Image.events.onInputDown.add(this.burnPreventionStart, this);
 
-        if (uipImage !== null && game2Image !== null && ngImageB !== null) {
+        if (uipImage !== null && game2Image !== null && game3Image !== null) {
             return true;
         } else {
             return false;
@@ -64,7 +66,7 @@ module.exports = {
     /**
      * Function to start next state of game, "Preload1"
      * @method captainSafetySelect
-    
+
      */
     captainSafetySelect: function () {
 
@@ -72,8 +74,12 @@ module.exports = {
     },
 
     //function that starts the game 2 state, preload.
-    game2Start : function(){
+    game2Start : function() {
         this.game.state.start('Preload2');
+    },
+
+    burnPreventionStart : function() {
+        this.game.state.start('Preload3');
     }
 
 }

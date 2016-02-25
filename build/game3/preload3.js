@@ -2,7 +2,7 @@ module.exports = {
 	  /**
   *preload2 class. The preload object, first state of the game, preloads all necessary assets
 
-  *@class preload2
+  *@class preload3
 
   */
 
@@ -26,7 +26,6 @@ module.exports = {
         this.game.load.image('replay button', './assets/game1/images/UIP-replay-button.png');
         this.game.load.image('victory page bg', './assets/game2/images/UIP-victory2.jpg');
         this.game.load.image('life', './assets/game2/images/life_ring.png');
-
     },
 
 	   /**
@@ -35,6 +34,6 @@ module.exports = {
      *
      */
     create: function() {
-        this.game.state.start("Title2");
+        this.game.state.start("Title3");
     }
 };

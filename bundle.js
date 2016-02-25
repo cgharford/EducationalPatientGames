@@ -2,18 +2,18 @@
 module.exports = {
 	/**
   *boot class. The boot object, boot state of the game
-  
+
   *@class boot
   */
             /**
-             * initialize 
+             * initialize
              * @method init
-             * 
+             *
              */
             init: function () {
                 //Set high score cookies
+                Cookies.set('high_scores_game1', [0, 0, 0]);
                 Cookies.set('high_scores_game2', [0, 0, 0]);
-                Cookies.set('high_scores_game1', [0,0,0]);
                 this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
                 this.scale.setMinMax(480, 260, 1024, 768);
                 this.scale.pageAlignHorizontally = true;
@@ -30,7 +30,7 @@ module.exports = {
             /**
              * Phaser create function, starts next state "Wrapper"
              * @method create
-             * 
+             *
              */
             create: function () {
 
@@ -40,7 +40,7 @@ module.exports = {
             /**
              * fixes orientation of game
              * @method enterIncorrectOrientation
-             * @return 
+             * @return
              */
             enterIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'none';
@@ -51,7 +51,7 @@ module.exports = {
             /**
              * preserves orientation of game
              * @method leaveIncorrectOrientation
-             *  
+             *
              */
             leaveIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'block';
@@ -86,22 +86,26 @@ game.state.add('Preload2',require('./game2/preload2.js'));
 game.state.add("Title2",require('./game2/title2.js'));
 game.state.add("Game2",require('./game2/game2.js'));
 game.state.add("Victory2",require('./game2/victory2.js'));
+game.state.add('Preload3',require('./game3/preload3.js'));
+game.state.add("Title3",require('./game3/title3.js'));
+game.state.add("Game3",require('./game3/game3.js'));
+game.state.add("Victory3",require('./game3/victory3.js'));
 game.state.add('Boot', require('./boot.js'));
 game.state.add('Wrapper', require('./wrapper.js'));
 //start game in boot state.
 game.state.start('Boot');
-},{"./boot.js":1,"./game1/game1.js":3,"./game1/preload1.js":4,"./game1/title1.js":5,"./game1/victory1.js":6,"./game2/game2.js":7,"./game2/preload2.js":8,"./game2/title2.js":9,"./game2/victory2.js":10,"./wrapper.js":11}],3:[function(require,module,exports){
+},{"./boot.js":1,"./game1/game1.js":3,"./game1/preload1.js":4,"./game1/title1.js":5,"./game1/victory1.js":6,"./game2/game2.js":7,"./game2/preload2.js":8,"./game2/title2.js":9,"./game2/victory2.js":10,"./game3/game3.js":11,"./game3/preload3.js":12,"./game3/title3.js":13,"./game3/victory3.js":14,"./wrapper.js":15}],3:[function(require,module,exports){
 module.exports = {
     /**
     *Game2 class. The game1 object, primary state of the game, handles all actual gameplay.
-  
+
     *@class game2
-  
+
     */
     /**
-     * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.  
+     * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.
      * @method create
-     *   
+     *
      */
     create: function() {
         this.urgency = 1;
@@ -195,7 +199,7 @@ module.exports = {
     /**
      * Pauses the game, shows instruction screen
      * @method pauseGame
-     *   
+     *
      */
     pauseGame: function() {
         this.game.paused = true;
@@ -205,7 +209,7 @@ module.exports = {
     /**
      * Unpauses the game, removes the instruction screen
      * @method unpauseGame
-     *   
+     *
      */
     unpauseGame: function() {
         this.game.paused = false;
@@ -217,7 +221,7 @@ module.exports = {
      * Functionality called every time game updates. Moves sprites, checks collision, updates time
      *Precondition: Game created and exists
      * @method update
-     *   
+     *
      */
     update: function() {
         // Check if time is 2/3 or 1/3 and create new spawners for faster spawn rate
@@ -284,7 +288,7 @@ module.exports = {
                 {
                     this.multiplier += 1;
                 }
-                currentChild.kill(); 
+                currentChild.kill();
                 safeChildren.remove(currentChild);
             }
 
@@ -297,7 +301,7 @@ module.exports = {
         /*
             generate a random x coordinate
             within 6 sections of the visible screen
-            and two off-screen sections 
+            and two off-screen sections
         */
         generateXPoint = function(sect) {
             switch (sect) {
@@ -339,7 +343,7 @@ module.exports = {
             yPoints.push(generateYPoint(i));
             xPoints.push(generateXPoint(i));
         }
-        //define those lists in object with 
+        //define those lists in object with
         //properties y and x
         var pathPts = {
             'y': yPoints,
@@ -371,7 +375,7 @@ module.exports = {
      *Postcondition: Sprite exists and is still safe
      * @method onSafeClick Function to execute when safe sprite is clicked
      * @param {} sprite Sprite object that is being clicked
-     *   
+     *
      */
     onSafeClick: function(sprite) {
 
@@ -392,7 +396,7 @@ module.exports = {
      *Postcondition: Sprite is replaced by safe sprite
      * @method onUnsafeClick Function to be executed when an unsafe sprite is clicked
      * @param {} sprite Sprite object that is being clicked
-     *   
+     *
      */
     onUnsafeClick: function(sprite) {
 
@@ -415,7 +419,7 @@ module.exports = {
      * Called when player wins the game or loses
      *Postcondition: game is now in victory2 state
      * @method victory
-     *   
+     *
      */
     victory: function() {
         safeChildren.forEach(function(child) {
@@ -432,7 +436,7 @@ module.exports = {
      * @param {} group Group the children will belong to
      * @param {} spriteName Name of the sprite used for the children
      * @param {} listener Function to be executed when children are clicked
-     *   
+     *
      */
     placeRandomChildren: function(group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
@@ -455,7 +459,7 @@ module.exports = {
      * @param {} x x coordinate
      * @param {} y y coordinate
      * @param {} direction direction sprite will move in
-     *   
+     *
      */
     startSpawn: function(timeDelay, x, y, direction) {
         var delayTime = Phaser.Timer.SECOND * timeDelay;
@@ -467,7 +471,7 @@ module.exports = {
      * Modifies the clock time of the game
      *Postcondition: timeRemaining is one less
      * @method updateTime
-     *   
+     *
      */
     updateTime: function() {
         timeRemaining -= 1;
@@ -481,7 +485,7 @@ module.exports = {
      * @param {} startx x coordinate
      * @param {} starty y coordinate
      * @param {} direction direction the child will move in
-     *   
+     *
      */
     createRandomChild: function(startx, starty, direction) {
         var group;
@@ -516,7 +520,7 @@ module.exports = {
 
     //function to create a child, called by create random child
     /**
-     * function to create a child, called by create random child. Gives x y coordinates, 
+     * function to create a child, called by create random child. Gives x y coordinates,
       direction to move in, group belongs to, name of image, and function to call when clicked
      *Postcondition: Group size is increased by one
      * @method createChild
@@ -551,7 +555,7 @@ module.exports = {
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
-        
+
         //animation and scale setup
         //name, frames, fps, boolean for loop (true means plays more than once)
         child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
@@ -564,7 +568,7 @@ module.exports = {
         /**
          * Makes sprite red
          * @method flashRed
-         *   
+         *
          */
         child.flashRed = function() {
             child.tint = 0xff0000;
@@ -573,16 +577,16 @@ module.exports = {
         /**
          * Returns a sprite to its original color after flashing red
          * @method restoreColor
-         *   
+         *
          */
         child.restoreColor = function() {
             child.tint = 0xFFFFFF;
         };
 
         /**
-         * Starts the sprite flashing red to warn player 
+         * Starts the sprite flashing red to warn player
          * @method startRed
-         *   
+         *
          */
         child.startRed = function() {
             child.flashRed();
@@ -591,7 +595,7 @@ module.exports = {
          * Tells a sprite object to move in its current direction
          *Precondition: child has a valid direction to move in and a valid velocity to move by
          * @method move
-         *   
+         *
          */
         child.move = function() {
             if (this.path[this.pi] == null) {
@@ -612,15 +616,15 @@ module.exports = {
 module.exports = {
 	  /**
   *preload1 class. The preload object, first state of the game, preloads all necessary assets
-  
+
   *@class preload1
-  
+
   */
-  
+
      /**
      * phaser preload function  -- loads in all necessary assets (images, sprites, spritesheets, audio) for use in the other game states
      * @method preload
-     *   
+     *
      */
     preload: function() {
         this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
@@ -639,11 +643,11 @@ module.exports = {
         this.game.load.image('life', './assets/game1/images/bike_life.png');
 
     },
-	
+
 	   /**
      * phaser create function  -- loads next state, the title screen
      * @method create
-     *   
+     *
      */
     create: function() {
         this.game.state.start("Title1");
@@ -653,14 +657,14 @@ module.exports = {
 module.exports = {
 	  /**
   *title1 class. The title1 object, just displays title screen
-  
+
   *@class title1
   */
-  
+
      /**
      * phaser create function  -- initializes the title state, displays title screen and play button.
      * @method create
-     * @return 
+     * @return
      */
     create: function() {
         var titleBg = this.add.sprite(this.game.width, this.game.height, 'title page bg');
@@ -676,13 +680,13 @@ module.exports = {
 
         playButton.events.onInputDown.add(this.playGame,this);
 
-       
+
     },
-	
+
 	   /**
      * playGame function that begins the gameplay state Game1
      * @method playGame
-     * @return 
+     * @return
      */
     playGame: function() {
         this.game.state.start("Game1");
@@ -693,19 +697,19 @@ module.exports = {
 module.exports = {
     /**
   *Victory1 class. The victory1 object, final state of the game
-  
+
   *@class victory1
-  
+
   */
 
     /**
-     * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates 
+     * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates
      * @method create
-     * @return 
+     * @return
      */
     create: function() {
         //get the cookie for high scores.
-    /* Deprecated - Get high score data from cookies - Deprecated */  
+    /* Deprecated - Get high score data from cookies - Deprecated */
         //highScores = Cookies.getJSON('high_scores_game2');
         responseArray = [];
     /* Send a POST request to the high score database
@@ -762,7 +766,7 @@ module.exports = {
             align: "center"
         };
 
-    // Deprecated 
+    // Deprecated
         // var yourScore = this.game.add.text(431, 172, score + " points", textStyle);
         // yourScore.x = 12 * this.game.width / 20;
         // yourScore.y = 6.5 * this.game.height / 20;
@@ -770,33 +774,33 @@ module.exports = {
     // End Deprecated Code
 
     //Display the 4 highest scores that were pulled from the database.
-        // If the scores didn't make it to the client for some reason, just display the user's current score.
-        scores0 = this.game.add.text(11 * this.game.width / 20, 6.5 * this.game.height / 20, (responseArray[0] + " points").trim(), textStyle);
-        scores0.visible = true;
-        // Load up the high scores, but don't display them yet. 
-        scores1 = this.game.add.text(11 * this.game.width / 20, 8 * this.game.height / 20, responseArray[1] + " points", textStyle);
-        scores2 = this.game.add.text(11 * this.game.width / 20, 9.5 * this.game.height / 20, responseArray[2] + " points", textStyle);
-        scores3 = this.game.add.text(11 * this.game.width / 20, 11 * this.game.height / 20, responseArray[3] + " points", textStyle);
-        scores1.visible = false;
-        scores2.visible = false;
-        scores3.visible = false;
+    // If the scores didn't make it to the client for some reason, just display the user's current score.
+    scores0 = this.game.add.text(11 * this.game.width / 20, 6.5 * this.game.height / 20, (responseArray[0] + " points").trim(), textStyle);
+    scores0.visible = true;
+    // Load up the high scores, but don't display them yet.
+    scores1 = this.game.add.text(11 * this.game.width / 20, 8 * this.game.height / 20, responseArray[1] + " points", textStyle);
+    scores2 = this.game.add.text(11 * this.game.width / 20, 9.5 * this.game.height / 20, responseArray[2] + " points", textStyle);
+    scores3 = this.game.add.text(11 * this.game.width / 20, 11 * this.game.height / 20, responseArray[3] + " points", textStyle);
+    scores1.visible = false;
+    scores2.visible = false;
+    scores3.visible = false;
 
-        //Display the high scores iff they made it back successfully and weren't equal to NULL
-        if(responseArray[1] > 0) {
-            scores1.visible = true;
-        }
-        if(responseArray[2] > 0) {
-            scores2.visible = true;
-        }
-        if(responseArray[3] > 0) {
-            scores3.visible = true;
-        }
+    //Display the high scores iff they made it back successfully and weren't equal to NULL
+    if(responseArray[1] > 0) {
+        scores1.visible = true;
+    }
+    if(responseArray[2] > 0) {
+        scores2.visible = true;
+    }
+    if(responseArray[3] > 0) {
+        scores3.visible = true;
+    }
 
-        // Show the user his/her score at the bottom of the results page
-        this.game.add.text(this.game.width / 2 - 275, 6 * this.game.height / 7, "Your Score:       " + score + " points!", {font: "bold 60px Arial", fill:"#ffffff"})
+    // Show the user his/her score at the bottom of the results page
+    this.game.add.text(this.game.width / 2 - 275, 6 * this.game.height / 7, "Your Score:       " + score + " points!", {font: "bold 60px Arial", fill:"#ffffff"})
 
-        //add an input function to the replay menut to send back to the wrapper
-        replayButton.events.onInputDown.add(this.restart, this);
+    //add an input function to the replay menut to send back to the wrapper
+    replayButton.events.onInputDown.add(this.restart, this);
 
     /* Deprecated - high scores using cookies - Deprecated */
         //push out the lowest score.
@@ -816,14 +820,14 @@ module.exports = {
 module.exports = {
     /**
     *Game2 class. The game1 object, primary state of the game, handles all actual gameplay.
-  
+
     *@class game2
-  
+
     */
     /**
-     * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.  
+     * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.
      * @method create
-     *   
+     *
      */
     create: function() {
         this.urgency = 1;
@@ -917,7 +921,7 @@ module.exports = {
     /**
      * Pauses the game, shows instruction screen
      * @method pauseGame
-     *   
+     *
      */
     pauseGame: function() {
         this.game.paused = true;
@@ -927,7 +931,7 @@ module.exports = {
     /**
      * Unpauses the game, removes the instruction screen
      * @method unpauseGame
-     *   
+     *
      */
     unpauseGame: function() {
         this.game.paused = false;
@@ -939,7 +943,7 @@ module.exports = {
      * Functionality called every time game updates. Moves sprites, checks collision, updates time
      *Precondition: Game created and exists
      * @method update
-     *   
+     *
      */
     update: function() {
         // Check if time is 2/3 or 1/3 and create new spawners for faster spawn rate
@@ -1006,7 +1010,7 @@ module.exports = {
                 {
                     this.multiplier += 1;
                 }
-                currentChild.kill(); 
+                currentChild.kill();
                 safeChildren.remove(currentChild);
             }
 
@@ -1019,7 +1023,7 @@ module.exports = {
         /*
             generate a random x coordinate
             within 6 sections of the visible screen
-            and two off-screen sections 
+            and two off-screen sections
         */
         generateXPoint = function(sect) {
             switch (sect) {
@@ -1061,7 +1065,7 @@ module.exports = {
             yPoints.push(generateYPoint(i));
             xPoints.push(generateXPoint(i));
         }
-        //define those lists in object with 
+        //define those lists in object with
         //properties y and x
         var pathPts = {
             'y': yPoints,
@@ -1093,7 +1097,7 @@ module.exports = {
      *Postcondition: Sprite exists and is still safe
      * @method onSafeClick Function to execute when safe sprite is clicked
      * @param {} sprite Sprite object that is being clicked
-     *   
+     *
      */
     onSafeClick: function(sprite) {
 
@@ -1114,7 +1118,7 @@ module.exports = {
      *Postcondition: Sprite is replaced by safe sprite
      * @method onUnsafeClick Function to be executed when an unsafe sprite is clicked
      * @param {} sprite Sprite object that is being clicked
-     *   
+     *
      */
     onUnsafeClick: function(sprite) {
 
@@ -1138,10 +1142,10 @@ module.exports = {
      * Precondition: timeRemaining <= 0
      * Postcondition: game is now in victory2 state
      * @method victory
-     *   
+     *
      */
     victory: function() {
-    // Kill off each remaining child    
+    // Kill off each remaining child
         safeChildren.forEach(function(child) {
             child.kill();
         });
@@ -1162,7 +1166,7 @@ module.exports = {
      * @param {} group Group the children will belong to
      * @param {} spriteName Name of the sprite used for the children
      * @param {} listener Function to be executed when children are clicked
-     *   
+     *
      */
     placeRandomChildren: function(group, spriteName, listener) {
         for (var i = 0; i < 3; i++) {
@@ -1185,7 +1189,7 @@ module.exports = {
      * @param {} x x coordinate
      * @param {} y y coordinate
      * @param {} direction direction sprite will move in
-     *   
+     *
      */
     startSpawn: function(timeDelay, x, y, direction) {
         var delayTime = Phaser.Timer.SECOND * timeDelay;
@@ -1197,7 +1201,7 @@ module.exports = {
      * Modifies the clock time of the game
      *Postcondition: timeRemaining is one less
      * @method updateTime
-     *   
+     *
      */
     updateTime: function() {
         timeRemaining -= 1;
@@ -1211,7 +1215,7 @@ module.exports = {
      * @param {} startx x coordinate
      * @param {} starty y coordinate
      * @param {} direction direction the child will move in
-     *   
+     *
      */
     createRandomChild: function(startx, starty, direction) {
         var group;
@@ -1246,7 +1250,7 @@ module.exports = {
 
     //function to create a child, called by create random child
     /**
-     * function to create a child, called by create random child. Gives x y coordinates, 
+     * function to create a child, called by create random child. Gives x y coordinates,
       direction to move in, group belongs to, name of image, and function to call when clicked
      *Postcondition: Group size is increased by one
      * @method createChild
@@ -1281,7 +1285,7 @@ module.exports = {
         this.game.physics.enable(child, Phaser.Physics.ARCADE, true);
         child.checkWorldBounds = true;
         child.outOfBoundsKill = true;
-        
+
         //animation and scale setup
         //name, frames, fps, boolean for loop (true means plays more than once)
         child.animations.add('row', [0, 1, 2, 3, 4], 4, true);
@@ -1294,7 +1298,7 @@ module.exports = {
         /**
          * Makes sprite red
          * @method flashRed
-         *   
+         *
          */
         child.flashRed = function() {
             child.tint = 0xff0000;
@@ -1303,16 +1307,16 @@ module.exports = {
         /**
          * Returns a sprite to its original color after flashing red
          * @method restoreColor
-         *   
+         *
          */
         child.restoreColor = function() {
             child.tint = 0xFFFFFF;
         };
 
         /**
-         * Starts the sprite flashing red to warn player 
+         * Starts the sprite flashing red to warn player
          * @method startRed
-         *   
+         *
          */
         child.startRed = function() {
             child.flashRed();
@@ -1321,7 +1325,7 @@ module.exports = {
          * Tells a sprite object to move in its current direction
          *Precondition: child has a valid direction to move in and a valid velocity to move by
          * @method move
-         *   
+         *
          */
         child.move = function() {
             if (this.path[this.pi] == null) {
@@ -1342,15 +1346,15 @@ module.exports = {
 module.exports = {
 	  /**
   *preload2 class. The preload object, first state of the game, preloads all necessary assets
-  
+
   *@class preload2
-  
+
   */
-  
+
      /**
      * phaser preload function  -- loads in all necessary assets (images, sprites, spritesheets, audio) for use in the other game states
      * @method preload
-     *   
+     *
      */
     preload: function() {
         this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
@@ -1369,11 +1373,11 @@ module.exports = {
         this.game.load.image('life', './assets/game2/images/life_ring.png');
 
     },
-	
+
 	   /**
      * phaser create function  -- loads next state, the title screen
      * @method create
-     *   
+     *
      */
     create: function() {
         this.game.state.start("Title2");
@@ -1383,14 +1387,14 @@ module.exports = {
 module.exports = {
 	  /**
   *title2 class. The title1 object, just displays title screen
-  
+
   *@class title2
   */
-  
+
      /**
      * phaser create function  -- initializes the title state, displays title screen and play button.
      * @method create
-     * @return 
+     * @return
      */
     create: function() {
         var titleBg = this.add.sprite(this.game.width, this.game.height, 'title page bg');
@@ -1410,13 +1414,13 @@ module.exports = {
 
         playButton.events.onInputDown.add(this.playGame,this);
 
-       
+
     },
-	
+
 	   /**
      * playGame function that begins the gameplay state Game1
      * @method playGame
-     * @return 
+     * @return
      */
     playGame: function() {
         this.game.state.start("Game2");
@@ -1427,19 +1431,19 @@ module.exports = {
 module.exports = {
     /**
   *Victory2 class. The victory1 object, final state of the game
-  
+
   *@class victory2
-  
+
   */
 
     /**
-     * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates 
+     * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates
      * @method create
-     * @return 
+     * @return
      */
     create: function() {
         //get the cookie for high scores.
-    /* Deprecated - Get high score data from cookies - Deprecated */  
+    /* Deprecated - Get high score data from cookies - Deprecated */
         //highScores = Cookies.getJSON('high_scores_game2');
         responseArray = [];
     /* Send a POST request to the high score database
@@ -1498,7 +1502,7 @@ module.exports = {
             align: "center"
         };
 
-    // Deprecated 
+    // Deprecated
         // var yourScore = this.game.add.text(431, 172, score + " points", textStyle);
         // yourScore.x = 12 * this.game.width / 20;
         // yourScore.y = 6.5 * this.game.height / 20;
@@ -1509,7 +1513,7 @@ module.exports = {
         // If the scores didn't make it to the client for some reason, just display the user's current score.
         scores0 = this.game.add.text(11 * this.game.width / 20, 6.5 * this.game.height / 20, (responseArray[0] + " points").trim(), textStyle);
         scores0.visible = true;
-        // Load up the high scores, but don't display them yet. 
+        // Load up the high scores, but don't display them yet.
         scores1 = this.game.add.text(11 * this.game.width / 20, 8 * this.game.height / 20, responseArray[1] + " points", textStyle);
         scores2 = this.game.add.text(11 * this.game.width / 20, 9.5 * this.game.height / 20, responseArray[2] + " points", textStyle);
         scores3 = this.game.add.text(11 * this.game.width / 20, 11 * this.game.height / 20, responseArray[3] + " points", textStyle);
@@ -1549,26 +1553,353 @@ module.exports = {
     }
 };
 
+
+
+
+
+
+//START OF NEW STUFF
+
+
+
+
+
 },{}],11:[function(require,module,exports){
+module.exports = {
+    /**
+    *Game3 class. The game3 object, primary state of the game, handles all actual gameplay.
+
+    *@class game3
+
+    */
+    /**
+     * phaser create function  -- initializes the game state, initialize game map, sounds, text messages, and clock. Starts spawners. Creates shifters for path manipulation.
+     * @method create
+     *
+     */
+    create: function() {
+        this.urgency = 1;
+        this.multiplier = 1;
+
+        //Add background
+        puzzleBackground = this.add.sprite(this.game.height, this.game.width, 'dangerous stove');
+        puzzleBackground.x = 0;
+        puzzleBackground.y = 0;
+        puzzleBackground.height = this.game.height;
+        puzzleBackground.width = this.game.width;
+    },
+
+    /**
+     * Pauses the game, shows instruction screen
+     * @method pauseGame
+     *
+     */
+    pauseGame: function() {
+        this.game.paused = true;
+        instructions.visible = true;
+
+    },
+    /**
+     * Unpauses the game, removes the instruction screen
+     * @method unpauseGame
+     *
+     */
+    unpauseGame: function() {
+        this.game.paused = false;
+        instructions.visible = false;
+
+    },
+    //phaser update function
+    /**
+     * Functionality called every time game updates. Moves sprites, checks collision, updates time
+     *Precondition: Game created and exists
+     * @method update
+     *
+     */
+    update: function() {
+
+    },
+
+
+
+    // Clicking a sprite being safe
+    /**
+     * Called when clicking an already safe sprite, gives warning message
+     *Precondition: Sprite exists and is safe
+     *Postcondition: Sprite exists and is still safe
+     * @method onSafeClick Function to execute when safe sprite is clicked
+     * @param {} sprite Sprite object that is being clicked
+     *
+     */
+    onSafeClick: function(sprite) {
+
+
+    },
+
+    // Clicking a sprite being unsafe
+    //creates a child to replace old child with to "put helmet on child"
+    /**
+     *  make an unsafe child sprite into a safe child sprite after being clicked
+     *Precondition: Sprite exists and is unsafe
+     *Postcondition: Sprite is replaced by safe sprite
+     * @method onUnsafeClick Function to be executed when an unsafe sprite is clicked
+     * @param {} sprite Sprite object that is being clicked
+     *
+     */
+    onUnsafeClick: function(sprite) {
+
+
+    },
+
+    /**
+     * Called when player wins the game or loses
+     * Precondition: timeRemaining <= 0
+     * Postcondition: game is now in victory2 state
+     * @method victory
+     *
+     */
+    victory: function() {
+
+        game_over.play();
+
+        //change to victory state
+        this.game.state.start("Victory2", true, false, score);
+    }
+};
+
+},{}],12:[function(require,module,exports){
+module.exports = {
+	  /**
+  *preload3 class. The preload object, first state of the game, preloads all necessary assets
+
+  *@class preload3
+
+  */
+
+     /**
+     * phaser preload function  -- loads in all necessary assets (images, sprites, spritesheets, audio) for use in the other game states
+     * @method preload
+     *
+     */
+    preload: function() {
+        this.game.load.image('play button', './assets/game1/images/UIP-play-button.png');
+        this.game.load.image('title page bg', './assets/general/images/UIP-title_poss.jpeg');
+        this.game.load.image('dangerous stove', './assets/game3/images/image1.jpg');
+    },
+
+	   /**
+     * phaser create function  -- loads next state, the title screen
+     * @method create
+     *
+     */
+    create: function() {
+        this.game.state.start("Title3");
+    }
+};
+},{}],13:[function(require,module,exports){
+module.exports = {
+	  /**
+  *title2 class. The title1 object, just displays title screen
+
+  *@class title2
+  */
+
+     /**
+     * phaser create function  -- initializes the title state, displays title screen and play button.
+     * @method create
+     * @return
+     */
+    create: function() {
+        var titleBg = this.add.sprite(this.game.width, this.game.height, 'title page bg');
+        titleBg.x = 0;
+        titleBg.y = 0;
+        titleBg.height = this.game.height;
+        titleBg.width = this.game.width;
+        //load and play blackground music
+/*        background_music = this.add.audio('background_music');
+        background_music.play();*/
+
+        //create a play button
+        var playButton = this.game.add.sprite(319, 160, 'play button');
+        playButton.x = this.game.width - 319;
+        playButton.y = this.game.height - 160;
+        playButton.inputEnabled = true;
+
+        playButton.events.onInputDown.add(this.playGame,this);
+
+
+    },
+
+	   /**
+     * playGame function that begins the gameplay state Game1
+     * @method playGame
+     * @return
+     */
+    playGame: function() {
+        this.game.state.start("Game3");
+    }
+};
+
+},{}],14:[function(require,module,exports){
+module.exports = {
+    /**
+  *Victory2 class. The victory1 object, final state of the game
+
+  *@class victory2
+
+  */
+
+    /**
+     * phaser create function  -- initializes the victory state, initialize victory image, text messages, and scores. Starts spawners. Creates
+     * @method create
+     * @return
+     */
+    create: function() {
+        //get the cookie for high scores.
+    /* Deprecated - Get high score data from cookies - Deprecated */
+        //highScores = Cookies.getJSON('high_scores_game2');
+        responseArray = [];
+    /* Send a POST request to the high score database
+     * Returns a pipe-delimeted string of the top 5 scores (in order)
+     * (ex: 2000|1000|750|565|20)
+     */
+        $.ajax({
+            type: 'POST',
+            url: "./db-api/savescores.php",
+            data: "game=water&score=" + score,
+            dataType: "text",
+            success: function(data, status) {
+                response = data;
+                console.log("Data: " + data + "\nStatus: " + status);
+            },
+            async: false
+        });
+    // Split the XHR response if it was successfully received
+        try {
+            responseArray = (response).split("|");
+        } catch (e) { // Otherwise, follow built-in error handling procedure
+            responseArray = [score, -1, -1, -1];
+        }
+
+        if(responseArray[0] == undefined || responseArray == "NULL") {
+            responseArray[0] = score;
+        }
+        if(responseArray[1] == undefined || responseArray == "NULL") {
+            responseArray[1] = -1;
+        }
+        if(responseArray[2] == undefined || responseArray == "NULL") {
+            responseArray[2] = -1;
+        }
+        if(responseArray[3] == undefined || responseArray == "NULL") {
+            responseArray[3] = -1;
+        }
+
+
+        //background of the victory screen
+        var victoryBg = this.add.sprite(this.game.width, this.game.height, 'victory page bg');
+        victoryBg.x = 0;
+        victoryBg.y = 0;
+        victoryBg.height = this.game.height;
+        victoryBg.width = this.game.width;
+
+        //replay button
+        var replayButton = this.game.add.sprite(513, 63, 'replay button');
+        replayButton.x = (944 * this.game.width / 1024) - 513;
+        replayButton.y = (590 * this.game.height / 768) - 63;
+        replayButton.inputEnabled = true;
+
+        //universal styling
+        textStyle = {
+            font: "48px Arial",
+            fill: "#ffffff",
+            align: "center"
+        };
+
+    // Deprecated
+        // var yourScore = this.game.add.text(431, 172, score + " points", textStyle);
+        // yourScore.x = 12 * this.game.width / 20;
+        // yourScore.y = 6.5 * this.game.height / 20;
+        // yourScore.visible = true;
+    // End Deprecated Code
+
+    //Display the 4 highest scores that were pulled from the database.
+        // If the scores didn't make it to the client for some reason, just display the user's current score.
+        scores0 = this.game.add.text(11 * this.game.width / 20, 6.5 * this.game.height / 20, (responseArray[0] + " points").trim(), textStyle);
+        scores0.visible = true;
+        // Load up the high scores, but don't display them yet.
+        scores1 = this.game.add.text(11 * this.game.width / 20, 8 * this.game.height / 20, responseArray[1] + " points", textStyle);
+        scores2 = this.game.add.text(11 * this.game.width / 20, 9.5 * this.game.height / 20, responseArray[2] + " points", textStyle);
+        scores3 = this.game.add.text(11 * this.game.width / 20, 11 * this.game.height / 20, responseArray[3] + " points", textStyle);
+        scores1.visible = false;
+        scores2.visible = false;
+        scores3.visible = false;
+
+        //Display the high scores iff they made it back successfully and weren't equal to NULL
+        if(responseArray[1] > 0) {
+            scores1.visible = true;
+        }
+        if(responseArray[2] > 0) {
+            scores2.visible = true;
+        }
+        if(responseArray[3] > 0) {
+            scores3.visible = true;
+        }
+
+    // Show the user his/her score at the bottom of the results page
+        this.game.add.text(this.game.width / 2 - 275, 6 * this.game.height / 7, "Your Score:       " + score + " points!", {font: "bold 60px Arial", fill:"#ffffff"})
+
+        //add an input function to the replay menut to send back to the wrapper
+        replayButton.events.onInputDown.add(this.restart, this);
+
+    /* Deprecated - high scores using cookies - Deprecated */
+        //push out the lowest score.
+        // highScores.push(score);
+        // highScores.sort();
+        // highScores.splice(0, 1);
+        // //store the three highest scores
+        // Cookies.set('high_scores_game2', highScores);
+    },
+
+    //move to state wrapper.
+    restart: function() {
+        this.game.state.start('Wrapper');
+    }
+};
+
+//END OF NEW STUFF
+
+
+
+
+
+
+
+
+
+
+
+
+
+},{}],15:[function(require,module,exports){
 module.exports = {
 	/**
   *wrapper class. The wrapper object, first displayed screen
   the main menu screen
-  
+
   *@class wrapper
   *@module game
   */
     /**
      * Phaser preload function. Preloads assets needed for wrapper
      * @method preload
-     * @return 
+     * @return
      */
     preload: function () {
         //load images for all of the games here
         this.game.load.image("wrapper-bg", "assets/general/images/wrapper.jpg");
-        this.game.load.image("new-game-thumb", "assets/general/images/new-game-thumbnail.jpg");
         this.game.load.image("UIP-thumb", "assets/game1/images/UIP-thumbnail.jpg");
         this.game.load.image("game2-thumbnail", "assets/game2/images/UIP-thumbnail.jpg");
+        this.game.load.image("game3-thumbnail", "assets/game3/images/image1.jpg");
     },
     /**
      * Phaser create function. Adds images needed for wrapper
@@ -1601,12 +1932,14 @@ module.exports = {
         game2Image.events.onInputDown.add(this.game2Start, this);
 
 
-        //a blank image for a new game slot - no functionality because it shouldn't do anything
-        var ngImageB = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "new-game-thumb");
-        ngImageB.anchor.set(.5);
-        ngImageB.scale.setTo(.7, .7);
+        // Create the thumbnail for the third game and enable functionality to move to next game
+        var game3Image = this.game.add.sprite(5 * this.game.width / 6, this.game.height / 2, "game3-thumbnail");
+        game3Image.anchor.set(.5);
+        game3Image.scale.setTo(.17, .17);
+        game3Image.inputEnabled = true;
+        game3Image.events.onInputDown.add(this.burnPreventionStart, this);
 
-        if (uipImage !== null && game2Image !== null && ngImageB !== null) {
+        if (uipImage !== null && game2Image !== null && game3Image !== null) {
             return true;
         } else {
             return false;
@@ -1616,7 +1949,7 @@ module.exports = {
     /**
      * Function to start next state of game, "Preload1"
      * @method captainSafetySelect
-    
+
      */
     captainSafetySelect: function () {
 
@@ -1626,6 +1959,11 @@ module.exports = {
     //function that starts the game 2 state, preload.
     game2Start : function(){
         this.game.state.start('Preload2');
+    },
+
+    //function that starts the game 3 state, preload.
+    burnPreventionStart : function() {
+        this.game.state.start('Preload3');
     }
 
 }

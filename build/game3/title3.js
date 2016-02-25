@@ -2,7 +2,7 @@ module.exports = {
 	  /**
   *title2 class. The title1 object, just displays title screen
 
-  *@class title2
+  *@class title3
   */
 
      /**
@@ -37,6 +37,6 @@ module.exports = {
      * @return
      */
     playGame: function() {
-        this.game.state.start("Game2");
+        this.game.state.start("Game3");
     }
 };
