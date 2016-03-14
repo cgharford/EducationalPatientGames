@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <title>Educational Patient Games</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Educational Patient Games">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css">
+        <script type="text/javascript" src="/js/libs/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/libs/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/libs/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/js/libs/phaser.js"></script>
+        <script type="text/javascript" src="assets/js/boot.js"></script>
+        <script type="text/javascript" src="assets/js/preload.js"></script>
+        <script type="text/javascript" src="assets/js/title.js"></script>
+        <script type="text/javascript" src="assets/js/main.js"></script>
+    </head>
+    <body>
+        <div id='orientation' style="display:none;">
+            <div class="alert alert-danger" role="alert">
+                <span class="sr-only">Error:</span> Flip your device, please!
+            </div>
+        </div>
+        <div id="game-container"></div>
+        <script>
+            (function() {
+                var w = window.innerWidth * window.devicePixelRatio;
+                var h = window.innerHeight * window.devicePixelRatio;
+                var game = new Phaser.Game((h > w) ? h : w, (h > w) ? w : h, Phaser.CANVAS, "game-container");
+                game.state.add("Boot", window.boot);
+                game.state.add("Preload", window.preload);
+                game.state.add("Title", window.title);
+                game.state.add("Main", window.main);
+                game.state.start("Boot");
+            })();
+        </script>
+    </body>
+</html>
