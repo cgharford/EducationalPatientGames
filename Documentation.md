@@ -1,5 +1,0 @@
-#####Documentation
-
-
-Educational Patient Game
-======
