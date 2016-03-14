@@ -1,0 +1,23 @@
+(function() {
+
+    // Handle into boot state
+    window.boot = function(game) {
+
+    };
+
+    window.boot.prototype = {
+
+    	preload: function(){
+            // this.game.load.image("loading","assets/loading.png");
+    	},
+
+      	create: function(){
+    		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    		this.scale.pageAlignHorizontally = true;
+    		this.scale.setScreenSize();
+    		this.game.state.start("Preload");
+    	}
+
+    };
+
+})();

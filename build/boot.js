@@ -1,13 +1,13 @@
 module.exports = {
 	/**
   *boot class. The boot object, boot state of the game
-  
+
   *@class boot
   */
             /**
-             * initialize 
+             * initialize
              * @method init
-             * 
+             *
              */
             init: function () {
                 //Set high score cookies
@@ -29,7 +29,7 @@ module.exports = {
             /**
              * Phaser create function, starts next state "Wrapper"
              * @method create
-             * 
+             *
              */
             create: function () {
 
@@ -39,7 +39,7 @@ module.exports = {
             /**
              * fixes orientation of game
              * @method enterIncorrectOrientation
-             * @return 
+             * @return
              */
             enterIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'none';
@@ -50,7 +50,7 @@ module.exports = {
             /**
              * preserves orientation of game
              * @method leaveIncorrectOrientation
-             *  
+             *
              */
             leaveIncorrectOrientation: function () {
                 document.getElementById('game-container').style.display = 'block';
