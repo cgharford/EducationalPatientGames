@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Burn Injury Prevention</title>
+    <link href="assets/css/puzzle.css" rel="stylesheet" type="text/css" />
+    <link href="/vendor/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="/vendor/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/vendor/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/vendor/js/paper.js" type="text/javascript"></script>
+    <script src="assets/js/puzzle.js" type="text/javascript"></script>
+    <script src="assets/js/board.js" type="text/paperscript" canvas="board"></script>
+    <script src="assets/js/finished.js" type="text/javascript"></script>
+</head>
+<body>
+    <div id="wrapper">
+
+        <div id="game-header">
+            Safety First
+
+            <span id="tool-bar">
+                <div id="timer">
+                    Add more here <span>00:00</span>
+                </div>
+            </span>
+        </div>
+
+
+        <div id="finished-instructions" class="">
+
+            Click on the dangerous spot in the picture
+        </div>
+        <div class="col-lg-12" id="finished-puzzle-container">
+            <!-- <img  src="assets/imgs/burn1.jpg"> -->
+
+
+            <img class="finished-puzzle-img" src="assets/imgs/burn1.jpg" alt="Planets" usemap="#planetmap">
+
+            <map name="planetmap">
+              <area shape="circle" coords="90,58,3" alt="Mercury" href="" onclick="finished-puzzle()">
+            </map>
+        </div>
+        <div class="row"></div>
+
+        <div id="board-container" class="hidden">
+            <canvas id="board" resize>
+                This is where the puzzle will be!
+            </canvas>
+        </div>
+    </div>
+</body>
+</html>
