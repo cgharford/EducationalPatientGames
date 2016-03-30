@@ -17,8 +17,50 @@
         'stove-puzzle.jpg'
     ];
     var background = potential_bgs[Math.floor(Math.random() * (potential_bgs.length + 1)]);
-    var raster_bg = new Raster('assets/imgs/' + background);
+    var background = new Raster('assets/imgs/' + background);
 
-    
+    // Define the puzzle piece orientations
+    +function() {
+
+        // The edge indicates how the piece meets with another piece. Ultimately,
+        // it is not possible to place one piece to another if the sum of their
+        // edges do not add to 0
+        var Edge = Object.freeze({
+            FLAT: 0,
+            CONVEX: 1,
+            CONCAVE: -1
+        });
+
+        // Each puzzle shape is defined as an array of 4 Edge objects
+        // where the indices represent respectively top, right, bottom, left
+        window.puzzle.shapePieces = function(width, height) {
+            var shapes = [];
+
+            for(var i = 0; i < width; i++) {
+                for(var j = 0; j < height; j++) {
+
+                    var currentShape = [];
+
+                    // Top/bottom edges
+                    if(i === 0) {
+                        currentShape[0] = Edge.FLAT;
+                    } else if(i === height - 1) {
+                        currentShape[2] = Edge.FLAT;
+                    }
+
+                    // Left/right edges
+                    if(j === 0) {
+                        currentShape[3] = Edge.FLAT;
+                    } else if(j === width - 1) {
+                        currentShape[2] = Edge.FLAT;
+                    }
+
+                    shapes.push(currentShape);
+                }
+            }
+
+        }
+
+    }
 
 }();
