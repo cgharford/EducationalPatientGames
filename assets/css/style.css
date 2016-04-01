@@ -52,7 +52,7 @@ body{
     box-shadow: 0 0 10px #3D9299;
 }
 
-#contentContainer {
+.contentContainer {
     background: #eee;
     border-radius: .5em;
     margin: 5em 7em;
@@ -129,14 +129,16 @@ body{
     left:35%;
     right:35%;
 }
-/*
-#game-container{
-    padding-top:50px;
-    padding-bottom:50px;
-}
-*/
+
 footer{
     color: white;
     height: 70px;
     position: relative;
+}
+
+/* Styles for mobile screen size */
+@media screen and (max-width: 770px) {
+    .contentContainer {
+        margin: 1.5em;
+    }
 }
