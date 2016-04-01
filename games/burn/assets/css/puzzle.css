@@ -14,7 +14,7 @@ html, body {
     background-color: #009CD6;
     color: #eee;
     font-family: 'Comic Sans MS';
-    padding: 1em 3em;
+    padding: 20px 30px;
     font-size: 50px;
 }
 
@@ -26,15 +26,12 @@ html, body {
 }
 
 #timer {
-    /*top: 0;
-    left: 0;
-    padding: 15px;
-    position: fixed;
-    background: rgba(187, 187, 187, 0.8);
-    color: white;*/
-
     font-size: 30px;
     color: black;
+}
+
+#tool-bar {
+    display: none;
 }
 
 #level-select-container {
@@ -48,7 +45,6 @@ html, body {
     linear-gradient(0deg, #7DFC28 0%, #7DFC28 20%, #7DFC28 30%, #7DFC28 40%, #7DFC28 50%, #7DFC28 60%, #7DFC28 70%, #7DFC28 80%, #7DFC28 90%, #7DFC28 100%);
     background-size: 470px 470px, 970px 970px, 410px 410px, 610px 610px, 530px 530px, 730px 730px, 100% 100%;
     background-color: #7DFC28;
-
     padding: 1.5em .75em;
     border-radius: .5em;
     border: solid #FFBB15 20px;
@@ -76,35 +72,17 @@ html, body {
 }
 
 .puzzle-img:hover {
-    position:relative;
+    cursor: pointer;
     border: 20px solid #eee;
 }
 
-
 #board {
     background-color: blue;
+    align-items: center;
     max-width: 50%;
     max-height: 50%;
-    align-items: center;
+    display: none;
     color: white;
-}
-
-#finished-instructions {
-    font-size: 25px;
-    font-family: sans-serif;;
-    color: #FFBB15;
-    text-align: center;
-    padding: 1em;
-}
-
-#finished-puzzle-container {
-    text-align: center;
-}
-
-.finished-puzzle-img {
-    height: 70%;
-    width: 70%;
-    border: 25px solid #7DFC28;
 }
 
 .hidden {
