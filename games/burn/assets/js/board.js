@@ -12,10 +12,11 @@
  *
  * Representation of a puzzle piece.
 */
-var TileTemplate = function(width, height) {
+var TileTemplate = function(width, height, margin) {
 
     this.width  = width;
     this.height = height;
+    this.margin = margin;
     this.top    = this.Edge.FLAT;
     this.right  = this.Edge.FLAT;
     this.bottom = this.Edge.FLAT;
@@ -35,18 +36,18 @@ var TileTemplate = function(width, height) {
         var mask = this.createMask();
 
         // Obtain tile raster
-        var clone = image.clone();
-        var size = new Size(this.width, this.height);
-        var offset = new Point(this.width * position[0], this.height * position[1]);
-        var tileRaster = this.createTileRaster(clone, size, offset);
+        // var clone = image.clone();
+        // var size = new Size(this.width, this.height);
+        // var offset = new Point(this.width * position[0], this.height * position[1]);
+        // var tileRaster = this.createTileRaster(clone, size, offset);
 
         // Create border
         var border = mask.clone();
         border.strokeColor = '#CCC';
-        border.strokeWidth = 15;
+        border.strokeWidth = 25;
 
         // Join all components together to form the tile
-        return new Group(mask, border, tileRaster);
+        return new Group(mask, border/*, tileRaster*/);
     };
 
     // Create Mask
@@ -58,7 +59,7 @@ var TileTemplate = function(width, height) {
     this.createMask = function() {
 
         var ratio = this.width / 100.0;
-        var curvyCoords = [
+        var coords = [
               0, 0, 35, 15, 37, 5,
               37, 5, 40, 0, 38, -5,
               38, -5, 20, -20, 50, -20,
@@ -68,44 +69,41 @@ var TileTemplate = function(width, height) {
         ];
 
         var mask = new Path();
-        var tileCenter = view.center;
+        mask.opacity = 0.25;
+        mask.strokeColor = '#FFF';
 
         // We build the path around the rectangular piece
-        var topLeftEdge = new Point(-4, 4);
-        mask.moveTo(topLeftEdge);
-        for (var i = 0; i < curvyCoords.length / 6; i++) {
-            var p1 = topLeftEdge + new Point(curvyCoords[i * 6 + 0] * ratio, this.top * curvyCoords[i * 6 + 1] * ratio);
-            var p2 = topLeftEdge + new Point(curvyCoords[i * 6 + 2] * ratio, this.top * curvyCoords[i * 6 + 3] * ratio);
-            var p3 = topLeftEdge + new Point(curvyCoords[i * 6 + 4] * ratio, this.top * curvyCoords[i * 6 + 5] * ratio);
+        mask.moveTo(new Point(0, 0));
+        for (var i = 0; i < coords.length / 6; i++) {
+            var p1 = new Point(coords[i * 6 + 0] * ratio, this.top * coords[i * 6 + 1] * ratio);
+            var p2 = new Point(coords[i * 6 + 2] * ratio, this.top * coords[i * 6 + 3] * ratio);
+            var p3 = new Point(coords[i * 6 + 4] * ratio, this.top * coords[i * 6 + 5] * ratio);
             mask.cubicCurveTo(p1, p2, p3);
         }
 
-        var topRightEdge = topLeftEdge + new Point(this.width, 0);
-        for (var i = 0; i < curvyCoords.length / 6; i++) {
-            var p1 = topRightEdge + new Point(-this.right * curvyCoords[i * 6 + 1] * ratio, curvyCoords[i * 6 + 0] * ratio);
-            var p2 = topRightEdge + new Point(-this.right * curvyCoords[i * 6 + 3] * ratio, curvyCoords[i * 6 + 2] * ratio);
-            var p3 = topRightEdge + new Point(-this.right * curvyCoords[i * 6 + 5] * ratio, curvyCoords[i * 6 + 4] * ratio);
+        var topRightEdge = new Point(this.width, 0);
+        for (var i = 0; i < coords.length / 6; i++) {
+            var p1 = topRightEdge + new Point(-this.right * coords[i * 6 + 1] * ratio, coords[i * 6 + 0] * ratio);
+            var p2 = topRightEdge + new Point(-this.right * coords[i * 6 + 3] * ratio, coords[i * 6 + 2] * ratio);
+            var p3 = topRightEdge + new Point(-this.right * coords[i * 6 + 5] * ratio, coords[i * 6 + 4] * ratio);
             mask.cubicCurveTo(p1, p2, p3);
         }
 
         var bottomRightEdge = topRightEdge + new Point(0, this.width);
-        for (var i = 0; i < curvyCoords.length / 6; i++) {
-            var p1 = bottomRightEdge - new Point(curvyCoords[i * 6 + 0] * ratio, this.bottom * curvyCoords[i * 6 + 1] * ratio);
-            var p2 = bottomRightEdge - new Point(curvyCoords[i * 6 + 2] * ratio, this.bottom * curvyCoords[i * 6 + 3] * ratio);
-            var p3 = bottomRightEdge - new Point(curvyCoords[i * 6 + 4] * ratio, this.bottom * curvyCoords[i * 6 + 5] * ratio);
+        for (var i = 0; i < coords.length / 6; i++) {
+            var p1 = bottomRightEdge - new Point(coords[i * 6 + 0] * ratio, this.bottom * coords[i * 6 + 1] * ratio);
+            var p2 = bottomRightEdge - new Point(coords[i * 6 + 2] * ratio, this.bottom * coords[i * 6 + 3] * ratio);
+            var p3 = bottomRightEdge - new Point(coords[i * 6 + 4] * ratio, this.bottom * coords[i * 6 + 5] * ratio);
             mask.cubicCurveTo(p1, p2, p3);
         }
 
         var bottomLeftEdge = bottomRightEdge - new Point(this.width, 0);
-        for (var i = 0; i < curvyCoords.length / 6; i++) {
-            var p1 = bottomLeftEdge - new Point(-this.left * curvyCoords[i * 6 + 1] * ratio, curvyCoords[i * 6 + 0] * ratio);
-            var p2 = bottomLeftEdge - new Point(-this.left * curvyCoords[i * 6 + 3] * ratio, curvyCoords[i * 6 + 2] * ratio);
-            var p3 = bottomLeftEdge - new Point(-this.left * curvyCoords[i * 6 + 5] * ratio, curvyCoords[i * 6 + 4] * ratio);
+        for (var i = 0; i < coords.length / 6; i++) {
+            var p1 = bottomLeftEdge - new Point(-this.left * coords[i * 6 + 1] * ratio, coords[i * 6 + 0] * ratio);
+            var p2 = bottomLeftEdge - new Point(-this.left * coords[i * 6 + 3] * ratio, coords[i * 6 + 2] * ratio);
+            var p3 = bottomLeftEdge - new Point(-this.left * coords[i * 6 + 5] * ratio, coords[i * 6 + 4] * ratio);
             mask.cubicCurveTo(p1, p2, p3);
         }
-
-        mask.opacity = 0.25;
-        mask.strokeColor = '#FFF';
 
         return mask;
     };
@@ -113,19 +111,18 @@ var TileTemplate = function(width, height) {
     // Create Tile Raster
     //
     // The following pulls out the segment of the image in question (with some
-    // margin), setting the data of the raster to the segment
+    // margin), setting the data of the raster to the segment. Note the 'empty'
+    // image is literally an empty image that we use as an empty template to
+    // begin with and then replace with the necessary content
     this.createTileRaster = function(src, size, offset) {
-        var marginWidth = this.width * 0.203125;
-        var tileWithMarginWidth = size.width + marginWidth * 2;
         var raster = new Raster(document.getElementById('empty'));
         raster.position = new Point(28, 36);
-        raster.setData(src.getData(
-            new Rectangle(
-                offset.x - marginWidth,
-                offset.y - marginWidth,
-                tileWithMarginWidth,
-                tileWithMarginWidth)),
-            new Point(0, 0));
+        raster.setData(src.getData(new Rectangle(
+                        offset.x - this.margin,
+                        offset.y - this.margin,
+                        size.width + this.margin * 2,
+                        size.width + this.margin * 2)),
+                        new Point(0, 0));
         return raster;
     };
 
@@ -184,7 +181,7 @@ var Puzzle = function() {
         var height = this.getDimension()[1];
         for(var i = 0; i < width; i++) {
             for(var j = 0; j < height; j++) {
-                outlines.push(new TileTemplate(this.tileWidth, this.tileHeight));
+                outlines.push(new TileTemplate(this.tileWidth, this.tileHeight, this.marginWidth));
             }
         }
 
@@ -206,12 +203,62 @@ var Puzzle = function() {
         return outlines;
     };
 
+    // Build Tiles
+    //
+    // The following function constructs the tiles out of the tile templates also
+    // constructed within the function. They are not placed in any particular location
+    // by this call
+    this.buildTiles = function() {
+        var tiles = [];
+        var templates = this.randomizeEdges();
+        for(var i = 0; i < height; i++) {
+            for(var j = 0; j < width; j++) {
+                var templ = templates[i * width + j];
+                var tile = templ.createTile(this.image, [j, i]);
+
+                tile.opacity = 1;
+                tile.clipped = true;
+                tile.shape = templ.getEdges();
+                tile.imagePosition = new Point(j, i);
+                tile.cellPosition = new Point(j + 1, i + 1);
+
+                tiles.push(tile);
+            }
+        }
+
+        return tiles;
+    }
+
+    // Scale Board
+    //
+    // Because of the different difficulty levels and potentially different sized
+    // images, we must compute where the pieces may snap too when placing a piece
+    // down
+    this.scaleBoard = function() {
+
+    };
+
+    // Place Pieces
+    //
+    // The following places all tiles in a scaled version down to the right side
+    // of the board. One can then drag or drop the piece (with the piece in question
+    // scaling to the appropriate size once selected) and try to complete the board.
+    // Pieces are placed randomly in position.
+    this.placePieces = function() {
+
+    };
+
+    // Load
+    //
     // The following function bootstraps the puzzle onto the canvas for
     // manipulating. In particular, it randomizes the pieces after generating
     // them, and allows for them to be moved and linked together. Note the
     // passed @selector is the selector of the canvas object the puzzle should
     // be placed onto.
     this.load = function(config) {
+
+        // Show on screen completely
+        view.zoom = 0.2;
 
         // General Properties
         this.tiles = [];
@@ -226,31 +273,25 @@ var Puzzle = function() {
 
         this.tileWidth = this.image.width / width;
         this.tileHeight = this.image.height / height;
+        this.marginWidth = this.tileWidth * 0.203125;
 
-        // Building the tiles and collecting them
-        var templates = this.randomizeEdges();
-        for(var i = 0; i < height; i++) {
-            for(var j = 0; j < width; j++) {
-                var templ = templates[i * width + j];
-                var tile = templ.createTile(this.image, [j, i]);
+        // Initialze the board
+        this.tiles = this.buildTiles();
+        this.scaleBoard();
+        this.placePieces();
 
-                tile.opacity = 1;
-                tile.clipped = true;
-                tile.shape = templ.getEdges();
-                tile.imagePosition = new Point(j, i);
-
-                this.tiles.push(tile);
-            }
-        }
-
-        // Position the tiles on the board
-        for(var i = 0; i < height; i++) {
-            for(var j = 0; j < width; j++) {
-                var current = this.tiles[i * width + j];
-                current.position = new Point(0, 0);
-                current.cellPosition = new Point(j + 1, i + 1);
-            }
-        }
+        // Position the tiles on the board relative to one another
+        // for(var i = 0; i < height; i++) {
+        //     for(var j = 0; j < width; j++) {
+        //         var current = this.tiles[i * width + j];
+        //         //current.position = new Point(j * this.tileWidth, i * this.tileWidth);
+        //         if(j === 1) {
+        //             var delta = current.bounds.topRight.x - current.bounds.topLeft.x;
+        //             current.bounds.topLeft = new Point(this.tiles[0].bounds.topRight.x - 3 * this.marginWidth / 2, this.tiles[0].bounds.topRight.y);
+        //             current.bounds.topRight = new Point(current.bounds.topLeft.x + delta, current.bounds.topLeft.y);
+        //         }
+        //     }
+        // }
 
     }
 
