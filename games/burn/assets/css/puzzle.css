@@ -1,7 +1,6 @@
 html, body {
     margin: 0;
     padding: 0;
-    /*overflow: hidden;*/
     background-color: #eee;
     font-size: 12px;
 }
@@ -20,9 +19,10 @@ html, body {
 
 #tool-bar {
     float: right;
-    background-color: #eee;
-    border-radius: .25em;
     padding: 10px;
+    display: none;
+    border-radius: .25em;
+    background-color: #eee;
 }
 
 #timer {
@@ -30,19 +30,22 @@ html, body {
     color: black;
 }
 
-#tool-bar {
+#board {
+    width: 90%;
     display: none;
+    margin: 10px auto;
+    background-color: blue;
 }
 
 #level-select-container {
     background:
-    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.15) 30%, rgba(255,255,255,.3) 32%, rgba(255,255,255,0) 33%) 0 0,
-    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.1) 11%, rgba(255,255,255,.3) 13%, rgba(255,255,255,0) 14%) 0 0,
-    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 17%, rgba(255,255,255,.43) 19%, rgba(255,255,255,0) 20%) 0 110px,
-    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 11%, rgba(255,255,255,.4) 13%, rgba(255,255,255,0) 14%) -130px -170px,
-    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 11%, rgba(255,255,255,.4) 13%, rgba(255,255,255,0) 14%) 130px 370px,
-    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.1) 11%, rgba(255,255,255,.2) 13%, rgba(255,255,255,0) 14%) 0 0,
-    linear-gradient(0deg, #7DFC28 0%, #7DFC28 20%, #7DFC28 30%, #7DFC28 40%, #7DFC28 50%, #7DFC28 60%, #7DFC28 70%, #7DFC28 80%, #7DFC28 90%, #7DFC28 100%);
+        radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.15) 30%, rgba(255,255,255,.3) 32%, rgba(255,255,255,0) 33%) 0 0,
+        radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.1) 11%, rgba(255,255,255,.3) 13%, rgba(255,255,255,0) 14%) 0 0,
+        radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 17%, rgba(255,255,255,.43) 19%, rgba(255,255,255,0) 20%) 0 110px,
+        radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 11%, rgba(255,255,255,.4) 13%, rgba(255,255,255,0) 14%) -130px -170px,
+        radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 11%, rgba(255,255,255,.4) 13%, rgba(255,255,255,0) 14%) 130px 370px,
+        radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.1) 11%, rgba(255,255,255,.2) 13%, rgba(255,255,255,0) 14%) 0 0,
+        linear-gradient(0deg, #7DFC28 0%, #7DFC28 20%, #7DFC28 30%, #7DFC28 40%, #7DFC28 50%, #7DFC28 60%, #7DFC28 70%, #7DFC28 80%, #7DFC28 90%, #7DFC28 100%);
     background-size: 470px 470px, 970px 970px, 410px 410px, 610px 610px, 530px 530px, 730px 730px, 100% 100%;
     background-color: #7DFC28;
     padding: 1.5em .75em;
@@ -61,6 +64,10 @@ html, body {
     padding: 0em 0em 1em 0em;
 }
 
+#empty {
+    display: none;
+}
+
 .puzzle-img-container {
     padding: 1em;
 }
@@ -74,17 +81,4 @@ html, body {
 .puzzle-img:hover {
     cursor: pointer;
     border: 20px solid #eee;
-}
-
-#board {
-    background-color: blue;
-    align-items: center;
-    max-width: 50%;
-    max-height: 50%;
-    display: none;
-    color: white;
-}
-
-.hidden {
-    display: none;
 }
