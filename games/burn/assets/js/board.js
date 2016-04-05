@@ -22,12 +22,6 @@ var TileTemplate = function(width, height, margin) {
     this.bottom = this.Edge.FLAT;
     this.left   = this.Edge.FLAT;
 
-    // Get Values
-    // Convenience function for shaping tiles
-    this.getEdges = function() {
-        return [this.top, this.right, this.bottom, this.left];
-    };
-
     // Create Tile
     // Goes through and masks the piece, creates the border, and the tile raster
     this.createTile = function(image, position) {
@@ -35,19 +29,37 @@ var TileTemplate = function(width, height, margin) {
         // Create Mask
         var mask = this.createMask();
 
-        // Obtain tile raster
-        // var clone = image.clone();
-        // var size = new Size(this.width, this.height);
-        // var offset = new Point(this.width * position[0], this.height * position[1]);
-        // var tileRaster = this.createTileRaster(clone, size, offset);
+        // Obtain tile raster and orient
+        var offset = new Point(this.width * position[0], this.height * position[1]);
+        var tileRaster = this.createTileRaster(image, offset);
+
+        // if(this.top === this.Edge.FLAT) {
+        //     if(this.left === this.Edge.FLAT) {
+        //         tileRaster.bounds.topLeft = mask.bounds.topLeft - new Point(this.margin, this.margin);
+        //         tileRaster.bounds.bottomRight = tileRaster.bounds.topLeft + new Point(width, height);
+        //     } else if(this.right === this.Edge.FLAT) {
+        //         tileRaster.bounds.topRight = mask.bounds.topRight - new Point(0, this.margin);
+        //         tileRaster.bounds.bottomRight = tileRaster.bounds.topRight + new Point(0, height);
+        //     }
+        // } else {
+        //     tileRaster.opacity = 0;
+        // }
 
         // Create border
-        var border = mask.clone();
-        border.strokeColor = '#CCC';
-        border.strokeWidth = 25;
+        /*var border = mask.clone();
+        border.opacity = 1;
+        border.strokeColor = '#000';
+        border.strokeWidth = 15;*/
 
         // Join all components together to form the tile
-        return new Group(mask, border/*, tileRaster*/);
+        var tile = new Group(mask, /*border, */tileRaster);
+        tile.opacity = 1;
+        // tile.clipped = true;
+        tile.shape = [this.top, this.right, this.bottom, this.left];
+
+        //tileRaster.bounds.center = new Point(tile.bounds.width - tile.bounds.)
+
+        return tile;
     };
 
     // Create Mask
@@ -114,16 +126,14 @@ var TileTemplate = function(width, height, margin) {
     // margin), setting the data of the raster to the segment. Note the 'empty'
     // image is literally an empty image that we use as an empty template to
     // begin with and then replace with the necessary content
-    this.createTileRaster = function(src, size, offset) {
-        var raster = new Raster(document.getElementById('empty'));
-        raster.position = new Point(28, 36);
-        raster.setData(src.getData(new Rectangle(
-                        offset.x - this.margin,
-                        offset.y - this.margin,
-                        size.width + this.margin * 2,
-                        size.width + this.margin * 2)),
-                        new Point(0, 0));
-        return raster;
+    this.createTileRaster = function(src, offset) {
+        var bounds = new Rectangle(
+            offset.x - this.margin,
+            offset.y - this.margin,
+            this.width + 2 * this.margin,
+            this.height + 2 * this.margin);
+        var tmp = src.getSubRaster(bounds);
+        return tmp;
     };
 
 };
@@ -207,21 +217,19 @@ var Puzzle = function() {
     //
     // The following function constructs the tiles out of the tile templates also
     // constructed within the function. They are not placed in any particular location
-    // by this call
-    this.buildTiles = function() {
+    // by this call.
+    //
+    // @width: The number of tiles per row
+    // @height: The number of tiles per column
+    this.buildTiles = function(tilesPerRow, tilesPerCol) {
         var tiles = [];
         var templates = this.randomizeEdges();
-        for(var i = 0; i < height; i++) {
-            for(var j = 0; j < width; j++) {
-                var templ = templates[i * width + j];
+        for(var i = 0; i < tilesPerCol; i++) {
+            for(var j = 0; j < tilesPerRow; j++) {
+                var templ = templates[i * tilesPerRow + j];
                 var tile = templ.createTile(this.image, [j, i]);
-
-                tile.opacity = 1;
-                tile.clipped = true;
-                tile.shape = templ.getEdges();
                 tile.imagePosition = new Point(j, i);
                 tile.cellPosition = new Point(j + 1, i + 1);
-
                 tiles.push(tile);
             }
         }
@@ -233,19 +241,26 @@ var Puzzle = function() {
     //
     // Because of the different difficulty levels and potentially different sized
     // images, we must compute where the pieces may snap too when placing a piece
-    // down
-    this.scaleBoard = function() {
-
+    // down. The pieces beginon the right 20% of the board, and they are placed on
+    // the left 80% of the board.
+    this.scaleBoard = function(targetRatio) {
+        var canvas = $(view.element);
+        view.viewSize = new Size(canvas.width(), canvas.height());
+        for(var i = 0; i < this.tiles.length; i++) {
+            this.tiles[i].scale(targetRatio * view.viewSize.width / this.tiles[i].bounds.width);
+        }
+        view.draw();
     };
 
     // Place Pieces
     //
-    // The following places all tiles in a scaled version down to the right side
-    // of the board. One can then drag or drop the piece (with the piece in question
-    // scaling to the appropriate size once selected) and try to complete the board.
-    // Pieces are placed randomly in position.
+    // If a piece has not yet been placed, we place the piece in an arbitrary location.
+    // I initially tried setting up a sideboard on which to hold the pieces, but this proved
+    // a bit unwieldy in terms of both programming and using.
     this.placePieces = function() {
-
+        for(var i = 0; i < this.tiles.length; i++) {
+            this.tiles[i].position = new Point(Math.random() * view.viewSize.width, Math.random() * view.viewSize.height);
+        }
     };
 
     // Load
@@ -255,30 +270,32 @@ var Puzzle = function() {
     // them, and allows for them to be moved and linked together. Note the
     // passed @selector is the selector of the canvas object the puzzle should
     // be placed onto.
+    //
+    // @config: Properties for loading board
     this.load = function(config) {
-
-        // Show on screen completely
-        view.zoom = 0.2;
 
         // General Properties
         this.tiles = [];
         this.path = config.path;
         this.difficulty = config.difficulty;
+
+        // Square Image
         this.image = new Raster(config.image);
+        var length = Math.min(this.image.width, this.image.height);
+        this.image.scale(length / this.image.width, length / this.image.height);
         this.image.opacity = 0;
 
         // Tile Properties
-        var width = this.getDimension()[0];
-        var height = this.getDimension()[1];
+        var tilesPerRow = this.getDimension()[0];
+        var tilesPerCol = this.getDimension()[1];
 
-        this.tileWidth = this.image.width / width;
-        this.tileHeight = this.image.height / height;
+        this.tileWidth = this.image.bounds.width / tilesPerRow;
+        this.tileHeight = this.image.bounds.height / tilesPerCol;
         this.marginWidth = this.tileWidth * 0.203125;
 
-        // Initialze the board
-        this.tiles = this.buildTiles();
-        this.scaleBoard();
-        this.placePieces();
+        // Initialize the board
+        this.tiles = this.buildTiles(tilesPerRow, tilesPerCol);
+        $(window).trigger('resize');
 
         // Position the tiles on the board relative to one another
         // for(var i = 0; i < height; i++) {
@@ -292,7 +309,6 @@ var Puzzle = function() {
         //         }
         //     }
         // }
-
     }
 
 };
@@ -315,3 +331,7 @@ Puzzle.prototype.Difficulty = Object.freeze({
  * difficulty.
 */
 window.puzzle = new Puzzle();
+$(window).resize(function() {
+    //window.puzzle.scaleBoard(0.25);
+    window.puzzle.placePieces();
+})

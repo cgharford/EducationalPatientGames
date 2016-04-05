@@ -34,7 +34,6 @@ html, body {
     width: 90%;
     display: none;
     margin: 10px auto;
-    background-color: blue;
 }
 
 #level-select-container {
@@ -62,10 +61,6 @@ html, body {
 
 #puzzle-pic-container {
     padding: 0em 0em 1em 0em;
-}
-
-#empty {
-    display: none;
 }
 
 .puzzle-img-container {
