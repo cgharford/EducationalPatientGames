@@ -1,5 +1,7 @@
 $(function() {
 
+    var audioElement = document.createElement('audio');
+
     // Preliminary setup. Hide elements and instruct user on how to begin playing
     // the game.
     +function() {
@@ -17,7 +19,6 @@ $(function() {
         $('#level-select-container').hide();
 
         // Create audio element and instruct user to pick a puzzle
-        var audioElement = document.createElement('audio');
         audioElement.setAttribute('src', './assets/audio/choosePuzzle.mp3');
         audioElement.setAttribute('autoplay', 'autoplay');
         audioElement.addEventListener("load", function() {
@@ -26,83 +27,87 @@ $(function() {
 
     }();
 
-    // Allow selection of the puzzle to work with. We then query the difficulty
-    // of the puzzle
-    $('.puzzle-img').click(function() {
+    // Puzzle and level selection
+    +function() {
 
-        $('#puzzle-select-container').hide();
-        $('#level-select-container').show();
+        // The puzzle selected and to be displayed after level selection
+        var selectedPuzzle = undefined;
 
-        var audioElement = document.createElement('audio');
-        audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
-        audioElement.setAttribute('autoplay', 'autoplay');
-        audioElement.addEventListener("load", function() {
-           audioElement.play();
-        }, true);
+        // Allow selection of the puzzle to work with. We then query the difficulty
+        // of the puzzle
+        $('.puzzle-img').click(function() {
 
-    });
+            selectedPuzzle = this;
+            $('#puzzle-select-container').hide();
+            $('#level-select-container').show();
 
-    // Allow selection of the puzzle to work with
-    // We simply take the image in question and remove the other puzzle images
-    // in place of a canvas with the background set to the selected image to
-    // scramble.
-    $('.level-button').click(function() {
+            audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.addEventListener("load", function() {
+               audioElement.play();
+            }, true);
 
-        var that = $(this);
+        });
 
-        // Play audio for puzzle instructions
-        var audioElement = document.createElement('audio');
-        audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
-        audioElement.setAttribute('autoplay', 'autoplay');
-        audioElement.addEventListener("load", function() {
-           audioElement.play();
-        }, true);
+        // Allow selection of the puzzle to work with
+        // We simply take the image in question and remove the other puzzle images
+        // in place of a canvas with the background set to the selected image to
+        // scramble.
+        $('.level-button').click(function() {
 
-        // Initialize the timer
-        // Begin starting the timer now that the puzzle has been selected.
-        +function() {
+            var that = $(this);
 
-            var bar = $('#tool-bar').show();
-            var display = bar.find('#timer').find('span');
+            // Play audio for puzzle instructions
+            audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.addEventListener("load", function() {
+               audioElement.play();
+            }, true);
 
-            var minutes = 0;
-            var seconds = 0;
-            var format = function(value) {
-                var prepend = (value < 10) ? "0" : "";
-                return prepend + value;
-            }
+            // Initialize the timer
+            // Begin starting the timer now that the puzzle has been selected.
+            +function() {
 
-            // When the puzzle is completed, we disable this interval ID
-            window.puzzle.intervalId = setInterval(function() {
-                seconds += 1;
-                if(seconds === 60) {
-                    minutes += 1;
-                    seconds = 0;
+                var bar = $('#tool-bar').show();
+                var display = bar.find('#timer').find('span');
+
+                var minutes = 0;
+                var seconds = 0;
+                var format = function(value) {
+                    var prepend = (value < 10) ? "0" : "";
+                    return prepend + value;
                 }
-                display.text(format(minutes) + ":" + format(seconds));
-            }, 1000);
 
-        }();
+                // When the puzzle is completed, we disable this interval ID
+                window.puzzle.intervalId = setInterval(function() {
+                    seconds += 1;
+                    if(seconds === 60) {
+                        minutes += 1;
+                        seconds = 0;
+                    }
+                    display.text(format(minutes) + ":" + format(seconds));
+                }, 1000);
 
-        // Do not allow for selection of any other puzzles
-        // In particular, load up the shuffled puzzle into the canvas
-        +function() {
-            $('#level-select-container').hide();
-            $('#board').css('display', 'block');
-            window.puzzle.load({
-                image: this,
-                difficulty: that.data('level')
-            });
-        }();
+            }();
 
-    });
+            // Do not allow for selection of any other puzzles
+            // In particular, load up the shuffled puzzle into the canvas
+            +function() {
+                $('#level-select-container').hide();
+                $('#board').css('display', 'block');
+                window.puzzle.load({
+                    image: selectedPuzzle,
+                    difficulty: that.data('level')
+                });
+            }();
+        });
+
+    }();
 
     // Preparations for when the puzzle is completed. This allows for selecting certain
     // parts of the image (once the puzzle is constructed) and identifying the problematic
     // regions of the puzzles
     +function() {
-
-        var audioElement = document.createElement('audio');
 
         $('.finished-img').click(function(e) {
             $('.instructions').text("Not quite...keep looking!");
