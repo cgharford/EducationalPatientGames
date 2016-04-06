@@ -46,6 +46,30 @@ var TileTemplate = function(width, height, margin) {
         tile.clipped = true;
         tile.shape = [this.top, this.right, this.bottom, this.left];
 
+        // Scale all components relative to one another and square them.
+        // Though it may be that we only need to square the tile raster, I
+        // chose to scale all components for defense sake
+        +function() {
+
+            var width = Number.MAX_VALUE;
+            var height = Number.MAX_VALUE;
+            for(var i = 0; i < tile.children.length; i++) {
+                width = Math.min(width, tile.children[i].bounds.width);
+                height = Math.min(height, tile.children[i].bounds.height);
+            }
+
+            var length = Math.min(width, height);
+            for(var i = 0; i < tile.children.length; i++) {
+                var child = tile.children[i];
+                child.scale(length / child.bounds.width, length / child.bounds.height);
+            }
+        }
+
+        // Setup events for tile
+        tile.onMouseDrag = function(event) {
+            tile.position += event.delta;
+        }
+
         return tile;
     };
 
@@ -133,10 +157,7 @@ var TileTemplate = function(width, height, margin) {
         }
 
         // Actual raster
-        var raster = src.getSubRaster(rect);
-        var length = Math.min(raster.bounds.width, raster.bounds.height);
-        raster.scale(length / raster.bounds.width, length / raster.bounds.height);
-        return raster;
+        return src.getSubRaster(rect);
     };
 
 };
@@ -288,8 +309,6 @@ var Puzzle = function() {
 
         // Square Image
         this.image = new Raster(config.image);
-        // var length = Math.min(this.image.width, this.image.height);
-        // this.image.scale(length / this.image.width, length / this.image.height);
         this.image.opacity = 0;
 
         // Tile Properties
