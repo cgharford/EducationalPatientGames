@@ -29,13 +29,17 @@ $(function() {
     // Allow selection of the puzzle to work with. We then query the difficulty
     // of the puzzle
     $('.puzzle-img').click(function() {
+
         $('#puzzle-select-container').hide();
         $('#level-select-container').show();
+
+        var audioElement = document.createElement('audio');
         audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
         audioElement.setAttribute('autoplay', 'autoplay');
         audioElement.addEventListener("load", function() {
            audioElement.play();
         }, true);
+
     });
 
     // Allow selection of the puzzle to work with
@@ -47,6 +51,7 @@ $(function() {
         var that = $(this);
 
         // Play audio for puzzle instructions
+        var audioElement = document.createElement('audio');
         audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
         audioElement.setAttribute('autoplay', 'autoplay');
         audioElement.addEventListener("load", function() {
@@ -96,6 +101,8 @@ $(function() {
     // parts of the image (once the puzzle is constructed) and identifying the problematic
     // regions of the puzzles
     +function() {
+
+        var audioElement = document.createElement('audio');
 
         $('.finished-img').click(function(e) {
             $('.instructions').text("Not quite...keep looking!");

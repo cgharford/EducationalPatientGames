@@ -275,7 +275,6 @@ var Puzzle = function() {
     this.load = function(config) {
 
         // General Properties
-        this.tiles = [];
         this.path = config.path;
         this.difficulty = config.difficulty;
 
