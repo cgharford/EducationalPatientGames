@@ -28,6 +28,7 @@ var TileTemplate = function(width, height, margin) {
 
         // Create Mask
         var mask = this.createMask();
+        console.log(mask);
 
         // Obtain tile raster and orient
         var offset = new Point(this.width * position[0], this.height * position[1]);
@@ -49,7 +50,7 @@ var TileTemplate = function(width, height, margin) {
         // Scale all components relative to one another and square them.
         // Though it may be that we only need to square the tile raster, I
         // chose to scale all components for defense sake
-        +function() {
+        /*+function() {
 
             var width = Number.MAX_VALUE;
             var height = Number.MAX_VALUE;
@@ -63,7 +64,7 @@ var TileTemplate = function(width, height, margin) {
                 var child = tile.children[i];
                 child.scale(length / child.bounds.width, length / child.bounds.height);
             }
-        }
+        }*/
 
         // Setup events for tile
         tile.onMouseDrag = function(event) {

@@ -118,7 +118,7 @@ $(function() {
             }, true);
         });
 
-        $('#fireplace-correct').click(function(e) {
+        $('.fireplace-correct').click(function(e) {
             e.preventDefault();
             $('.instructions').text("Great job! Make sure you keep your distance from any fireplaces.");
             audioElement.setAttribute('src', './assets/audio/fireplace.mp3');
@@ -128,7 +128,7 @@ $(function() {
             }, true);
         });
 
-        $('#lamp-correct').click(function(e) {
+        $('.lamp-correct').click(function(e) {
             e.preventDefault();
             $('.instructions').text("You're right! Clothes don't belong on hot lamps.");
             audioElement.setAttribute('src', './assets/audio/lamp.mp3');
@@ -138,7 +138,7 @@ $(function() {
             }, true);
         });
 
-        $('#matches-correct').click(function(e) {
+        $('.matches-correct').click(function(e) {
             e.preventDefault();
             $('.instructions').text("Fantastic! Let adults handle the matches. ");
             audioElement.setAttribute('src', './assets/audio/matches.mp3');
@@ -158,7 +158,7 @@ $(function() {
             }, true);
         });
 
-        $('#stove-correct').click(function(e) {
+        $('.stove-correct').click(function(e) {
             e.preventDefault();
             $('.instructions').text("Well done! Be careful around stoves and exposed handles.");
             audioElement.setAttribute('src', './assets/audio/stove.mp3');
