@@ -12,7 +12,6 @@ body{
 }
 
 #header {
-    height: 100px;
     background: #14BECC;
 }
 
@@ -35,7 +34,6 @@ body{
 }
 
 #byline {
-    float: right;
     color: #eee;
     padding-right: 5em;
     font-family: 'georgia';
@@ -140,5 +138,20 @@ footer{
 @media screen and (max-width: 770px) {
     .contentContainer {
         margin: 1.5em;
+    }
+    #logo {
+        padding: 1em 0em;
+        text-align: center;
+    }
+    #byline {
+        float: none;
+        font-size: 18px;
+        padding: 30px 0em;
+    }
+    #uncLogo {
+        float: none;
+    }
+    #kidsLogo {
+        float: none;
     }
 }
