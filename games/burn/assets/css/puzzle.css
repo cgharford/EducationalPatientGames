@@ -41,9 +41,10 @@
 
 #board {
     width: 90%;
+    height: 90%;
     display: none;
     margin: 10px auto;
-    background-color: white;
+    border: 1px solid #009CD6;
 }
 
 /**

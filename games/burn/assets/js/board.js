@@ -12,11 +12,12 @@
  *
  * Representation of a puzzle piece.
 */
-var TileTemplate = function(width, height, margin) {
+var TileTemplate = function(width, height) {
 
-    this.width  = width;
+    this.width = width;
     this.height = height;
-    this.margin = margin;
+    this.margin = width * 0.203125;
+
     this.top    = this.Edge.FLAT;
     this.right  = this.Edge.FLAT;
     this.bottom = this.Edge.FLAT;
@@ -28,43 +29,22 @@ var TileTemplate = function(width, height, margin) {
 
         // Create Mask
         var mask = this.createMask();
-        console.log(mask);
 
         // Obtain tile raster and orient
         var offset = new Point(this.width * position[0], this.height * position[1]);
         var tileRaster = this.createTileRaster(image, offset);
-        tileRaster.bounds = mask.bounds;
 
         // Create border
         var border = mask.clone();
         border.opacity = 1;
-        border.strokeColor = '#000';
         border.strokeWidth = 5;
+        border.strokeColor = '#000';
 
         // Join all components together to form the tile
         var tile = new Group(mask, tileRaster, border);
         tile.opacity = 1;
         tile.clipped = true;
         tile.shape = [this.top, this.right, this.bottom, this.left];
-
-        // Scale all components relative to one another and square them.
-        // Though it may be that we only need to square the tile raster, I
-        // chose to scale all components for defense sake
-        /*+function() {
-
-            var width = Number.MAX_VALUE;
-            var height = Number.MAX_VALUE;
-            for(var i = 0; i < tile.children.length; i++) {
-                width = Math.min(width, tile.children[i].bounds.width);
-                height = Math.min(height, tile.children[i].bounds.height);
-            }
-
-            var length = Math.min(width, height);
-            for(var i = 0; i < tile.children.length; i++) {
-                var child = tile.children[i];
-                child.scale(length / child.bounds.width, length / child.bounds.height);
-            }
-        }*/
 
         // Setup events for tile
         tile.onMouseDrag = function(event) {
@@ -82,7 +62,8 @@ var TileTemplate = function(width, height, margin) {
     // in question.
     this.createMask = function() {
 
-        var ratio = this.width / 100.0;
+        var length = Math.min(this.width, this.height);
+        var ratio = length / 100.0;
         var coords = [
               0, 0, 35, 15, 37, 5,
               37, 5, 40, 0, 38, -5,
@@ -105,7 +86,7 @@ var TileTemplate = function(width, height, margin) {
             mask.cubicCurveTo(p1, p2, p3);
         }
 
-        var topRightEdge = new Point(this.width, 0);
+        var topRightEdge = new Point(length, 0);
         for (var i = 0; i < coords.length / 6; i++) {
             var p1 = topRightEdge + new Point(-this.right * coords[i * 6 + 1] * ratio, coords[i * 6 + 0] * ratio);
             var p2 = topRightEdge + new Point(-this.right * coords[i * 6 + 3] * ratio, coords[i * 6 + 2] * ratio);
@@ -113,7 +94,7 @@ var TileTemplate = function(width, height, margin) {
             mask.cubicCurveTo(p1, p2, p3);
         }
 
-        var bottomRightEdge = topRightEdge + new Point(0, this.width);
+        var bottomRightEdge = topRightEdge + new Point(0, length);
         for (var i = 0; i < coords.length / 6; i++) {
             var p1 = bottomRightEdge - new Point(coords[i * 6 + 0] * ratio, this.bottom * coords[i * 6 + 1] * ratio);
             var p2 = bottomRightEdge - new Point(coords[i * 6 + 2] * ratio, this.bottom * coords[i * 6 + 3] * ratio);
@@ -121,7 +102,7 @@ var TileTemplate = function(width, height, margin) {
             mask.cubicCurveTo(p1, p2, p3);
         }
 
-        var bottomLeftEdge = bottomRightEdge - new Point(this.width, 0);
+        var bottomLeftEdge = bottomRightEdge - new Point(length, 0);
         for (var i = 0; i < coords.length / 6; i++) {
             var p1 = bottomLeftEdge - new Point(-this.left * coords[i * 6 + 1] * ratio, coords[i * 6 + 0] * ratio);
             var p2 = bottomLeftEdge - new Point(-this.left * coords[i * 6 + 3] * ratio, coords[i * 6 + 2] * ratio);
@@ -140,25 +121,51 @@ var TileTemplate = function(width, height, margin) {
     // begin with and then replace with the necessary content
     this.createTileRaster = function(src, offset) {
 
-        // Coordinates
-        var rect = new Rectangle(offset.x, offset.y, this.width, this.height);
+        var rasters = [];
 
-        // Adjust width
-        rect.width += (this.right === this.Edge.FLAT) ? 0 : this.margin;
-        if(this.left !== this.Edge.FLAT) {
-            rect.x -= this.margin;
-            rect.width += this.margin;
-        }
+        // Square the raster
+        var tileRaster = src.getSubRaster(new Rectangle(offset.x, offset.y, this.width, this.height));
+        var length = Math.min(this.width, this.height);
+        tileRaster.scale(length / tileRaster.bounds.width, length / tileRaster.bounds.height);
+        tileRaster.position = new Point(length / 2, length / 2);
+        rasters.push(tileRaster);
 
-        // Adjust height
-        rect.height += (this.bottom === this.Edge.FLAT) ? 0 : this.margin;
+        // Because we have to reshape the raster, the margins of the tiles are
+        // rendered separately and grouped together with the main raster
         if(this.top !== this.Edge.FLAT) {
-            rect.y -= this.margin;
-            rect.height += this.margin;
+            var rect = new Rectangle(offset.x, offset.y - this.margin, this.width, this.margin);
+            var mTop = src.getSubRaster(rect);
+            mTop.scale(length / mTop.bounds.width, 1);
+            mTop.position = new Point(length / 2, -this.margin / 2);
+            rasters.push(mTop);
         }
 
-        // Actual raster
-        return src.getSubRaster(rect);
+        if(this.right !== this.Edge.FLAT) {
+            var rect = new Rectangle(offset.x + this.width, offset.y, this.margin, this.height);
+            var mRight = src.getSubRaster(rect);
+            mRight.scale(1, length / mRight.bounds.height);
+            mRight.position = new Point(length + this.margin / 2, length / 2);
+            rasters.push(mRight);
+        }
+
+        if(this.bottom !== this.Edge.FLAT) {
+            var rect = new Rectangle(offset.x, offset.y + this.height, this.width, this.margin);
+            var mBottom = src.getSubRaster(rect);
+            mBottom.scale(length / mBottom.bounds.width, 1);
+            mBottom.position = new Point(length / 2, length + this.margin / 2);
+            rasters.push(mBottom);
+        }
+
+        if(this.left !== this.Edge.FLAT) {
+            var rect = new Rectangle(offset.x - this.margin, offset.y, this.margin, this.height);
+            var mLeft = src.getSubRaster(rect);
+            mLeft.scale(1, length / mLeft.bounds.height);
+            mLeft.position = new Point(-this.margin / 2, length / 2);
+            rasters.push(mLeft);
+        }
+
+        // Group all rasters together
+        return new Group(rasters);
     };
 
 };
@@ -217,7 +224,7 @@ var Puzzle = function() {
         var height = this.getDimension()[1];
         for(var i = 0; i < width; i++) {
             for(var j = 0; j < height; j++) {
-                outlines.push(new TileTemplate(this.tileWidth, this.tileHeight, this.marginWidth));
+                outlines.push(new TileTemplate(this.tileWidth, this.tileHeight));
             }
         }
 
@@ -269,15 +276,12 @@ var Puzzle = function() {
     // images, we must compute where the pieces may snap too when placing a piece
     // down. The pieces beginon the right 20% of the board, and they are placed on
     // the left 80% of the board.
-    this.scaleBoard = function() {
+    this.scaleBoard = function(ratio) {
         var canvas = $(view.element);
-        var targetRatio = 1 / (this.getDimension()[0] * this.getDimension()[1]);
-        for(var i = 0; i < this.tiles.length; i++) {
-            var bounds = this.tiles[i].bounds;
-            var scaleWidth = (targetRatio * canvas.width()) / bounds.width;
-            var scaleHeight = bounds.width * scaleWidth / bounds.height;
-            this.tiles[i].scale(scaleWidth, scaleHeight);
-        }
+        var tilesPerRow = this.getDimension()[0];
+        var tileWidth = this.tiles[0].bounds.width;
+        var minimumSide = Math.min(canvas.width(), canvas.height());
+        view.zoom = (ratio * minimumSide) / (tilesPerRow * tileWidth);
     };
 
     // Place Pieces
@@ -286,10 +290,34 @@ var Puzzle = function() {
     // I initially tried setting up a sideboard on which to hold the pieces, but this proved
     // a bit unwieldy in terms of both programming and using.
     this.placePieces = function() {
-        var canvas = $(view.element);
-        for(var i = 0; i < this.tiles.length; i++) {
-            this.tiles[i].position = new Point(Math.random() * canvas.width(), Math.random() * canvas.height());
+        if(!this.placedPieces) {
+
+            var indices = [];
+            for(i = 0; i < this.tiles.length; i++) {
+                indices.push(i);
+            }
+
+            // In order to randomize how the tiles are placed in the initial
+            // pile, we remove all elements from the active layer and then
+            // re-add them randomly
+            var reordering = [];
+            while(indices.length > 0) {
+                var index = Math.floor(Math.random() * indices.length);
+                var tile = this.tiles[indices[index]];
+                indices = indices.slice(0, index).concat(indices.slice(index + 1));
+                reordering.push(tile);
+            }
+
+            var canvas = $(view.element);
+            for(var i = 0; i < reordering.length; i++) {
+                tile[i].remove();
+                var x = Math.random() * canvas.width();
+                var y = Math.random() * canvas.height();
+                reordering[i].position = new Point(x, y);
+                project.activeLayer.addChild(reordering[i]);
+            }
         }
+        this.placedPieces = true;
     };
 
     // Load
@@ -318,10 +346,11 @@ var Puzzle = function() {
 
         this.tileWidth = this.image.bounds.width / tilesPerRow;
         this.tileHeight = this.image.bounds.height / tilesPerCol;
-        this.marginWidth = this.tileWidth * 0.203125;
+        this.tiles = this.buildTiles(tilesPerRow, tilesPerCol);
 
         // Initialize the board
-        this.tiles = this.buildTiles(tilesPerRow, tilesPerCol);
+        var canvas = $(view.element);
+        view.setViewSize(canvas.width(), canvas.height());
         $(window).trigger('resize');
     }
 
@@ -347,7 +376,7 @@ Puzzle.prototype.Difficulty = Object.freeze({
 window.puzzle = new Puzzle();
 $(window).resize(function() {
     if(window.puzzle.loaded) {
-        window.puzzle.scaleBoard();
+        window.puzzle.scaleBoard(0.9);
         window.puzzle.placePieces();
     }
 })
