@@ -306,11 +306,11 @@ var Puzzle = function() {
                 var tile = this.tiles[indices[index]];
                 indices = indices.slice(0, index).concat(indices.slice(index + 1));
                 reordering.push(tile);
+                tile.remove();
             }
 
             var canvas = $(view.element);
             for(var i = 0; i < reordering.length; i++) {
-                tile[i].remove();
                 var x = Math.random() * canvas.width();
                 var y = Math.random() * canvas.height();
                 reordering[i].position = new Point(x, y);

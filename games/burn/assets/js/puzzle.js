@@ -6,9 +6,6 @@ $(function() {
     // the game.
     +function() {
 
-        // Setup responsive image map
-        $('img[usemap]').rwdImageMaps();
-
         // Hide all components beforehand
         $('#fireplace-img').hide();
         $('#lamp-img').hide();
@@ -37,7 +34,7 @@ $(function() {
         // of the puzzle
         $('.puzzle-img').click(function() {
 
-            selectedPuzzle = this;
+            selectedPuzzle = $(this);
             $('#puzzle-select-container').hide();
             $('#level-select-container').show();
 
@@ -96,10 +93,21 @@ $(function() {
                 $('#level-select-container').hide();
                 $('#board').css('display', 'block');
                 window.puzzle.load({
-                    image: selectedPuzzle,
+                    image: selectedPuzzle.get(0),
                     difficulty: that.data('level')
                 });
             }();
+        });
+
+        // This is a temporary method to demonstrate code
+        $('#skip').click(function() {
+            $('#board').hide();
+            $('#click-puzzle').show();
+            $('#' + selectedPuzzle.data('content') + '-img').show();
+            $(this).hide();
+
+            // Setup responsive image map
+            $('img[usemap]').rwdImageMaps();
         });
 
     }();
