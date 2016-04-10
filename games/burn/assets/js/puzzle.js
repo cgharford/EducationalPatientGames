@@ -171,3 +171,7 @@ $(function() {
     }();
 
 });
+
+function testFunction(){
+    return "test";
+}

@@ -14,19 +14,16 @@ module.exports = function(config) {
 
 
     // list of files / patterns to load in the browser
-    files: ['build/*.js','build/game1/*.js','js/libs/phaser.js','specs/test_one.js'
-    ],
+    files: ['games/burn/assets/js/test.js'],
 
 
     // list of files to exclude
-    exclude: ['build/nodeServer.js', 'build/postToServer.js', 'serverSpec.js'
-    ],
+    exclude: [],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-    preprocessors: {
-    },
+    preprocessors: {},
 
 
     // test results reporter to use
