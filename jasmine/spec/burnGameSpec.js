@@ -1,58 +1,42 @@
-describe("Player", function() {
-  var player;
-  var song;
+describe("Tests for Burn Prevention Game (must be run in order)", function() {
 
-  beforeEach(function() {
-    player = new Player();
-    song = new Song();
-  });
-
-  it("should be able to play a Song", function() {
-    player.play(song);
-    expect(player.currentlyPlayingSong).toEqual(song);
-
-    //demonstrates use of custom matcher
-    expect(player).toBePlaying(song);
-  });
-
-  describe("when song has been paused", function() {
-    beforeEach(function() {
-      player.play(song);
-      player.pause();
+    it("Tests test function in Puzzle.js", function() {
+      expect(testTesters()).toEqual("Test Worked!");
     });
 
-    it("should indicate that the song is currently paused", function() {
-      expect(player.isPlaying).toBeFalsy();
+    describe("Select puzzle test", function() {
+        it("Tests that the level select box is hidden", function() {
+          expect($("#level-select-container").css("display")).toEqual("none");
+        });
 
-      // demonstrates use of 'not' with a custom matcher
-      expect(player).not.toBePlaying(song);
+        it("Tests that 5 puzzles have loaded on the page", function() {
+          expect($('.puzzle-img').length).toEqual(5);
+        });
     });
 
-    it("should be possible to resume", function() {
-      player.resume();
-      expect(player.isPlaying).toBeTruthy();
-      expect(player.currentlyPlayingSong).toEqual(song);
+    describe("Select test", function() {
+        it("Tests puzzle select div is hidden after photo is clicked", function() {
+          $('.puzzle-img').click();
+          expect($("#puzzle-select-container").css("display")).toEqual("none");
+        });
+
+        it("Tests that level select div is visible after photo is clicked", function() {
+          expect($("#level-select-container").css("display")).toEqual("block");
+        });
+
+        it("Tests that 5 level options have loaded on the page", function() {
+          expect($('.level-button').length).toEqual(5);
+        });
     });
-  });
 
-  // demonstrates use of spies to intercept and test method calls
-  it("tells the current song if the user has made it a favorite", function() {
-    spyOn(song, 'persistFavoriteStatus');
+    describe("Assemble puzzle test", function() {
+        it("Tests level select div is hidden after level is selected", function() {
+          $("#easy-button").click();
+          expect($("#level-select-container").css("display")).toEqual("none");
+        });
 
-    player.play(song);
-    player.makeFavorite();
-
-    expect(song.persistFavoriteStatus).toHaveBeenCalledWith(true);
-  });
-
-  //demonstrates use of expected exceptions
-  describe("#resume", function() {
-    it("should throw an exception if song is already playing", function() {
-      player.play(song);
-
-      expect(function() {
-        player.resume();
-      }).toThrowError("song is already playing");
+        it("Tests that puzzle is visible after level is selected", function() {
+          expect($("#board").css("display")).toEqual("block");
+        });
     });
-  });
 });

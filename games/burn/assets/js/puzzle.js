@@ -177,5 +177,8 @@ $(function() {
         });
 
     }();
-
 });
+
+function testTesters () {
+    return "Test Worked!";
+}
