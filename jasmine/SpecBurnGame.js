@@ -1,4 +1,4 @@
-describe("Player", function() {
+describe("Tests For Burn Prevention Game", function() {
   var player;
   var song;
 
@@ -7,9 +7,9 @@ describe("Player", function() {
     song = new Song();
   });
 
-  it("Trying to figure this out", function() {
+  it("Test case for Jasmine", function() {
     player.play(song);
-    expect(player.currentlyPlayingSong).toEqual(song);
+    expect(testFunction()).toEqual("test");
 
     //demonstrates use of custom matcher
     expect(player).toBePlaying(song);
