@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <title>Educational Patient Games</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="Educational Patient Games">
+        <meta name="keywords" content="UNC, Hospital, Trauma, Prevention, Game, Educational">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+        <link type="text/css" rel="stylesheet" href="/assets/css/style.css">
+        <script type="text/javascript" src="/vendor/js/jquery.min.js"></script>
+        <script type="text/javascript" src="/vendor/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/vendor/js/jquery.cookie.js"></script>
+        <script type="text/javascript" src="/vendor/js/phaser.js"></script>
+    </head>
+    <body>
+        <!-- Header -->
+        <div class="row" id="header">
+            <div id="logo" class="hidden-xs">
+                <span id="uncLogo">UNC</span>
+                <span id="kidsLogo"> Kids</span>
+                <span id="byline">Tar Heel Trauma</span>
+            </div>
+            <div id="logo" class="visible-xs">
+                <div>
+                    <span id="uncLogo">UNC</span>
+                    <span id="kidsLogo"> Kids</span>
+                </div>
+                <div>
+                    <span id="byline">Tar Heel Trauma</span>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="headerStrip"></div>
+
+        <!-- Main content -->
+        <div class="contentContainer row">
+            <div class="row" id="intro">Click on a game to play and learn about injury prevention!</div>
+            <div class="col-lg-4 col-md-6 col-sm-6 gameContainer">
+                <div class="gameTitle">
+                    Bike Safety
+                </div>
+                <div>
+                    <a href="games/helmet/game.html">
+                        <img class="gameImg" src="games/helmet/assets/imgs/helmet_thumbnail.png">
+                    </a>
+                </div>
+                <div class="gameExplanation">
+                    What's the most important thing to remember when riding a bike?
+                    Have fun? Yes...but also wear a helmet!
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 gameContainer">
+                <div class="gameTitle">
+                    Water Safety
+                </div>
+                <div>
+                    <a href="games/water/game.html">
+                        <img class="gameImg" src="games/water/assets/imgs/water_thumbnail.png">
+                    </a>
+                </div>
+                <div class="gameExplanation">
+                    Row, row, row your boat, gently to the shore; don't forget
+                    your life jacket, that's what this game's for!
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6 gameContainer">
+                <div class="gameTitle">
+                    Burn Safety
+                </div>
+                <div>
+                    <a href="games/burn/game.html">
+                        <img class="gameImg" src="games/burn/assets/imgs/burn_thumbnail.png">
+                    </a>
+                </div>
+                <div class="gameExplanation">
+                    Not everything in our house is always safe...
+                    how many different dangerous situations can you avoid?
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

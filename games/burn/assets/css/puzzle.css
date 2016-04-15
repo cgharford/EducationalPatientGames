@@ -1,0 +1,165 @@
+/**
+ * General Layout
+ * ===================================
+*/
+
+#game-header {
+    background-color: #009CD6;
+    color: #eee;
+    font-family: 'Comic Sans MS';
+    padding: 20px 30px;
+    font-size: 50px;
+}
+
+#tool-bar {
+    float: right;
+    padding: 10px;
+    display: none;
+    border-radius: .25em;
+    background-color: #eee;
+}
+
+.contentContainer {
+    padding: 1.5em .75em;
+    border-radius: .5em;
+    margin: 2em 4em;
+    font-size: 25px;
+    font-family: 'Comic Sans MS';
+    color: #FF7985;
+    text-align: center;
+}
+
+/**
+ * Puzzle Game
+ * ===================================
+*/
+
+#timer {
+    font-size: 30px;
+    color: black;
+}
+
+#board {
+    width: 90%;
+    height: 90%;
+    display: none;
+    margin: 10px auto;
+    border: 1px solid #009CD6;
+}
+
+/**
+ * Puzzle Selection
+ * ===================================
+*/
+
+#puzzle-pic-container {
+    padding: 0em 0em 1em 0em;
+}
+
+.puzzle-img-container {
+    padding: 1em;
+}
+
+.puzzle-img {
+    height: 250px;
+    width: 300px;
+    border: 10px solid #14BECC;
+}
+
+.puzzle-img:hover {
+    cursor: pointer;
+    border: 20px solid #ccc;
+}
+
+/**
+ * Level Selection
+ * ===================================
+*/
+
+#level-select-container {
+    padding-bottom: 1em;
+}
+
+.level-button {
+    background-color: #14BECC;
+    font-family: verdana;
+    border: none;
+    border-radius: 0em;
+    margin: .5em;
+}
+
+.level-button:hover {
+    background-color: #3D9299;
+}
+
+#easy-button {
+    padding: .25em 1em;
+}
+
+#medium-button {
+    padding: .5em 1em;
+}
+
+#hard-button {
+    padding: .75em 3em;
+}
+
+#insane-button {
+    padding: 1em 4em;
+}
+
+#nightmare-button {
+    padding: 1.25em 5em;
+}
+
+.level-icons {
+    padding: 5px;
+    color: #00FF83;
+}
+
+
+/**
+ * Finished Images
+ * ===================================
+*/
+
+.finished-img {
+    height: 75%;
+    width: 75%;
+    cursor: pointer;
+    border: 15px solid #14BECC;
+}
+
+.instructions {
+    padding-bottom: 1em;
+}
+
+/* Styles for mobile screen size */
+@media (min-width: 992px) and (max-width: 1200px) {
+    .puzzle-img {
+        height: 200px;
+        width: 225px;
+        border: 10px solid #14BECC;
+    }
+}
+
+/* Styles for mobile screen size */
+@media (min-width: 770px) and (max-width: 992px) {
+    .puzzle-img {
+        height: 200px;
+        width: 250px;
+        border: 10px solid #14BECC;
+    }
+}
+
+/* Styles for mobile screen size */
+@media screen and (max-width: 770px) {
+    .contentContainer {
+        margin: 1.5em;
+    }
+    .puzzle-img {
+        height: 175px;
+        width: 200px;
+        border: 10px solid #14BECC;
+    }
+}

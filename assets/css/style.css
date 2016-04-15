@@ -1,0 +1,157 @@
+body{
+    background:
+    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.15) 30%, rgba(255,255,255,.3) 32%, rgba(255,255,255,0) 33%) 0 0,
+    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.1) 11%, rgba(255,255,255,.3) 13%, rgba(255,255,255,0) 14%) 0 0,
+    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 17%, rgba(255,255,255,.43) 19%, rgba(255,255,255,0) 20%) 0 110px,
+    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 11%, rgba(255,255,255,.4) 13%, rgba(255,255,255,0) 14%) -130px -170px,
+    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.2) 11%, rgba(255,255,255,.4) 13%, rgba(255,255,255,0) 14%) 130px 370px,
+    radial-gradient(rgba(255,255,255,0) 0, rgba(255,255,255,.1) 11%, rgba(255,255,255,.2) 13%, rgba(255,255,255,0) 14%) 0 0,
+    linear-gradient(0deg, #00FF83 0%, #00FF83 20%, #00FF83 30%, #00FF83 40%, #00FF83 50%, #00FF83 60%, #00FF83 70%, #00FF83 80%, #00FF83 90%, #00FF83 100%);
+    background-size: 470px 470px, 970px 970px, 410px 410px, 610px 610px, 530px 530px, 730px 730px, 100% 100%;
+    background-color: #00FF83;
+}
+
+#header {
+    background: #14BECC;
+}
+
+#logo {
+    color: #eee;
+    padding-left: 8em;
+}
+
+#uncLogo {
+    font-family: 'georgia';
+    font-size: 35px;
+    float: left;
+    padding-top: 30px;
+}
+
+#kidsLogo {
+    font-family: 'Comic Sans MS';
+    font-size: 70px;
+    float: left;
+}
+
+#byline {
+    color: #eee;
+    padding-right: 5em;
+    font-family: 'georgia';
+    font-size: 25px;
+    float: right;
+    padding-top: 35px;
+}
+
+#headerStrip {
+    height: 15px;
+    background: #FF7985;
+    outline: none;
+    border-color: #3D9299;
+    box-shadow: 0 0 10px #3D9299;
+}
+
+.contentContainer {
+    background: #eee;
+    border-radius: .5em;
+    margin: 5em 7em;
+    outline: none;
+    border-color: #3D9299;
+    box-shadow: 0 0 30px #3D9299;
+    padding: 1em;
+}
+
+#intro {
+    text-align: center;
+    color: black;
+    padding: 1.5em;
+    font-size: 25px;
+    font-family: "Comic Sans MS";
+}
+
+.gameTitle {
+    text-align: left;
+    color: #14BECC;
+    font-size: 25px;
+    font-weight: bold;
+    margin-left: 12%;
+    margin-bottom: 5%;
+}
+
+.gameImg {
+    max-width: 75%;
+    max-height: 75%;
+    border: 7px solid #ccc;
+    /*border-radius: .5em;*/
+}
+
+.gameContainer {
+    text-align: center;
+    border-radius: .5em;
+    color: black;
+    padding: .25em 0em 2em 0em;
+}
+
+.gameExplanation {
+    border-left: solid 3px #FF7985;
+    padding: 1em;
+    text-align: left;
+    margin-left: 12%;
+    margin-top: 5%;
+    margin-right: 10%;
+}
+
+nav{
+    padding-top: 30px;
+    padding-bottom:10px;
+}
+
+h2{
+    display: inline-block;
+    margin-top: 0px;
+}
+
+.navbar-form{
+    border-bottom: none;
+    border-top: none;
+}
+
+body{
+	color: #ADD8E6;
+
+}
+
+#orientation{
+    text-align: center;
+    position:absolute;
+    width: 30%;
+    left:35%;
+    right:35%;
+}
+
+footer{
+    color: white;
+    height: 70px;
+    position: relative;
+}
+
+/* Styles for mobile screen size */
+@media screen and (max-width: 770px) {
+    .contentContainer {
+        margin: 1.5em;
+    }
+    #logo {
+        padding: 1em 0em;
+        text-align: center;
+    }
+    #byline {
+        float: none;
+        font-size: 18px;
+        padding: 30px 0em;
+    }
+    #uncLogo {
+        float: none;
+    }
+    #kidsLogo {
+        float: none;
+    }
+}
