@@ -46,11 +46,6 @@ var TileTemplate = function(width, height) {
         tile.clipped = true;
         tile.shape = [this.top, this.right, this.bottom, this.left];
 
-        // Setup events for tile
-        tile.onMouseDrag = function(event) {
-            tile.position += event.delta;
-        }
-
         return tile;
     };
 
@@ -290,6 +285,8 @@ var Puzzle = function() {
     // I initially tried setting up a sideboard on which to hold the pieces, but this proved
     // a bit unwieldy in terms of both programming and using.
     this.placePieces = function() {
+
+        // Initally place any pieces
         if(!this.placedPieces) {
 
             var indices = [];
@@ -317,7 +314,35 @@ var Puzzle = function() {
                 project.activeLayer.addChild(reordering[i]);
             }
         }
+
+        // Check that pieces are snapped properly
+        for(var i = 0; i < this.tiles.length; i++) {
+            this.boundPiece(this.tiles[i]);
+        }
+
+        // Ensure initial placement only occurs once
         this.placedPieces = true;
+    };
+
+    // Bound Piece
+    //
+    // Ensure that the pieces are within the canvas.
+    this.boundPiece = function(piece) {
+
+        // Set x-bound limits
+        if(piece.position.x <= view.bounds.x + piece.bounds.width / 2) {
+            piece.position.x = view.bounds.x + piece.bounds.width / 2;
+        } else if(piece.position.x >= view.bounds.x + view.bounds.width - piece.bounds.width / 2) {
+            piece.position.x = view.bounds.x + view.bounds.width - piece.bounds.width / 2;
+        }
+
+        // Set y-bound limits
+        if(piece.position.y <= view.bounds.y + piece.bounds.height / 2) {
+            piece.position.y = view.bounds.y + piece.bounds.height / 2;
+        } else if(piece.position.y >= view.bounds.y + view.bounds.height - piece.bounds.height / 2) {
+            piece.position.y = view.bounds.y + view.bounds.height - piece.bounds.height / 2;
+        }
+
     };
 
     // Load
@@ -330,6 +355,8 @@ var Puzzle = function() {
     //
     // @config: Properties for loading board
     this.load = function(config) {
+
+        var that = this;
 
         // General Properties
         this.loaded = true;
@@ -352,6 +379,31 @@ var Puzzle = function() {
         var canvas = $(view.element);
         view.setViewSize(canvas.width(), canvas.height());
         $(window).trigger('resize');
+
+        // Event Setup
+        +function() {
+            for(var i = 0; i < that.tiles.length; i++) {
+
+                // Allow movement of each tile piece. Note these will snap together
+                // if they are placed in the correct position. When this occurs, we
+                // move the attached pieces as a unit
+                that.tiles[i].onMouseDrag = function(event) {
+                    this.position += event.delta;
+                    that.boundPiece(this);
+                }
+
+                // How close a piece needs to be next to another to snap
+                // into place and conjoin into one. We must check for each
+                // side once this occurs.
+                that.tiles[i].onMouseUp = function(event) {
+                    var snapDelta = 300;
+                    for(var j = 0; j < that.tiles.length; j++) {
+
+                    }
+                }
+
+            }
+        }();
     }
 
 };

@@ -93,23 +93,28 @@
 }
 
 #easy-button {
-    padding: .5em 1em;
+    padding: .25em 1em;
 }
 
 #medium-button {
-    padding: .75em 1em;
+    padding: .5em 1em;
 }
 
 #hard-button {
-    padding: 1em 3em;
+    padding: .75em 3em;
 }
 
 #insane-button {
-    padding: 1.25em 4em;
+    padding: 1em 4em;
 }
 
 #nightmare-button {
-    padding: 1.5em 5em;
+    padding: 1.25em 5em;
+}
+
+.level-icons {
+    padding: 5px;
+    color: #00FF83;
 }
 
 
@@ -121,6 +126,7 @@
 .finished-img {
     height: 75%;
     width: 75%;
+    cursor: pointer;
     border: 15px solid #14BECC;
 }
 

@@ -65,7 +65,8 @@ $(function() {
             // Begin starting the timer now that the puzzle has been selected.
             +function() {
 
-                var bar = $('#tool-bar').show();
+                // var bar = $('#tool-bar').show();
+                var bar = $('#tool-bar');
                 var display = bar.find('#timer').find('span');
 
                 var minutes = 0;
