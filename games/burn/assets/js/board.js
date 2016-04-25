@@ -44,6 +44,7 @@ var TileTemplate = function(width, height) {
         var tile = new Group(mask, tileRaster, border);
         tile.opacity = 1;
         tile.clipped = true;
+        tile.centralRaster = tileRaster.children[0];
         tile.shape = [this.top, this.right, this.bottom, this.left];
 
         return tile;
@@ -345,6 +346,74 @@ var Puzzle = function() {
 
     };
 
+    // Snap Piece
+    //
+    // We snap the piece depending on how close it is to the corresponding puzzle piece.
+    // Note we base this off the central raster of the tile since, when the tiles are not
+    // clipped, they form a perfect square.
+    //
+    // @moved: Tile moved
+    // @target: Tile checking to be snapped to
+    // @snapDelta: Proximity necessary for snapping
+    this.snapPiece = function(moved, target, snapDelta) {
+
+        // Note this check makes sure we are working with an adjacent tile
+        var cellDeltaX = Math.abs(target.cellPosition.x - moved.cellPosition.x);
+        var cellDeltaY = Math.abs(target.cellPosition.y - moved.cellPosition.y);
+        if(cellDeltaX + cellDeltaY !== 1) {
+            return;
+        }
+
+        // Begin tiling
+        var bounds = moved.centralRaster.bounds;
+        var targetBounds = target.centralRaster.bounds;
+
+        // Setup for positioning
+        var deltaX = undefined;
+        var deltaY = undefined;
+
+        // Tile to the right
+        if(target.cellPosition.x > moved.cellPosition.x) {
+            deltaX = targetBounds.x - (bounds.x + bounds.width);
+            deltaY = targetBounds.y - bounds.y;
+
+        // Tile to the left
+        } else if(target.cellPosition.x < moved.cellPosition.x) {
+            deltaX = targetBounds.x + targetBounds.width - bounds.x;
+            deltaY = targetBounds.y - bounds.y;
+
+        // Tile to the top
+        } else if(target.cellPosition.y < moved.cellPosition.y) {
+            deltaX = targetBounds.x - bounds.x;
+            deltaY = (targetBounds.y + targetBounds.height) - bounds.y;
+
+        // Tile to the bottom
+        } else {
+            deltaX = targetBounds.x - bounds.x;
+            deltaY = targetBounds.y - (bounds.y + bounds.height);
+
+        }
+
+        // Position piece and turn into one joint piece
+        if(Math.abs(deltaX) < snapDelta && Math.abs(deltaY) < snapDelta) {
+            moved.position += new Point(deltaX, deltaY);
+
+            // Clear up mouse dragging
+            moved.onMouseDrag = undefined;
+            target.onMouseDrag = undefined;
+
+            // Combine into single unit (by joining the groups or just the
+            // piece into a collective group).
+
+            // Allow moving as one entire unit
+            joint.onMouseDrag = function(event) {
+                this.position += event.delta;
+            }
+
+        }
+
+    };
+
     // Load
     //
     // The following function bootstraps the puzzle onto the canvas for
@@ -381,29 +450,29 @@ var Puzzle = function() {
         $(window).trigger('resize');
 
         // Event Setup
-        +function() {
-            for(var i = 0; i < that.tiles.length; i++) {
+        for(var i = 0; i < that.tiles.length; i++) {
 
-                // Allow movement of each tile piece. Note these will snap together
-                // if they are placed in the correct position. When this occurs, we
-                // move the attached pieces as a unit
-                that.tiles[i].onMouseDrag = function(event) {
-                    this.position += event.delta;
-                    that.boundPiece(this);
-                }
-
-                // How close a piece needs to be next to another to snap
-                // into place and conjoin into one. We must check for each
-                // side once this occurs.
-                that.tiles[i].onMouseUp = function(event) {
-                    var snapDelta = 300;
-                    for(var j = 0; j < that.tiles.length; j++) {
-
-                    }
-                }
-
+            // Allow movement of each tile piece. Note these will snap together
+            // if they are placed in the correct position. When this occurs, we
+            // move the attached pieces as a unit
+            that.tiles[i].onMouseDrag = function(event) {
+                this.position += event.delta;
+                that.boundPiece(this);
             }
-        }();
+
+            // How close a piece needs to be next to another to snap
+            // into place and conjoin into one. We must check for each
+            // side once this occurs. When checking whether pieces are
+            // properly joined, we use the central raster as our means
+            // of measurement since they form a perfect square when the
+            // tile is not clipped.
+            that.tiles[i].onMouseUp = function(event) {
+                for(var j = 0; j < that.tiles.length; j++) {
+                    that.snapPiece(this, that.tiles[j], 200);
+                }
+            }
+
+        }
     }
 
 };
