@@ -44,8 +44,16 @@ var TileTemplate = function(width, height) {
         var tile = new Group(mask, tileRaster, border);
         tile.opacity = 1;
         tile.clipped = true;
+
+        // Used for snapping; the central raster forms a perfect square
+        // and can be used for shaping properly
         tile.centralRaster = tileRaster.children[0];
-        tile.shape = [this.top, this.right, this.bottom, this.left];
+
+        // Used to join pieces together
+        tile.grouping = {
+            pieces: [tile],
+            bounds: tile.bounds
+        };
 
         return tile;
     };
@@ -346,6 +354,52 @@ var Puzzle = function() {
 
     };
 
+    // Expand Group
+    //
+    // Convenience function intended to adjust a group's boundaries
+    this.expandGroup = function(moved, target) {
+
+        // We always grow the larger group.
+        var larger = moved.grouping;
+        var smaller = target.grouping;
+        if(moved.grouping.pieces.length < target.grouping.pieces.length) {
+            larger = target.grouping;
+            smaller = moved.grouping;
+        }
+
+        // For use in boundaries
+        var left = larger.bounds.x;
+        var top = larger.bounds.y;
+        var right = larger.bounds.x + larger.bounds.width;
+        var bottom = larger.bounds.y + larger.bounds.height;
+
+        // Next extend the group to include the newly attached pieces
+        for(var i = 0; i < smaller.pieces.length; i++) {
+            if(smaller.pieces[i].grouping !== larger) {
+                larger.pieces.push(smaller.pieces[i]);
+                smaller.pieces[i].grouping = larger;
+            }
+        }
+        console.log(larger);
+        // Adjust position
+        /*for(var i = 0; i < larger.pieces.length; i++) {
+            var piece = larger.pieces[i];
+            larger.bounds.x = Math.min(piece.bounds.x, larger.bounds.x);
+            larger.bounds.y = Math.min(piece.bounds.y, larger.bounds.y);
+        }*/
+
+        // Lastly, Adjust size
+        /*for(var i = 0; i < larger.pieces.length; i++) {
+            var piece = larger.pieces[i];
+            if(piece.bounds.x + piece.bounds.width > larger.bounds.x + larger.bounds.width) {
+                larger.bounds.width = piece.bounds.x + piece.bounds.width - larger.bounds.x;
+            }
+            if(piece.bounds.y + piece.bounds.height > larger.bounds.y + larger.bounds.height) {
+                larger.bounds.height = piece.bounds.y + piece.bounds.height - larger.bounds.y;
+            }
+        }*/
+    };
+
     // Snap Piece
     //
     // We snap the piece depending on how close it is to the corresponding puzzle piece.
@@ -357,11 +411,17 @@ var Puzzle = function() {
     // @snapDelta: Proximity necessary for snapping
     this.snapPiece = function(moved, target, snapDelta) {
 
+        // Note that snapping can occur with a piece already snapped to.
+        // If this is the case, we should not be working with this code.
+        if(target.grouping === moved.grouping) {
+            return false;
+        }
+
         // Note this check makes sure we are working with an adjacent tile
         var cellDeltaX = Math.abs(target.cellPosition.x - moved.cellPosition.x);
         var cellDeltaY = Math.abs(target.cellPosition.y - moved.cellPosition.y);
         if(cellDeltaX + cellDeltaY !== 1) {
-            return;
+            return false;
         }
 
         // Begin tiling
@@ -394,24 +454,16 @@ var Puzzle = function() {
 
         }
 
-        // Position piece and turn into one joint piece
+        // Positions group to fit snug against joined piece
         if(Math.abs(deltaX) < snapDelta && Math.abs(deltaY) < snapDelta) {
-            moved.position += new Point(deltaX, deltaY);
-
-            // Clear up mouse dragging
-            moved.onMouseDrag = undefined;
-            target.onMouseDrag = undefined;
-
-            // Combine into single unit (by joining the groups or just the
-            // piece into a collective group).
-
-            // Allow moving as one entire unit
-            joint.onMouseDrag = function(event) {
-                this.position += event.delta;
+            for(var i = 0; i < moved.grouping.pieces.length; i++) {
+                moved.grouping.pieces[i].position += new Point(deltaX, deltaY);
             }
-
+            this.expandGroup(moved, target);
+            return true;
         }
 
+        return false;
     };
 
     // Load
@@ -456,8 +508,12 @@ var Puzzle = function() {
             // if they are placed in the correct position. When this occurs, we
             // move the attached pieces as a unit
             that.tiles[i].onMouseDrag = function(event) {
-                this.position += event.delta;
-                that.boundPiece(this);
+                for(var j = 0; j < this.grouping.pieces.length; j++) {
+                    this.grouping.pieces[j].position += event.delta;
+                    that.boundPiece(this.grouping.pieces[j]);
+                }
+                //this.grouping.bounds.x += event.delta.x;
+                //this.grouping.bounds.y += event.delta.y;
             }
 
             // How close a piece needs to be next to another to snap
@@ -466,9 +522,16 @@ var Puzzle = function() {
             // properly joined, we use the central raster as our means
             // of measurement since they form a perfect square when the
             // tile is not clipped.
+            //
+            // Note if anyone of the pieces in the group snap in place,
+            // the rest of the group should also be in the correct spot
             that.tiles[i].onMouseUp = function(event) {
-                for(var j = 0; j < that.tiles.length; j++) {
-                    that.snapPiece(this, that.tiles[j], 200);
+                for(var j = 0; j < this.grouping.pieces.length; j++) {
+                    for(var k = 0; k < that.tiles.length; k++) {
+                        if(that.snapPiece(this.grouping.pieces[j], that.tiles[k], 200)) {
+                            return;
+                        }
+                    }
                 }
             }
 
