@@ -15,6 +15,8 @@ $(function() {
          preloader: false,
          focus: '#name',
          closeOnContentClick: false,
+         showCloseBtn: false,
+         closeOnBgClick: false,
 
          // When elemened is focused, some mobile browsers in some cases zoom in
          // It looks not nice, so we disable it:
