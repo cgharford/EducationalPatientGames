@@ -1,8 +1,4 @@
-var score=1000; //the 'high' score, decreases the longer you take
-
 $(function() {
-
-    //sets up our popup window, credits in magnificPopup files
 
     var audioElement = document.createElement('audio');
 
@@ -18,8 +14,8 @@ $(function() {
          showCloseBtn: false,
          closeOnBgClick: false,
 
-         // When elemened is focused, some mobile browsers in some cases zoom in
-         // It looks not nice, so we disable it:
+         // When elemenet is focused, some mobile browsers in some cases zoom in
+         // It doesn't look nice so we disable it:
          callbacks: {
              beforeOpen: function() {
                  if($(window).width() < 700) {
@@ -110,7 +106,6 @@ $(function() {
                 // When the puzzle is completed, we disable this interval ID
                 window.puzzle.intervalId = setInterval(function() {
                     seconds += 1;
-                    score += -1;
                     if(seconds === 60) {
                         minutes += 1;
                         seconds = 0;
@@ -133,17 +128,17 @@ $(function() {
         });
 
         // This is a temporary method to demonstrate code
-        $('#skip').click(function() {
-            $('#puzzle-container').hide();
-            $('#board').hide();
-            $('#click-puzzle').show();
-            $('#' + selectedPuzzle.data('content') + '-img-anim').show();
-            $('#' + selectedPuzzle.data('content') + '-img').show();
-            $(this).hide();
-
-            // Setup responsive image map
-            $('img[usemap]').rwdImageMaps();
-        });
+        // $('#skip').click(function() {
+        //     $('#puzzle-container').hide();
+        //     $('#board').hide();
+        //     $('#click-puzzle').show();
+        //     $('#' + selectedPuzzle.data('content') + '-img-anim').show();
+        //     $('#' + selectedPuzzle.data('content') + '-img').show();
+        //     $(this).hide();
+        //
+        //     // Setup responsive image map
+        //     $('img[usemap]').rwdImageMaps();
+        // });
 
     }();
 
@@ -228,64 +223,3 @@ $(function() {
 
     }();
 });
-
-// Creates our highscore table html to display the top four high scores
-function writeTable() {
-    var responseArray=loadtable();
-    var tbody = $('#body');
-    for (var i = 0; i < 4; i++) {
-        if(responseArray[i]>0){
-            var tr = $('<tr/>').appendTo(tbody);
-            var j=i+1;
-            tr.append('<td class="scorelabel">' + 'High Score '+j+' '+'</td>');
-            tr.append('<td class="scoreval">'+responseArray[i]+'</td>');
-        }
-    }
-    var tr = $('<tr/>').appendTo(tbody);
-    tr.append('<td class="scorelabel">'+'Your Score'+'</td>');
-    tr.append('<td class="scoreval">'+score+'</td>');
-}
-
-// Fetches the high scores from the database, database info in the db-api folder
-function loadtable() {
-    //get the cookie for high scores.
-
-    var responseArray = [10,10,10,10];
-
-    /* Send a POST request to the high score database
-     * Returns a pipe-delimeted string of the top 5 scores (in order)
-     * (ex: 2000|1000|750|565|20)
-     */
-
-        $.ajax({
-            type: 'POST',
-            url: "savescores.php",
-            data: "game=water&score=" + score,
-            dataType: "text",
-            success: function(data, status) {
-                response = data;
-                console.log("Data: " + data + "\nStatus: " + status);
-            },
-            async: false
-        });
-    // Split the XHR response if it was successfully received
-        try {
-            responseArray = (response).split("|");
-        } catch (e) { // Otherwise, follow built-in error handling procedure
-            responseArray = [score, -1, -1, -1];
-        }
-        if(responseArray[0] == undefined || responseArray == "NULL") {
-            responseArray[0] = score;
-        }
-        if(responseArray[1] == undefined || responseArray == "NULL") {
-            responseArray[1] = -1;
-        }
-        if(responseArray[2] == undefined || responseArray == "NULL") {
-            responseArray[2] = -1;
-        }
-        if(responseArray[3] == undefined || responseArray == "NULL") {
-            responseArray[3] = -1;
-        }
-        return responseArray;
-
-}
