@@ -7,30 +7,43 @@
 // project (it is possible to do with Microsoft Azure)
 
 /**
- * Puzzle Piece
+ * Tile Template
  * ==================================
  *
- * Representation of a puzzle piece.
+ * The tile template is essentially a factory (via the function @createTile) to
+ * create puzzle pieces. Note that the width and height passed into the constructor
+ * is not necessarily the actual width and height of the puzzle piece since we
+ * mask the image. Rather, these are dimensions of the unclipped raster.
+ *
+ * @width: The width of the raster of the piece
+ * @height: The height of the raster of the piece
 */
 var TileTemplate = function(width, height) {
 
+    // Dimensions
     this.width = width;
     this.height = height;
     this.margin = width * 0.203125;
 
+    // To begin with, we set all edges to the flat end and then randomly adjust
+    // the edges (unless it is an edge piece)
     this.top    = this.Edge.FLAT;
     this.right  = this.Edge.FLAT;
     this.bottom = this.Edge.FLAT;
     this.left   = this.Edge.FLAT;
 
     // Create Tile
-    // Goes through and masks the piece, creates the border, and the tile raster
+    // ----------------------------------
+    //
+    // Main method used to construct our puzzle piece. Masks the passed image,
+    // creates the border, etc.
+    //
+    // @image: The image file being adjusted
+    // @position: The cell position of the constructed piece.
     this.createTile = function(image, position) {
 
         // Create Mask
         var mask = this.createMask();
-
-        // Obtain tile raster and orient
         var offset = new Point(this.width * position[0], this.height * position[1]);
         var tileRaster = this.createTileRaster(image, offset);
 
@@ -46,19 +59,23 @@ var TileTemplate = function(width, height) {
         tile.clipped = true;
 
         // Used for snapping; the central raster forms a perfect square
-        // and can be used for shaping properly
+        // and can be used for shaping properly (try setting tile.clipped to
+        // false if this isn't clear)
         tile.centralRaster = tileRaster.children[0];
 
-        // Used to join pieces together
-        tile.grouping = {
-            pieces: [tile],
-            bounds: tile.bounds.clone()
+        // Used to join pieces together. That is, when a piece snaps to another
+        // piece, we must now look at the two pieces as if they were one. In this
+        // way, if one is moved, both must move.
+        tile.joint = {
+            pieces: [tile],         // A group will always contain the initial piece
+            bounds: undefined       // Defined when pieces are placed initially
         };
 
         return tile;
     };
 
     // Create Mask
+    // ----------------------------------
     //
     // The following applies to tile pieces to obtain the look of a puzzle piece.
     // A path forming to the shape of a puzzle piece (according to the +/-1) value
@@ -118,18 +135,24 @@ var TileTemplate = function(width, height) {
     };
 
     // Create Tile Raster
+    // ----------------------------------
     //
     // The following pulls out the segment of the image in question (with some
-    // margin), setting the data of the raster to the segment. Note the 'empty'
-    // image is literally an empty image that we use as an empty template to
-    // begin with and then replace with the necessary content
+    // margin), setting the data of the raster to the segment. Note that we
+    // scale the raster into a square for the sake of simplicity when creating
+    // the actual pieces.
+    //
+    // @src: The image a subraster is being generated from
+    // @offset: The x, y coordinate in which the topleft corner of the square used
+    //          to segment the image starts at
     this.createTileRaster = function(src, offset) {
 
+        // Contains the central raster and raster's used in margins
         var rasters = [];
 
         // Square the raster
-        var tileRaster = src.getSubRaster(new Rectangle(offset.x, offset.y, this.width, this.height));
         var length = Math.min(this.width, this.height);
+        var tileRaster = src.getSubRaster(new Rectangle(offset.x, offset.y, this.width, this.height));
         tileRaster.scale(length / tileRaster.bounds.width, length / tileRaster.bounds.height);
         tileRaster.position = new Point(length / 2, length / 2);
         rasters.push(tileRaster);
@@ -183,35 +206,17 @@ TileTemplate.prototype.Edge = Object.freeze({
 });
 
 /**
- * Puzzle
+ * Board
  * ==================================
  *
- * Representation of the actual puzzle and its current state.
+ * Representation of the actual puzzle and its current state. This class handles
+ * piece manipulation, snapping, boundaries, etc. and will also trigger a callback
+ * when the puzzle is complete.
 */
-var Puzzle = function() {
-
-    // Get Dimension
-    //
-    // Convenience function that returns the dimension of the puzzle according
-    // to the difficulty class. The returned value is of form [width, height].
-    this.getDimension = function() {
-        switch(this.difficulty) {
-            case this.Difficulty.EASY:
-                return [2, 2];
-            case this.Difficulty.MEDIUM:
-                return [3, 3];
-            case this.Difficulty.HARD:
-                return [4, 4];
-            case this.Difficulty.INSANE:
-                return [5, 5];
-            case this.Difficulty.NIGHTMARE:
-                return [6, 6];
-            default:
-                return [1, 1];
-        }
-    };
+var Board = function() {
 
     // Randomize Edges
+    // ----------------------------------
     //
     // When creating the puzzle, each piece is setup so that each side is
     // either flat (if on the edge of the puzzle), convex, or concave. These
@@ -224,8 +229,8 @@ var Puzzle = function() {
     this.randomizeEdges = function() {
 
         var outlines = [];
-        var width = this.getDimension()[0];
-        var height = this.getDimension()[1];
+        var width = this.dimension;
+        var height = this.dimension;
         for(var i = 0; i < width; i++) {
             for(var j = 0; j < height; j++) {
                 outlines.push(new TileTemplate(this.tileWidth, this.tileHeight));
@@ -251,19 +256,17 @@ var Puzzle = function() {
     };
 
     // Build Tiles
+    // ----------------------------------
     //
-    // The following function constructs the tiles out of the tile templates also
-    // constructed within the function. They are not placed in any particular location
-    // by this call.
-    //
-    // @width: The number of tiles per row
-    // @height: The number of tiles per column
-    this.buildTiles = function(tilesPerRow, tilesPerCol) {
+    // The following function constructs the tiles out of tile templates. We create
+    // each piece in order of cell position (row-wise first) and then randomize
+    // the tiles position afterward.
+    this.buildTiles = function() {
         var tiles = [];
         var templates = this.randomizeEdges();
-        for(var i = 0; i < tilesPerCol; i++) {
-            for(var j = 0; j < tilesPerRow; j++) {
-                var templ = templates[i * tilesPerRow + j];
+        for(var i = 0; i < this.dimension; i++) {
+            for(var j = 0; j < this.dimension; j++) {
+                var templ = templates[i * this.dimension + j];
                 var tile = templ.createTile(this.image, [j, i]);
                 tile.imagePosition = new Point(j, i);
                 tile.cellPosition = new Point(j + 1, i + 1);
@@ -274,112 +277,100 @@ var Puzzle = function() {
         return tiles;
     }
 
-    // Scale Board
-    //
-    // Because of the different difficulty levels and potentially different sized
-    // images, we must compute where the pieces may snap too when placing a piece
-    // down. The pieces beginon the right 20% of the board, and they are placed on
-    // the left 80% of the board.
-    this.scaleBoard = function(ratio) {
-        var canvas = $(view.element);
-        var tilesPerRow = this.getDimension()[0];
-        var tileWidth = this.tiles[0].bounds.width;
-        var minimumSide = Math.min(canvas.width(), canvas.height());
-        view.zoom = (ratio * minimumSide) / (tilesPerRow * tileWidth);
-    };
-
     // Place Pieces
+    // ----------------------------------
     //
-    // If a piece has not yet been placed, we place the piece in an arbitrary location.
     // I initially tried setting up a sideboard on which to hold the pieces, but this proved
-    // a bit unwieldy in terms of both programming and using.
+    // a bit unwieldy in terms of both programming and using. Instead, I simply shuffle the
+    // pieces around the canvas.
     this.placePieces = function() {
 
-        // Initally place any pieces
-        if(!this.placedPieces) {
-
-            var indices = [];
-            for(i = 0; i < this.tiles.length; i++) {
-                indices.push(i);
-            }
-
-            // In order to randomize how the tiles are placed in the initial
-            // pile, we remove all elements from the active layer and then
-            // re-add them randomly
-            var reordering = [];
-            while(indices.length > 0) {
-                var index = Math.floor(Math.random() * indices.length);
-                var tile = this.tiles[indices[index]];
-                indices = indices.slice(0, index).concat(indices.slice(index + 1));
-                reordering.push(tile);
-                tile.remove();
-            }
-
-            var canvas = $(view.element);
-            for(var i = 0; i < reordering.length; i++) {
-                var x = Math.random() * canvas.width();
-                var y = Math.random() * canvas.height();
-                reordering[i].position = new Point(x, y);
-                project.activeLayer.addChild(reordering[i]);
-            }
+        var indices = [];
+        for(i = 0; i < this.tiles.length; i++) {
+            indices.push(i);
         }
 
-        // Check that pieces are snapped properly
-        for(var i = 0; i < this.tiles.length; i++) {
-            this.boundGroup(this.tiles[i].grouping);
+        // In order to randomize how the tiles are placed in the initial
+        // pile, we remove all elements from the active layer and then
+        // re-add them randomly
+        var reordering = [];
+        while(indices.length > 0) {
+            var index = Math.floor(Math.random() * indices.length);
+            var tile = this.tiles[indices[index]];
+            indices = indices.slice(0, index).concat(indices.slice(index + 1));
+            reordering.push(tile);
+            tile.remove();
         }
 
-        // Ensure initial placement only occurs once
-        this.placedPieces = true;
+        // We then push each piece evenly around the canvas
+        for(var i = 0; i < reordering.length; i++) {
+            var x = i % this.dimension;
+            var y = Math.floor(i / this.dimension);
+            var posX = view.bounds.width / this.dimension * x + reordering[i].bounds.width / 2;
+            var posY = view.bounds.height / this.dimension * y + reordering[i].bounds.height / 2;
+            reordering[i].position = new Point(view.bounds.x + posX, view.bounds.y + posY);
+            reordering[i].joint.bounds = reordering[i].bounds.clone();
+            project.activeLayer.addChild(reordering[i]);
+        }
+
     };
 
-    // Bound Piece
+    // Bound Group
+    // ----------------------------------
     //
-    // Ensure that the pieces are within the canvas.
+    // Ensure that the pieces stay within the canvas when dragged or the canvas resized.
+    // Since each puzzle piece belongs to a group (all pieces any one piece is connected to),
+    // we must check that the group in question is completely within the canvas.
     this.boundGroup = function(group) {
+
+        // Convenience function for adjusting all piece positions
+        var reposition = function(x, delta) {
+            for(var i = 0; i < group.pieces.length; i++) {
+                group.pieces[i].position[x ? 'x' : 'y'] += delta;
+            }
+        }
 
         // Check left handed bounds
         if(group.bounds.x <= view.bounds.x) {
-            for(var i = 0; i < group.pieces.length; i++) {
-                group.pieces[i].position.x += view.bounds.x - group.bounds.x;
-            }
+            reposition(true, view.bounds.x - group.bounds.x);
             group.bounds.x = view.bounds.x;
 
         // Check right handed bounds
         } else if(group.bounds.x + group.bounds.width >= view.bounds.x + view.bounds.width) {
-            for(var i = 0; i < group.pieces.length; i++) {
-                group.pieces[i].position.x += view.bounds.x + view.bounds.width - (group.bounds.x + group.bounds.width);
-            }
+            reposition(true, view.bounds.x + view.bounds.width - (group.bounds.x + group.bounds.width));
             group.bounds.x = view.bounds.x + view.bounds.width - group.bounds.width;
         }
 
         // Check top handed bounds
         if(group.bounds.y <= view.bounds.y) {
-            for(var i = 0; i < group.pieces.length; i++) {
-                group.pieces[i].position.y += view.bounds.y - group.bounds.y;
-            }
+            reposition(false, view.bounds.y - group.bounds.y);
             group.bounds.y = view.bounds.y;
 
         // Check bottom handed bounds
         } else if(group.bounds.y + group.bounds.height >= view.bounds.y + view.bounds.height) {
-            for(var i = 0; i < group.pieces.length; i++) {
-                group.pieces[i].position.y += view.bounds.y + view.bounds.height - (group.bounds.y + group.bounds.height);
-            }
+            reposition(false, view.bounds.y + view.bounds.height - (group.bounds.y + group.bounds.height));
             group.bounds.y = view.bounds.y + view.bounds.height - group.bounds.height;
         }
     };
 
     // Expand Group
+    // ----------------------------------
     //
-    // Convenience function intended to adjust a group's boundaries
-    this.expandGroup = function(moved, target) {
+    // Convenience function intended to adjust a group. That is, when I move a group
+    // towards another puzzle piece and they actually bind together, then we need to
+    // extend the current group to include the joined group and consequently consider
+    // them all collectively as one larger new group.
+    //
+    // @moved: The puzzle piece being moved
+    // @target: The puzzle piece moved next to
+    this.extendGroup = function(moved, target) {
 
-        // We always grow the larger group.
-        var larger = moved.grouping;
-        var smaller = target.grouping;
-        if(moved.grouping.pieces.length < target.grouping.pieces.length) {
-            larger = target.grouping;
-            smaller = moved.grouping;
+        // We always extend the larger group
+        var larger = moved.joint;
+        var smaller = target.joint;
+        if(moved.joint.pieces.length < target.joint.pieces.length) {
+            larger = target.joint;
+            smaller = moved.joint;
         }
 
         // For use in boundaries
@@ -389,21 +380,24 @@ var Puzzle = function() {
         var bottom = larger.bounds.y + larger.bounds.height;
 
         // Next extend the group to include the newly attached pieces
+        // Note we check that the smaller pieces do not actually already
+        // belong to the larger group (without this check, the pieces would
+        // be repeatedly added to the same group whenever a mouse click occurs
+        // on an already combined piece).
         for(var i = 0; i < smaller.pieces.length; i++) {
-            if(smaller.pieces[i].grouping !== larger) {
+            if(smaller.pieces[i].joint !== larger) {
                 larger.pieces.push(smaller.pieces[i]);
-                smaller.pieces[i].grouping = larger;
+                smaller.pieces[i].joint = larger;
             }
         }
 
         // Adjust position
         for(var i = 0; i < larger.pieces.length; i++) {
-            var piece = larger.pieces[i];
-            larger.bounds.x = Math.min(piece.bounds.x, larger.bounds.x);
-            larger.bounds.y = Math.min(piece.bounds.y, larger.bounds.y);
+            larger.bounds.x = Math.min(larger.pieces[i].bounds.x, larger.bounds.x);
+            larger.bounds.y = Math.min(larger.pieces[i].bounds.y, larger.bounds.y);
         }
 
-        // Lastly, Adjust size
+        // Adjust size
         for(var i = 0; i < larger.pieces.length; i++) {
             var piece = larger.pieces[i];
             if(piece.bounds.x + piece.bounds.width > larger.bounds.x + larger.bounds.width) {
@@ -416,6 +410,7 @@ var Puzzle = function() {
     };
 
     // Snap Piece
+    // ----------------------------------
     //
     // We snap the piece depending on how close it is to the corresponding puzzle piece.
     // Note we base this off the central raster of the tile since, when the tiles are not
@@ -424,15 +419,16 @@ var Puzzle = function() {
     // @moved: Tile moved
     // @target: Tile checking to be snapped to
     // @snapDelta: Proximity necessary for snapping
+    // @return: Whether or not a snapping was successful
     this.snapPiece = function(moved, target, snapDelta) {
 
-        // Note that snapping can occur with a piece already snapped to.
-        // If this is the case, we should not be working with this code.
-        if(target.grouping === moved.grouping) {
+        // Snapping is technically performed with pieces already snapped to.
+        // If this is the case, we should not be trying to snap them again.
+        if(target.joint === moved.joint) {
             return false;
         }
 
-        // Note this check makes sure we are working with an adjacent tile
+        // This check makes sure we are working with an adjacent tile
         var cellDeltaX = Math.abs(target.cellPosition.x - moved.cellPosition.x);
         var cellDeltaY = Math.abs(target.cellPosition.y - moved.cellPosition.y);
         if(cellDeltaX + cellDeltaY !== 1) {
@@ -469,12 +465,13 @@ var Puzzle = function() {
 
         }
 
-        // Positions group to fit snug against joined piece
+        // Positions group to fit snug against joined piece and then combines
+        // all pieces together
         if(Math.abs(deltaX) < snapDelta && Math.abs(deltaY) < snapDelta) {
-            for(var i = 0; i < moved.grouping.pieces.length; i++) {
-                moved.grouping.pieces[i].position += new Point(deltaX, deltaY);
+            for(var i = 0; i < moved.joint.pieces.length; i++) {
+                moved.joint.pieces[i].position += new Point(deltaX, deltaY);
             }
-            this.expandGroup(moved, target);
+            this.extendGroup(moved, target);
             return true;
         }
 
@@ -482,6 +479,7 @@ var Puzzle = function() {
     };
 
     // Load
+    // ----------------------------------
     //
     // The following function bootstraps the puzzle onto the canvas for
     // manipulating. In particular, it randomizes the pieces after generating
@@ -497,24 +495,15 @@ var Puzzle = function() {
         // General Properties
         this.loaded = true;
         this.path = config.path;
-        this.difficulty = config.difficulty;
+        this.dimension = config.dimension;
 
         // Square Image
         this.image = new Raster(config.image);
         this.image.opacity = 0;
 
-        // Tile Properties
-        var tilesPerRow = this.getDimension()[0];
-        var tilesPerCol = this.getDimension()[1];
-
-        this.tileWidth = this.image.bounds.width / tilesPerRow;
-        this.tileHeight = this.image.bounds.height / tilesPerCol;
-        this.tiles = this.buildTiles(tilesPerRow, tilesPerCol);
-
-        // Initialize the board
-        var canvas = $(view.element);
-        view.setViewSize(canvas.width(), canvas.height());
-        $(window).trigger('resize');
+        this.tileWidth = this.image.bounds.width / this.dimension;
+        this.tileHeight = this.image.bounds.height / this.dimension;
+        this.tiles = this.buildTiles();
 
         // Event Setup
         for(var i = 0; i < that.tiles.length; i++) {
@@ -523,12 +512,12 @@ var Puzzle = function() {
             // if they are placed in the correct position. When this occurs, we
             // move the attached pieces as a unit
             that.tiles[i].onMouseDrag = function(event) {
-                for(var j = 0; j < this.grouping.pieces.length; j++) {
-                    this.grouping.pieces[j].position += event.delta;
+                this.joint.bounds.x += event.delta.x;
+                this.joint.bounds.y += event.delta.y;
+                for(var j = 0; j < this.joint.pieces.length; j++) {
+                    this.joint.pieces[j].position += event.delta;
                 }
-                this.grouping.bounds.x += event.delta.x;
-                this.grouping.bounds.y += event.delta.y;
-                that.boundGroup(this.grouping);
+                that.boundGroup(this.joint);
             }
 
             // How close a piece needs to be next to another to snap
@@ -541,27 +530,24 @@ var Puzzle = function() {
             // Note if anyone of the pieces in the group snap in place,
             // the rest of the group should also be in the correct spot
             that.tiles[i].onMouseUp = function(event) {
-                for(var j = 0; j < this.grouping.pieces.length; j++) {
+                for(var j = 0; j < this.joint.pieces.length; j++) {
                     for(var k = 0; k < that.tiles.length; k++) {
-                        if(that.snapPiece(this.grouping.pieces[j], that.tiles[k], 200)) {
+                        if(that.snapPiece(this.joint.pieces[j], that.tiles[k], 200)) {
                             return;
                         }
                     }
                 }
             }
-
         }
+
+        // Initialize the board
+        var canvas = $(view.element);
+        view.setViewSize(canvas.width(), canvas.height());
+        $(window).trigger('resize');
+        this.placePieces();
     }
 
 };
-
-Puzzle.prototype.Difficulty = Object.freeze({
-    EASY: 0,      // 2x2
-    MEDIUM: 1,    // 3x3
-    HARD: 2,      // 4x4
-    INSANE: 3,    // 5x5
-    NIGHTMARE: 4, // 6x6
-});
 
 /**
  * Global reference
@@ -572,10 +558,25 @@ Puzzle.prototype.Difficulty = Object.freeze({
  * afterward run puzzle.js, which will bootstrap our choices of puzzle and
  * difficulty.
 */
-window.puzzle = new Puzzle();
+window.puzzle = new Board();
 $(window).resize(function() {
     if(window.puzzle.loaded) {
-        window.puzzle.scaleBoard(0.9);
-        window.puzzle.placePieces();
+
+        // Because of the different difficulty levels and potentially different sized
+        // images, we must scale the board in such a way that the completed puzzle will
+        // fit completely within the canvas.
+        var ratio = 0.9;
+        var canvas = $(view.element);
+        var tileWidth = window.puzzle.tiles[0].bounds.width;
+        var minimumSide = Math.min(canvas.width(), canvas.height());
+        view.zoom = (ratio * minimumSide) / (window.puzzle.dimension * tileWidth);
+
+        // We must also make sure each piece is bound within the canvas.
+        for(var i = 0; i < window.puzzle.tiles.length; i++) {
+            if(window.puzzle.tiles[i].joint.bounds !== undefined) {
+                window.puzzle.boundGroup(window.puzzle.tiles[i].joint);
+            }
+        }
+
     }
 })

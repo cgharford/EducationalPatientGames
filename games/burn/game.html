@@ -3,27 +3,21 @@
     <head>
         <title>Burn Injury Prevention</title>
         <link href="/vendor/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-        <link href="../../assets/css/style.css" rel="stylesheet" type="text/css" />
-        <script src="/vendor/js/jquery.min.js" type="text/javascript"></script>
-        <script src="/vendor/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="/vendor/js/paper.js" type="text/javascript"></script>
-        <script src="/vendor/js/jquery.rwdImageMaps.js" type="text/javascript"></script>
-        <link href="../../vendor/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-        <link href="../../assets/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
         <link href="assets/css/puzzle.css" rel="stylesheet" type="text/css" />
+        <link href="../../assets/css/style.css" rel="stylesheet" type="text/css" />
         <link href="../../vendor/css/magnific-popup.css" rel="stylesheet" type="text/css">
         <script src="../../vendor/js/jquery.min.js" type="text/javascript"></script>
-        <script src="../../vendor/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="../../vendor/js/jquery.magnific-popup.js" type="text/javascript" ></script>
-        <script src="../../vendor/js/paper.js" type="text/javascript"></script>
         <script src="../../vendor/js/jquery.rwdImageMaps.js" type="text/javascript"></script>
+        <script src="../../vendor/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="../../vendor/js/paper.js" type="text/javascript"></script>
         <script src="assets/js/board.js" type="text/paperscript" canvas="board"></script>
         <script src="assets/js/puzzle.js" type="text/javascript"></script>
     </head>
     <body>
         <div id="wrapper">
+
             <!-- Header -->
             <div class="row" id="header">
                 <div id="logo" class="hidden-xs">
@@ -75,20 +69,20 @@
                 <div class="instructions">
                     Pick a level!
                 </div>
-                <div><button id="easy-button" type="button" class="btn btn-primary level-button" data-level="0">
+                <div><button id="easy-button" type="button" class="btn btn-primary level-button" data-level="2">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                     </div>
                     Easy</button>
                 </div>
-                <div><button id="medium-button" type="button" class="btn btn-primary level-button" data-level="1">
+                <div><button id="medium-button" type="button" class="btn btn-primary level-button" data-level="3">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                     </div>
                     Medium</button>
                 </div>
-                <div><button id="hard-button" type="button" class="btn btn-primary level-button" data-level="2">
+                <div><button id="hard-button" type="button" class="btn btn-primary level-button" data-level="4">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
@@ -96,7 +90,7 @@
                     </div>
                     Hard</button>
                 </div>
-                <div><button id="insane-button" type="button" class="btn btn-primary level-button" data-level="3">
+                <div><button id="insane-button" type="button" class="btn btn-primary level-button" data-level="5">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
@@ -105,7 +99,7 @@
                     </div>
                     Insane</button>
                 </div>
-                <div><button id="nightmare-button" type="button" class="btn btn-primary level-button" data-level="4">
+                <div><button id="nightmare-button" type="button" class="btn btn-primary level-button" data-level="6">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
@@ -128,6 +122,7 @@
                 </span>
                 <canvas id="board" resize></canvas>
             </div>
+
             <!-- Puzzle Completion Game -->
             <div class="content-container" id="click-puzzle">
                 <div class="instructions">
@@ -173,20 +168,21 @@
                     </div>
                 </div>
                 <div class="row"></div>
-                
+
+                <!-- High Scores -->
                 <a class="popup-with-form" href="#test-form" style="display:none;" onclick='writeTable();' id="tableLink"></a>
-            
                 <div id="test-form" class="mfp-hide white-popup-block">
                     <form id="highscores">
 	                    <h1 id="congratstext">You win!</h1>
-	                        <fieldset>
-                                <table id="scores" class=center>
-                                    <tbody id="body"></tbody>
-                                </table>
-                                <input id="restart" type="button" onclick="location.href='http://www.unc.edu/~jrpotter/';" value="Pick a new game!" />
-	                        </fieldset>
+                        <fieldset>
+                            <table id="scores" class=center>
+                                <tbody id="body"></tbody>
+                            </table>
+                            <input id="restart" type="button" onclick="location.href='http://www.unc.edu/~jrpotter/';" value="Pick a new game!" />
+                        </fieldset>
                     </form>
                 </div>
+
             </div>
         </div>
     </body>

@@ -127,7 +127,7 @@ $(function() {
                 $('#board').css('display', 'block');
                 window.puzzle.load({
                     image: selectedPuzzle.get(0),
-                    difficulty: that.data('level')
+                    dimension: that.data('level')
                 });
             }();
         });
