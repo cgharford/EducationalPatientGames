@@ -3,7 +3,6 @@ var score=1000; //the 'high' score, decreases the longer you take
 $(function() {
     
     //sets up our popup window, credits in magnificPopup files
-    +function() {
 
     var audioElement = document.createElement('audio');
 
