@@ -13,11 +13,12 @@ body{
 
 #header {
     background: #14BECC;
+    color: #eee;
 }
 
 #logo {
-    color: #eee;
     padding-left: 8em;
+    color: #eee;
 }
 
 #uncLogo {
@@ -25,12 +26,14 @@ body{
     font-size: 35px;
     float: left;
     padding-top: 30px;
+    color: #eee;
 }
 
 #kidsLogo {
     font-family: 'Comic Sans MS';
     font-size: 70px;
     float: left;
+    color: #eee;
 }
 
 #byline {

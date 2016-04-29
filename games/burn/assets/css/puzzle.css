@@ -46,6 +46,10 @@
     margin: 10px auto;
 }
 
+#skip {
+    margin: 0em 1em;
+}
+
 /**
  * Puzzle Selection
  * ===================================
