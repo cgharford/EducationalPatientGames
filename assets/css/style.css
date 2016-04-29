@@ -137,6 +137,72 @@ footer{
     position: relative;
 }
 
+.white-popup-block {
+    color: black;
+    position: relative;
+    text-align:center;
+    background: #FFF;
+    padding: 20px;
+    width:auto;
+    max-width: 500px;
+    margin: 20px auto;
+    border: 7px solid #14BECC;
+    border-radius: 25px;
+}
+
+#congratstext {
+    color: white;
+    font-family: 'Comic Sans MS';
+    background-color: #14BECC;
+    border-radius: 25px;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 50px 0;
+  padding: 20px 0;
+
+}
+
+table.center {
+  margin-left:auto; 
+  margin-right:auto;
+}
+
+td {
+  color: white;
+  padding: 10px 0;
+  background-color: #FF7985;
+  font-family: 'Comic Sans MS';
+  border: 2px solid #FFF;
+  border-radius: 20px;
+  width: 120%;
+}
+
+table tr td+td{
+    background-color: #FFF;
+    color: black
+}
+
+#restart{
+    padding: 10px 0;
+    font-family: 'Comic Sans MS';
+    background-color: #00FF83;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    width: 75%;
+    border-radius: 5px;
+    color: black;
+
+}
+
+#restart:hover {
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid green
+}
+
 /* Styles for mobile screen size */
 @media screen and (max-width: 770px) {
     .content-container {
