@@ -4,6 +4,12 @@ $(function() {
     
     //sets up our popup window, credits in magnificPopup files
     +function() {
+
+    var audioElement = document.createElement('audio');
+
+    // Preliminary setup. Hide elements and instruct user on how to begin playing
+    // the game.
+    +function() {
         
         $('.popup-with-form').magnificPopup({
          type: 'inline',
@@ -23,13 +29,6 @@ $(function() {
              }
           }
         });
-    
-
-    var audioElement = document.createElement('audio');
-
-    // Preliminary setup. Hide elements and instruct user on how to begin playing
-    // the game.
-    +function() {
 
         // Hide all components beforehand
         $('#fireplace-img').hide();
