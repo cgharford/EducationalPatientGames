@@ -19,7 +19,7 @@
     background-color: #eee;
 }
 
-.contentContainer {
+.content-container {
     padding: 1.5em .75em;
     border-radius: .5em;
     margin: 2em 4em;
@@ -44,7 +44,6 @@
     height: 90%;
     display: none;
     margin: 10px auto;
-    border: 1px solid #009CD6;
 }
 
 /**
@@ -117,11 +116,16 @@
     color: #00FF83;
 }
 
-
 /**
  * Finished Images
  * ===================================
 */
+
+.img-container {
+    position: relative;
+    top: 0;
+    left: 0;
+}
 
 .finished-img {
     height: 75%;
@@ -132,6 +136,14 @@
 
 .instructions {
     padding-bottom: 1em;
+}
+
+.img-animated {
+    position: absolute;
+    height: 100%;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
 }
 
 /* Styles for mobile screen size */
@@ -154,7 +166,7 @@
 
 /* Styles for mobile screen size */
 @media screen and (max-width: 770px) {
-    .contentContainer {
+    .content-container {
         margin: 1.5em;
     }
     .puzzle-img {

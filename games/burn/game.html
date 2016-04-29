@@ -6,11 +6,20 @@
         <link href="/vendor/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="../../assets/css/style.css" rel="stylesheet" type="text/css" />
-        <link href="assets/css/puzzle.css" rel="stylesheet" type="text/css" />
         <script src="/vendor/js/jquery.min.js" type="text/javascript"></script>
         <script src="/vendor/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="/vendor/js/paper.js" type="text/javascript"></script>
         <script src="/vendor/js/jquery.rwdImageMaps.js" type="text/javascript"></script>
+        <link href="../../vendor/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../assets/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="assets/css/puzzle.css" rel="stylesheet" type="text/css" />
+        <link href="../../vendor/css/magnific-popup.css" rel="stylesheet" type="text/css">
+        <script src="../../vendor/js/jquery.min.js" type="text/javascript"></script>
+        <script src="../../vendor/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="../../vendor/js/jquery.magnific-popup.js" type="text/javascript" ></script>
+        <script src="../../vendor/js/paper.js" type="text/javascript"></script>
+        <script src="../../vendor/js/jquery.rwdImageMaps.js" type="text/javascript"></script>
         <script src="assets/js/board.js" type="text/paperscript" canvas="board"></script>
         <script src="assets/js/puzzle.js" type="text/javascript"></script>
     </head>
@@ -43,7 +52,7 @@
             </span>
 
             <!-- Puzzle Selection -->
-            <div class="contentContainer" id="puzzle-select-container">
+            <div class="content-container" id="puzzle-select-container">
                 Pick a puzzle!
                 <div class="col-lg-12" id="puzzle-pic-container">
                     <div class="col-lg-4 col-md-4 col-sm-6 puzzle-img-container">
@@ -66,7 +75,7 @@
             </div>
 
             <!-- Level Selection -->
-            <div class="contentContainer" id="level-select-container">
+            <div class="content-container" id="level-select-container">
                 <div class="instructions">
                     Pick a level!
                 </div>
@@ -114,41 +123,52 @@
             </div>
 
             <!-- Puzzle -->
-            <canvas id="board" resize></canvas>
-
+            <div class="content-container" id="puzzle-container">
+                <canvas id="board" resize></canvas>
+            </div>
             <!-- Puzzle Completion Game -->
-            <div class="contentContainer" id="click-puzzle">
+            <div class="content-container" id="click-puzzle">
                 <div class="instructions">
                     Click on the dangerous spot in the puzzle!
                 </div>
                 <div class="col-lg-12" id="puzzle-pic-container">
 
-                    <img id="fireplace-img" class="finished-img" width="900" height="800" src="assets/imgs/puzzles/fireplace.jpg" usemap="#fireplace-map"/>
-                    <map name="fireplace-map">
-                        <area class="fireplace-correct" shape="circle" coords="360,490,120" alt="" href="">
-                    </map>
-
-                    <img id="lamp-img" class="finished-img" width="900" height="800" src="assets/imgs/puzzles/lamp.jpg" usemap="#lamp-map"/>
-                    <map name="lamp-map">
-                        <area class="lamp-correct" shape="circle" coords="250,220,130" alt="" href="">
-                    </map>
-
-                    <img id="matches-img" class="finished-img" width="900" height="800" src="assets/imgs/puzzles/matches.jpg" usemap="#matches-map"/>
-                    <map name="matches-map">
-                        <area class="matches-correct" shape="circle" coords="330,620,130" alt="" href="">
-                    </map>
-
-                    <img id="outlet-img" class="finished-img" width="900" height="800" src="assets/imgs/puzzles/outlet.jpg" usemap="#outlet-map"/>
-                    <map name="outlet-map">
-                        <area class="outlet-correct" shape="circle" coords="670,550,130" alt="" href="">
-                        <area class="outlet-correct" shape="circle" coords="580,730,120" alt="" href="">
-                    </map>
-
-                    <img id="stove-img" class="finished-img" width="900" height="800" src="assets/imgs/puzzles/stove.jpg" usemap="#stove-map"/>
-                    <map name="stove-map">
-                        <area class="stove-correct" shape="circle" coords="580,410,120" alt="" href="">
-                    </map>
-
+                    <div class="img-container">
+                        <img id="fireplace-img-anim" class="img-animated finished-img" width="900" height="800" src="assets/imgs/anims/fireplaceanims.gif" usemap="#fireplace-map"/>
+                        <img id="fireplace-img" width="900" height="800" src="assets/imgs/puzzles/fireplace.jpg" />
+                        <map name="fireplace-map">
+                            <area class="fireplace-correct" shape="circle" coords="360,490,120" alt="" href="">
+                        </map>
+                    </div>
+                    <div class="img-container">
+                        <img id="lamp-img-anim" class="img-animated finished-img"  width="900" height="800" src="assets/imgs/anims/lampanims.gif" usemap="#lamp-map"/>
+                        <img id="lamp-img" width="900" height="800" src="assets/imgs/puzzles/lamp.jpg" />
+                        <map name="lamp-map">
+                            <area class="lamp-correct" shape="circle" coords="250,220,130" alt="" href="">
+                        </map>
+                    </div>
+                    <div class="img-container">
+                        <img id="matches-img-anim" class="img-animated finished-img"  width="900" height="800" src="assets/imgs/anims/matchanims.gif" usemap="#matches-map"/>
+                        <img id="matches-img" width="900" height="800" src="assets/imgs/puzzles/matches.jpg"/>
+                        <map name="matches-map">
+                            <area class="matches-correct" shape="circle" coords="330,620,130" alt="" href="">
+                        </map>
+                    </div>
+                    <div class="img-container">
+                        <img id="outlet-img-anim" class="img-animated finished-img"  width="900" height="800" src="assets/imgs/anims/pluganims.gif" usemap="#outlet-map"/>
+                        <img id="outlet-img" width="900" height="800" src="assets/imgs/puzzles/outlet.jpg" />
+                        <map name="outlet-map">
+                            <area class="outlet-correct" shape="circle" coords="670,550,130" alt="" href="">
+                            <area class="outlet-correct" shape="circle" coords="580,730,120" alt="" href="">
+                        </map>
+                    </div>
+                    <div class="img-container">
+                        <img id="stove-img-anim" class="img-animated finished-img"  width="900" height="800" src="assets/imgs/anims/potanims.gif" usemap="#stove-map"/>
+                        <img id="stove-img" width="900" height="800" src="assets/imgs/puzzles/stove.jpg"/>
+                        <map name="stove-map">
+                            <area class="stove-correct" shape="circle" coords="580,410,120" alt="" href="">
+                        </map>
+                    </div>
                 </div>
                 <div class="row"></div>
             </div>

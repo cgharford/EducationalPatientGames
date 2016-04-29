@@ -19,6 +19,11 @@ if(isset($_POST['game']) && isset($_POST['score'])){
           $sql = mysql_query("INSERT INTO `$db`.`water-scores` (`id`,`score`) VALUES ('0','$score');");
      } else if ($game == "helmet") {
           $sql = mysql_query("INSERT INTO `$db`.`helmet-scores` (`id`,`score`) VALUES ('0','$score');");
+<<<<<<< HEAD
+=======
+     } else if ($game == "fire") {
+          $sql = mysql_query("INSERT INTO `$db`.`fire-scores` (`id`,`score`) VALUES ('0','$score');");
+>>>>>>> 24f332ffa76d16f6f1444fad53dc023a862ec5c0
      }
      
      if($sql){
@@ -27,6 +32,11 @@ if(isset($_POST['game']) && isset($_POST['score'])){
                $sql="SELECT * FROM `water-scores` ORDER BY score DESC LIMIT 5";
           } else if ($game == "helmet") {
                $sql = "SELECT * FROM `helmet-scores` ORDER BY score DESC LIMIT 5";
+<<<<<<< HEAD
+=======
+          } else if ($game == "fire") {
+               $sql = "SELECT * FROM `fire-scores` ORDER BY score DESC LIMIT 5";
+>>>>>>> 24f332ffa76d16f6f1444fad53dc023a862ec5c0
           }
           $result=mysql_query($sql);
 
@@ -52,4 +62,8 @@ if(isset($_POST['game']) && isset($_POST['score'])){
 }
 
 mysql_close($dblink);//Close off the MySQL connection to save resources.
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 24f332ffa76d16f6f1444fad53dc023a862ec5c0

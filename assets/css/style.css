@@ -50,7 +50,7 @@ body{
     box-shadow: 0 0 10px #3D9299;
 }
 
-.contentContainer {
+.content-container {
     background: #eee;
     border-radius: .5em;
     margin: 5em 7em;
@@ -136,7 +136,7 @@ footer{
 
 /* Styles for mobile screen size */
 @media screen and (max-width: 770px) {
-    .contentContainer {
+    .content-container {
         margin: 1.5em;
     }
     #logo {
