@@ -496,6 +496,7 @@ var Board = function() {
         this.loaded = true;
         this.path = config.path;
         this.dimension = config.dimension;
+        this.completed = config.completed;
 
         // Square Image
         this.image = new Raster(config.image);
@@ -529,10 +530,16 @@ var Board = function() {
             //
             // Note if anyone of the pieces in the group snap in place,
             // the rest of the group should also be in the correct spot
+            //
+            // Lastly, if all pieces are added together, we call the callback
+            // to move on to the next portion of the game.
             that.tiles[i].onMouseUp = function(event) {
                 for(var j = 0; j < this.joint.pieces.length; j++) {
                     for(var k = 0; k < that.tiles.length; k++) {
                         if(that.snapPiece(this.joint.pieces[j], that.tiles[k], 200)) {
+                            if(this.joint.pieces.length == Math.pow(that.dimension, 2)) {
+                                that.completed();
+                            }
                             return;
                         }
                     }

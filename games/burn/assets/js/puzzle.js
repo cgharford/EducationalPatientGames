@@ -14,7 +14,7 @@ $(function() {
          showCloseBtn: false,
          closeOnBgClick: false,
 
-         // When elemenet is focused, some mobile browsers in some cases zoom in
+         // When element is focused, some mobile browsers in some cases zoom in
          // It doesn't look nice so we disable it:
          callbacks: {
              beforeOpen: function() {
@@ -48,97 +48,6 @@ $(function() {
         audioElement.addEventListener("load", function() {
            audioElement.play();
         }, true);
-
-    }();
-
-    // Puzzle and level selection
-    +function() {
-
-        // The puzzle selected and to be displayed after level selection
-        var selectedPuzzle = undefined;
-
-        // Allow selection of the puzzle to work with. We then query the difficulty
-        // of the puzzle
-        $('.puzzle-img').click(function() {
-
-            selectedPuzzle = $(this);
-            $('#puzzle-select-container').hide();
-            $('#level-select-container').show();
-
-            audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-
-        });
-
-        // Allow selection of the puzzle to work with
-        // We simply take the image in question and remove the other puzzle images
-        // in place of a canvas with the background set to the selected image to
-        // scramble.
-        $('.level-button').click(function() {
-
-            var that = $(this);
-
-            // Play audio for puzzle instructions
-            audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-
-            // Initialize the timer
-            // Begin starting the timer now that the puzzle has been selected.
-            +function() {
-
-                $('#puzzle-container').show();
-                var bar = $('#tool-bar');
-                var display = bar.find('#timer').find('span');
-
-                var minutes = 0;
-                var seconds = 0;
-                var format = function(value) {
-                    var prepend = (value < 10) ? "0" : "";
-                    return prepend + value;
-                }
-
-                // When the puzzle is completed, we disable this interval ID
-                window.puzzle.intervalId = setInterval(function() {
-                    seconds += 1;
-                    if(seconds === 60) {
-                        minutes += 1;
-                        seconds = 0;
-                    }
-                    display.text(format(minutes) + ":" + format(seconds));
-                }, 1000);
-
-            }();
-
-            // Do not allow for selection of any other puzzles
-            // In particular, load up the shuffled puzzle into the canvas
-            +function() {
-                $('#level-select-container').hide();
-                $('#board').css('display', 'block');
-                window.puzzle.load({
-                    image: selectedPuzzle.get(0),
-                    dimension: that.data('level')
-                });
-            }();
-        });
-
-        // This is a temporary method to demonstrate code
-        // $('#skip').click(function() {
-        //     $('#puzzle-container').hide();
-        //     $('#board').hide();
-        //     $('#click-puzzle').show();
-        //     $('#' + selectedPuzzle.data('content') + '-img-anim').show();
-        //     $('#' + selectedPuzzle.data('content') + '-img').show();
-        //     $(this).hide();
-        //
-        //     // Setup responsive image map
-        //     $('img[usemap]').rwdImageMaps();
-        // });
 
     }();
 
@@ -222,4 +131,97 @@ $(function() {
         });
 
     }();
+
+    // Puzzle and level selection
+    +function() {
+
+        // The puzzle selected and to be displayed after level selection
+        var selectedPuzzle = undefined;
+
+        // Allow selection of the puzzle to work with. We then query the difficulty
+        // of the puzzle
+        $('.puzzle-img').click(function() {
+
+            selectedPuzzle = $(this);
+            $('#puzzle-select-container').hide();
+            $('#level-select-container').show();
+
+            audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.addEventListener("load", function() {
+               audioElement.play();
+            }, true);
+
+        });
+
+        // Allow selection of the puzzle to work with
+        // We simply take the image in question and remove the other puzzle images
+        // in place of a canvas with the background set to the selected image to
+        // scramble.
+        $('.level-button').click(function() {
+
+            var that = $(this);
+
+            // Play audio for puzzle instructions
+            audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.addEventListener("load", function() {
+               audioElement.play();
+            }, true);
+
+            // Initialize the timer
+            // Begin starting the timer now that the puzzle has been selected.
+            +function() {
+
+                $('#puzzle-container').show();
+                var bar = $('#tool-bar');
+                var display = bar.find('#timer').find('span');
+
+                var minutes = 0;
+                var seconds = 0;
+                var format = function(value) {
+                    var prepend = (value < 10) ? "0" : "";
+                    return prepend + value;
+                }
+
+                // When the puzzle is completed, we disable this interval ID
+                window.puzzle.intervalId = setInterval(function() {
+                    seconds += 1;
+                    if(seconds === 60) {
+                        minutes += 1;
+                        seconds = 0;
+                    }
+                    display.text(format(minutes) + ":" + format(seconds));
+                }, 1000);
+
+            }();
+
+            // Do not allow for selection of any other puzzles
+            // In particular, load up the shuffled puzzle into the canvas
+            +function() {
+                $('#level-select-container').hide();
+                $('#board').css('display', 'block');
+                window.puzzle.load({
+                    image: selectedPuzzle.get(0),
+                    dimension: that.data('level'),
+                    completed: function() {
+
+                        alert("Good Job!");
+
+                        $('#puzzle-container').hide();
+                        $('#board').hide();
+                        $('#click-puzzle').show();
+                        $('#' + selectedPuzzle.data('content') + '-img-anim').show();
+                        $('#' + selectedPuzzle.data('content') + '-img').show();
+                        $(this).hide();
+
+                        // Setup responsive image map
+                        $('img[usemap]').rwdImageMaps();
+                    }
+                });
+            }();
+        });
+
+    }();
+
 });

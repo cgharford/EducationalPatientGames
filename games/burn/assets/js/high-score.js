@@ -5,7 +5,7 @@
  * Creates the HTML for our highscore table and displays the top four high scores.
 */
 function writeTable(score) {
-    loadtable(score, function() {
+    loadTable(score, function() {
         var tbody = $('#body');
         for (var i = 0; i < 4; i++) {
             if(responseArray[i] > 0){
