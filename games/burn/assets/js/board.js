@@ -52,7 +52,7 @@ var TileTemplate = function(width, height) {
         // Used to join pieces together
         tile.grouping = {
             pieces: [tile],
-            bounds: tile.bounds
+            bounds: tile.bounds.clone()
         };
 
         return tile;
@@ -326,7 +326,7 @@ var Puzzle = function() {
 
         // Check that pieces are snapped properly
         for(var i = 0; i < this.tiles.length; i++) {
-            this.boundPiece(this.tiles[i]);
+            this.boundGroup(this.tiles[i].grouping);
         }
 
         // Ensure initial placement only occurs once
@@ -336,22 +336,37 @@ var Puzzle = function() {
     // Bound Piece
     //
     // Ensure that the pieces are within the canvas.
-    this.boundPiece = function(piece) {
+    this.boundGroup = function(group) {
 
-        // Set x-bound limits
-        if(piece.position.x <= view.bounds.x + piece.bounds.width / 2) {
-            piece.position.x = view.bounds.x + piece.bounds.width / 2;
-        } else if(piece.position.x >= view.bounds.x + view.bounds.width - piece.bounds.width / 2) {
-            piece.position.x = view.bounds.x + view.bounds.width - piece.bounds.width / 2;
+        // Check left handed bounds
+        if(group.bounds.x <= view.bounds.x) {
+            for(var i = 0; i < group.pieces.length; i++) {
+                group.pieces[i].position.x += view.bounds.x - group.bounds.x;
+            }
+            group.bounds.x = view.bounds.x;
+
+        // Check right handed bounds
+        } else if(group.bounds.x + group.bounds.width >= view.bounds.x + view.bounds.width) {
+            for(var i = 0; i < group.pieces.length; i++) {
+                group.pieces[i].position.x += view.bounds.x + view.bounds.width - (group.bounds.x + group.bounds.width);
+            }
+            group.bounds.x = view.bounds.x + view.bounds.width - group.bounds.width;
         }
 
-        // Set y-bound limits
-        if(piece.position.y <= view.bounds.y + piece.bounds.height / 2) {
-            piece.position.y = view.bounds.y + piece.bounds.height / 2;
-        } else if(piece.position.y >= view.bounds.y + view.bounds.height - piece.bounds.height / 2) {
-            piece.position.y = view.bounds.y + view.bounds.height - piece.bounds.height / 2;
-        }
+        // Check top handed bounds
+        if(group.bounds.y <= view.bounds.y) {
+            for(var i = 0; i < group.pieces.length; i++) {
+                group.pieces[i].position.y += view.bounds.y - group.bounds.y;
+            }
+            group.bounds.y = view.bounds.y;
 
+        // Check bottom handed bounds
+        } else if(group.bounds.y + group.bounds.height >= view.bounds.y + view.bounds.height) {
+            for(var i = 0; i < group.pieces.length; i++) {
+                group.pieces[i].position.y += view.bounds.y + view.bounds.height - (group.bounds.y + group.bounds.height);
+            }
+            group.bounds.y = view.bounds.y + view.bounds.height - group.bounds.height;
+        }
     };
 
     // Expand Group
@@ -380,16 +395,16 @@ var Puzzle = function() {
                 smaller.pieces[i].grouping = larger;
             }
         }
-        console.log(larger);
+
         // Adjust position
-        /*for(var i = 0; i < larger.pieces.length; i++) {
+        for(var i = 0; i < larger.pieces.length; i++) {
             var piece = larger.pieces[i];
             larger.bounds.x = Math.min(piece.bounds.x, larger.bounds.x);
             larger.bounds.y = Math.min(piece.bounds.y, larger.bounds.y);
-        }*/
+        }
 
         // Lastly, Adjust size
-        /*for(var i = 0; i < larger.pieces.length; i++) {
+        for(var i = 0; i < larger.pieces.length; i++) {
             var piece = larger.pieces[i];
             if(piece.bounds.x + piece.bounds.width > larger.bounds.x + larger.bounds.width) {
                 larger.bounds.width = piece.bounds.x + piece.bounds.width - larger.bounds.x;
@@ -397,7 +412,7 @@ var Puzzle = function() {
             if(piece.bounds.y + piece.bounds.height > larger.bounds.y + larger.bounds.height) {
                 larger.bounds.height = piece.bounds.y + piece.bounds.height - larger.bounds.y;
             }
-        }*/
+        }
     };
 
     // Snap Piece
@@ -510,10 +525,10 @@ var Puzzle = function() {
             that.tiles[i].onMouseDrag = function(event) {
                 for(var j = 0; j < this.grouping.pieces.length; j++) {
                     this.grouping.pieces[j].position += event.delta;
-                    that.boundPiece(this.grouping.pieces[j]);
                 }
-                //this.grouping.bounds.x += event.delta.x;
-                //this.grouping.bounds.y += event.delta.y;
+                this.grouping.bounds.x += event.delta.x;
+                this.grouping.bounds.y += event.delta.y;
+                that.boundGroup(this.grouping);
             }
 
             // How close a piece needs to be next to another to snap
