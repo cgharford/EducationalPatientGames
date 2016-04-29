@@ -1,7 +1,7 @@
 var score=1000; //the 'high' score, decreases the longer you take
 
 $(function() {
-    
+
     //sets up our popup window, credits in magnificPopup files
 
     var audioElement = document.createElement('audio');
@@ -9,7 +9,7 @@ $(function() {
     // Preliminary setup. Hide elements and instruct user on how to begin playing
     // the game.
     +function() {
-        
+
         $('.popup-with-form').magnificPopup({
          type: 'inline',
          preloader: false,
@@ -95,8 +95,9 @@ $(function() {
             // Initialize the timer
             // Begin starting the timer now that the puzzle has been selected.
             +function() {
+
                 $('#puzzle-container').show();
-                var bar = $('#tool-bar').show();
+                var bar = $('#tool-bar');
                 var display = bar.find('#timer').find('span');
 
                 var minutes = 0;
@@ -196,7 +197,7 @@ $(function() {
             }, true);
             audioElement.addEventListener('ended', function(){
                 document.getElementById('tableLink').click();
-            });            
+            });
         });
 
         $('.outlet-correct').click(function(e) {
@@ -209,7 +210,7 @@ $(function() {
             }, true);
             audioElement.addEventListener('ended', function(){
                 document.getElementById('tableLink').click();
-            });            
+            });
         });
 
         $('.stove-correct').click(function(e) {
@@ -222,7 +223,7 @@ $(function() {
             }, true);
             audioElement.addEventListener('ended', function(){
                 document.getElementById('tableLink').click();
-            });            
+            });
         });
 
     }();
@@ -248,14 +249,14 @@ function writeTable() {
 // Fetches the high scores from the database, database info in the db-api folder
 function loadtable() {
     //get the cookie for high scores.
-    
+
     var responseArray = [10,10,10,10];
-    
+
     /* Send a POST request to the high score database
      * Returns a pipe-delimeted string of the top 5 scores (in order)
      * (ex: 2000|1000|750|565|20)
      */
-        
+
         $.ajax({
             type: 'POST',
             url: "savescores.php",
