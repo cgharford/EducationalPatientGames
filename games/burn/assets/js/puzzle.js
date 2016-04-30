@@ -1,6 +1,8 @@
 $(function() {
 
     var audioElement = document.createElement('audio');
+    var score = 0;
+
 
     // Preliminary setup. Hide elements and instruct user on how to begin playing
     // the game.
@@ -187,6 +189,7 @@ $(function() {
                 // When the puzzle is completed, we disable this interval ID
                 window.puzzle.intervalId = setInterval(function() {
                     seconds += 1;
+                    score = minutes * 60 + seconds;
                     if(seconds === 60) {
                         minutes += 1;
                         seconds = 0;
