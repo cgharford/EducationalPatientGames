@@ -1,43 +1,35 @@
 $(function() {
 
     var audioElement = document.createElement('audio');
+    var score = 0;
 
     // Preliminary setup. Hide elements and instruct user on how to begin playing
     // the game.
     +function() {
 
         $('.popup-with-form').magnificPopup({
-         type: 'inline',
-         preloader: false,
-         focus: '#name',
-         closeOnContentClick: false,
-         showCloseBtn: false,
-         closeOnBgClick: false,
+            type: 'inline',
+            preloader: false,
+            focus: '#name',
+            closeOnContentClick: false,
+            showCloseBtn: false,
+            closeOnBgClick: false,
 
-         // When element is focused, some mobile browsers in some cases zoom in
-         // It doesn't look nice so we disable it:
-         callbacks: {
-             beforeOpen: function() {
-                 if($(window).width() < 700) {
-                     this.st.focus = false;
-                 } else {
-                     this.st.focus = '#name';
-                 }
-             }
-          }
+            // When element is focused, some mobile browsers in some cases zoom in
+            // It doesn't look nice so we disable it:
+            callbacks: {
+                beforeOpen: function() {
+                    if($(window).width() < 700) {
+                        this.st.focus = false;
+                    } else {
+                        this.st.focus = '#name';
+                    }
+                }
+            }
         });
 
         // Hide all components beforehand
-        $('#fireplace-img').hide();
-        $('#lamp-img').hide();
-        $('#matches-img').hide();
-        $('#outlet-img').hide();
-        $('#stove-img').hide();
-        $('#fireplace-img-anim').hide();
-        $('#lamp-img-anim').hide();
-        $('#matches-img-anim').hide();
-        $('#outlet-img-anim').hide();
-        $('#stove-img-anim').hide();
+        $('.img-container').find('img').hide();
         $('#click-puzzle').hide();
         $('#level-select-container').hide();
         $('#puzzle-container').hide();
@@ -46,7 +38,7 @@ $(function() {
         audioElement.setAttribute('src', './assets/audio/choosePuzzle.mp3');
         audioElement.setAttribute('autoplay', 'autoplay');
         audioElement.addEventListener("load", function() {
-           audioElement.play();
+            audioElement.play();
         }, true);
 
     }();
@@ -60,75 +52,47 @@ $(function() {
             $('.instructions').text("Not quite...keep looking!");
             audioElement.setAttribute('src', './assets/audio/unsuccessfulTry.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
+            audioElement.addEventListener('load', function() {
                audioElement.play();
             }, true);
         });
 
-        $('.fireplace-correct').click(function(e) {
-            e.preventDefault();
-            $('.instructions').text("Great job! Make sure you keep your distance from any fireplaces.");
-            audioElement.setAttribute('src', './assets/audio/fireplace.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-            audioElement.addEventListener('ended', function(){
-                document.getElementById('tableLink').click();
-            });
-        });
+        var classes = ['fireplace', 'lamp', 'matches', 'outlet', 'stove'];
+        var instructions = [
+            "Great job! Make sure you keep your distance from any fireplaces.",
+            "You're right! Clothes don't belong on hot lamps.",
+            "Fantastic! Let adults handle the matches.",
+            "Nice one! Excercise caution when plugging into outlets.",
+            "Well done! Be careful around stoves and exposed handles."
+        ];
 
-        $('.lamp-correct').click(function(e) {
-            e.preventDefault();
-            $('.instructions').text("You're right! Clothes don't belong on hot lamps.");
-            audioElement.setAttribute('src', './assets/audio/lamp.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-            audioElement.addEventListener('ended', function(){
-                document.getElementById('tableLink').click();
-            });
-        });
+        // Switch over to scoring now that the user has selected the correct spot
+        // This means stopping the timer and launching the scoreboard
+        for(var i = 0; i < classes.length; i++) {
+            +function() {
+                var src = classes[i];
+                var instr = instructions[i];
+                $('.' + classes[i] + '-correct').click(function(e) {
 
-        $('.matches-correct').click(function(e) {
-            e.preventDefault();
-            $('.instructions').text("Fantastic! Let adults handle the matches. ");
-            audioElement.setAttribute('src', './assets/audio/matches.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-            audioElement.addEventListener('ended', function(){
-                document.getElementById('tableLink').click();
-            });
-        });
+                    // Stop timer to fix our score
+                    clearInterval(window.puzzle.intervalId);
 
-        $('.outlet-correct').click(function(e) {
-            e.preventDefault();
-            $('.instructions').text("Nice one! Excercise caution when plugging into outlets.");
-            audioElement.setAttribute('src', './assets/audio/outlets.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-            audioElement.addEventListener('ended', function(){
-                document.getElementById('tableLink').click();
-            });
-        });
+                    // Load in audio related to finishing game
+                    e.preventDefault();
+                    $('.instructions').text(instr);
+                    audioElement.setAttribute('src', './assets/audio/' + src + '.mp3');
+                    audioElement.setAttribute('autoplay', 'autoplay');
+                    audioElement.addEventListener('load', function() {
+                        audioElement.play();
+                    }, true);
+                    audioElement.addEventListener('ended', function() {
+                        document.getElementById('tableLink').click();
+                        writeTable(score);
+                    });
 
-        $('.stove-correct').click(function(e) {
-            e.preventDefault();
-            $('.instructions').text("Well done! Be careful around stoves and exposed handles.");
-            audioElement.setAttribute('src', './assets/audio/stove.mp3');
-            audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
-               audioElement.play();
-            }, true);
-            audioElement.addEventListener('ended', function(){
-                document.getElementById('tableLink').click();
-            });
-        });
+                });
+            }();
+        }
 
     }();
 
@@ -148,7 +112,7 @@ $(function() {
 
             audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
+            audioElement.addEventListener('load', function() {
                audioElement.play();
             }, true);
 
@@ -165,7 +129,7 @@ $(function() {
             // Play audio for puzzle instructions
             audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
-            audioElement.addEventListener("load", function() {
+            audioElement.addEventListener('load', function() {
                audioElement.play();
             }, true);
 
@@ -187,6 +151,7 @@ $(function() {
                 // When the puzzle is completed, we disable this interval ID
                 window.puzzle.intervalId = setInterval(function() {
                     seconds += 1;
+                    score = minutes * 60 + seconds;
                     if(seconds === 60) {
                         minutes += 1;
                         seconds = 0;
@@ -205,18 +170,23 @@ $(function() {
                     image: selectedPuzzle.get(0),
                     dimension: that.data('level'),
                     completed: function() {
+                        setTimeout(function() {
 
-                        alert("Good Job!");
+                            // Some notification that the puzzle is complete
+                            alert("Good Job!");
 
-                        $('#puzzle-container').hide();
-                        $('#board').hide();
-                        $('#click-puzzle').show();
-                        $('#' + selectedPuzzle.data('content') + '-img-anim').show();
-                        $('#' + selectedPuzzle.data('content') + '-img').show();
-                        $(this).hide();
+                            // Switch to selection portion of game
+                            $('#puzzle-container').hide();
+                            $('#board').hide();
+                            $('#click-puzzle').show();
+                            $('#' + selectedPuzzle.data('content') + '-img-anim').show();
+                            $('#' + selectedPuzzle.data('content') + '-img').show();
+                            $(this).hide();
 
-                        // Setup responsive image map
-                        $('img[usemap]').rwdImageMaps();
+                            // Setup responsive image map
+                            $('img[usemap]').rwdImageMaps();
+
+                        }, 200);
                     }
                 });
             }();

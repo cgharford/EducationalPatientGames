@@ -29,7 +29,7 @@ if(isset($_POST['game']) && isset($_POST['score'])){
           } else if ($game == "helmet") {
                $sql = "SELECT * FROM `helmet-scores` ORDER BY score DESC LIMIT 5";
           } else if ($game == "fire") {
-               $sql = "SELECT * FROM `fire-scores` ORDER BY score DESC LIMIT 5";
+               $sql = "SELECT * FROM `fire-scores` ORDER BY score ASC LIMIT 5";
           }
           $result=mysql_query($sql);
 

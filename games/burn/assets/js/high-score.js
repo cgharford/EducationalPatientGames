@@ -5,7 +5,7 @@
  * Creates the HTML for our highscore table and displays the top four high scores.
 */
 function writeTable(score) {
-    loadTable(score, function() {
+    loadTable(score, function(responseArray) {
         var tbody = $('#body');
         for (var i = 0; i < 4; i++) {
             if(responseArray[i] > 0){
@@ -28,23 +28,22 @@ function writeTable(score) {
 */
 function loadTable(score, callback) {
 
+    // Get the cookie for high scores.
+    // Split the XHR response if it was successfully received
+    var responseArray = [10, 10, 10, 10];
+    var errorArray = [score, -1, -1, -1];
+
     /* Send a POST request to the high score database
      * Returns a pipe-delimeted string of the top 5 scores (in order)
      * (ex: 2000|1000|750|565|20)
      */
     $.ajax({
         type: 'POST',
-        url: "savescores.php",
-        data: "game=water&score=" + score,
+        url: "/db-api/savescores.php",
+        data: "game=burn&score=" + score,
         dataType: "text",
         async: false,
         success: function(data, status) {
-
-            // Get the cookie for high scores.
-            // Split the XHR response if it was successfully received
-            var responseArray = [10, 10, 10, 10];
-            var errorArray = [score, -1, -1, -1];
-
             try {
                 responseArray = data.split("|");
             } catch (e) { // Otherwise, follow built-in error handling procedure
@@ -56,7 +55,8 @@ function loadTable(score, callback) {
                     responseArray[i] = errorArray[i];
                 }
             }
-
+        },
+        complete: function(jqXHR, textStatus) {
             callback(responseArray);
         }
     });
