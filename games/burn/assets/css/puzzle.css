@@ -183,4 +183,7 @@
         width: 200px;
         border: 10px solid #14BECC;
     }
+    .finished-img {
+        width: 100%;
+    }
 }

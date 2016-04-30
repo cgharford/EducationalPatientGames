@@ -173,7 +173,11 @@ $(function() {
                         setTimeout(function() {
 
                             // Some notification that the puzzle is complete
-                            alert("Good Job!");
+                            audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
+                            audioElement.setAttribute('autoplay', 'autoplay');
+                            audioElement.addEventListener('load', function() {
+                               audioElement.play();
+                            }, true);
 
                             // Switch to selection portion of game
                             $('#puzzle-container').hide();
