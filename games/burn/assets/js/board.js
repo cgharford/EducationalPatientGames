@@ -507,20 +507,75 @@ var Board = function() {
         this.tiles = this.buildTiles();
 
         // Event Setup
-        for(var i = 0; i < that.tiles.length; i++) {
+        +function() {
+
+            // Only select a single piece at a time
+            var selected = undefined;
+
+            // Mouse events on tiles
+            for(var i = 0; i < that.tiles.length; i++) {
+
+                // Note that we want a consistent interaction when working
+                // on mobile as well as desktop clients. That is, when a person
+                // places their thumb on the mobile screen and drags a puzzle
+                // piece, it is expected to move. Yet our client also wants to
+                // allow a person to click a piece and move the mouse to drag
+                // a piece instead of holding down the mouse button since this
+                // is sometimes difficult for small children to do.
+                //
+                // For this reason, we have this flag to check if a mouse up
+                // occurs immediately after a mouse down that was committed in
+                // a tile. If so, we assume the user is working on a desktop
+                // and should not propagate the click within the view (since this
+                // would immediately set the selected tile back to undefined).
+                var mouseDownLastFrame = false;
+
+                // Make a selection and determine how movement of the tile will work
+                // We set the tile to be the topmost element in this case.
+                that.tiles[i].onMouseDown = function(event) {
+                    mouseDownLastFrame = false;
+                    if(selected === undefined) {
+                        selected = this;
+                        mouseDownLastFrame = true;
+                        for(var i = 0; i < this.joint.pieces.length; i++) {
+                            this.joint.pieces[i].bringToFront();
+                        }
+                    }
+                };
+
+                // Don't propagate to the view object
+                that.tiles[i].onMouseUp = function(event) {
+                    if(mouseDownLastFrame) {
+                        event.stopPropagation();
+                        mouseDownLastFrame = false;
+                    }
+                };
+
+                // If dragging, then no need to try clicking and moving
+                that.tiles[i].onMouseDrag = function() {
+                    mouseDownLastFrame = false;
+                };
+
+            }
 
             // Allow movement of each tile piece. Note these will snap together
             // if they are placed in the correct position. When this occurs, we
             // move the attached pieces as a unit
-            that.tiles[i].onMouseDrag = function(event) {
-                this.joint.bounds.x += event.delta.x;
-                this.joint.bounds.y += event.delta.y;
-                for(var j = 0; j < this.joint.pieces.length; j++) {
-                    this.joint.pieces[j].position += event.delta;
+            view.onMouseMove = function(event) {
+                if(selected !== undefined) {
+                    var deltaX = event.point.x - selected.joint.bounds.x - selected.joint.bounds.width / 2;
+                    var deltaY = event.point.y - selected.joint.bounds.y - selected.joint.bounds.height / 2;
+                    selected.joint.bounds.x += deltaX;
+                    selected.joint.bounds.y += deltaY;
+                    for(var j = 0; j < selected.joint.pieces.length; j++) {
+                        selected.joint.pieces[j].position += new Point(deltaX, deltaY);
+                    }
+                    that.boundGroup(selected.joint);
                 }
-                that.boundGroup(this.joint);
-            }
+            };
 
+            // Allow deselection of puzzle piece and otherwise snapping.
+            //
             // How close a piece needs to be next to another to snap
             // into place and conjoin into one. We must check for each
             // side once this occurs. When checking whether pieces are
@@ -533,19 +588,24 @@ var Board = function() {
             //
             // Lastly, if all pieces are added together, we call the callback
             // to move on to the next portion of the game.
-            that.tiles[i].onMouseUp = function(event) {
-                for(var j = 0; j < this.joint.pieces.length; j++) {
-                    for(var k = 0; k < that.tiles.length; k++) {
-                        if(that.snapPiece(this.joint.pieces[j], that.tiles[k], 200)) {
-                            if(this.joint.pieces.length == Math.pow(that.dimension, 2)) {
-                                that.completed();
+            view.onMouseUp = function(event) {
+                if(selected !== undefined) {
+                    for(var j = 0; j < selected.joint.pieces.length; j++) {
+                        for(var k = 0; k < that.tiles.length; k++) {
+                            if(that.snapPiece(selected.joint.pieces[j], that.tiles[k], 200)) {
+                                if(selected.joint.pieces.length == Math.pow(that.dimension, 2)) {
+                                    that.completed();
+                                }
+                                selected = undefined;
+                                return;
                             }
-                            return;
                         }
                     }
+                    selected = undefined;
                 }
-            }
-        }
+            };
+
+        }();
 
         // Initialize the board
         var canvas = $(view.element);
