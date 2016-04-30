@@ -34,8 +34,8 @@ function loadTable(score, callback) {
      */
     $.ajax({
         type: 'POST',
-        url: "savescores.php",
-        data: "game=water&score=" + score,
+        url: "/db-api/savescores.php",
+        data: "game=burn&score=" + score,
         dataType: "text",
         async: false,
         success: function(data, status) {
