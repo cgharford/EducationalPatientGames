@@ -1,6 +1,8 @@
+var audioElement;
+
 $(function() {
 
-    var audioElement = document.createElement('audio');
+    audioElement = document.createElement('audio');
     var score = 0;
 
     // Preliminary setup. Hide elements and instruct user on how to begin playing
@@ -193,11 +195,33 @@ $(function() {
                         }, 200);
                     }
                 });
+
+                // For testing purposes only
+                $('#skip').click(function() {
+                    audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
+                    audioElement.setAttribute('autoplay', 'autoplay');
+                    audioElement.addEventListener('load', function() {
+                       audioElement.play();
+                    }, true);
+
+                    $('#puzzle-container').hide();
+                    $('#board').hide();
+                    $('#click-puzzle').show();
+                    $('#' + selectedPuzzle.data('content') + '-img-anim').show();
+                    $('#' + selectedPuzzle.data('content') + '-img').show();
+                    $(this).hide();
+
+                    // Setup responsive image map
+                    $('img[usemap]').rwdImageMaps();
+                });
+
             }();
         });
 
     }();
 });
+
+
 
 function testTesters () {
     return "Test Worked!";
