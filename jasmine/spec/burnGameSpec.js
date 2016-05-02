@@ -61,22 +61,21 @@ describe("Tests for Burn Prevention Game (must be run in order)", function() {
     });
 
     describe("Assemble puzzle test", function() {
-        // var playing, somethingAsyncWithCallback = function(callback) {
-        //         playing = !audioElement.paused && !audioElement.ended && 0 < audioElement.currentTime;
-        //     callback();
-        // };
+        var playing, somethingAsyncWithCallback = function(callback) {
+                playing = !audioElement.paused && !audioElement.ended && 0 < audioElement.currentTime;
+            callback();
+        };
 
         beforeEach(function(done) {
-            console.log("here's where it messes up");
             $("#easy-button").click();
-            // setInterval(function(){
-            //     somethingAsyncWithCallback(done);
-            // }, 2000);
+            setInterval(function(){
+                somethingAsyncWithCallback(done);
+            }, 2000);
         });
 
-        // it("Tests that instructional audio for puzzle is playing", function() {
-        //     expect(playing).toEqual(true);
-        // });
+        it("Tests that instructional audio for puzzle is playing", function() {
+            expect(playing).toEqual(true);
+        });
 
         it("Tests level select div is hidden after level is selected", function() {
           expect($("#level-select-container").css("display")).toEqual("none");
@@ -118,6 +117,52 @@ describe("Tests for Burn Prevention Game (must be run in order)", function() {
 
         it("Tests that the image animations is visible after 'skip' is clicked", function() {
           expect($("#stove-img-anim").css("display")).toEqual("block");
+        });
+    });
+
+    describe("Incorrect click test", function() {
+        var playing, somethingAsyncWithCallback = function(callback) {
+                playing = !audioElement.paused && !audioElement.ended && 0 < audioElement.currentTime;
+            callback();
+        };
+
+        beforeEach(function(done) {
+            $(".finished-img").click();
+            setInterval(function() {
+                somethingAsyncWithCallback(done);
+            }, 1000);
+        });
+
+        it("Tests that the the incorrect click audio feedback plays", function() {
+            expect(playing).toEqual(true);
+        });
+
+        it("Tests that correct text audio feedback is given", function() {
+          var text = $(".instructions").text();
+          contains = text.includes("Not quite...keep looking!");
+          expect(contains).toEqual(true);
+        });
+    });
+
+    describe("Final scoreboard test", function() {
+        var playing, somethingAsyncWithCallback = function(callback) {
+                playing = !audioElement.paused && !audioElement.ended && 0 < audioElement.currentTime;
+            callback();
+        };
+
+        beforeEach(function(done) {
+            $("#skipClick").click();
+            setInterval(function() {
+                somethingAsyncWithCallback(done);
+            }, 2000);
+        });
+
+        it("Tests that the ending personal feedback is played", function() {
+            expect(playing).toEqual(true);
+        });
+
+        it("Tests that we put up the high score board after we click on the right area", function() {
+          expect(wroteScoreboard).toEqual(true);
         });
     });
 });

@@ -6,7 +6,7 @@ $(function() {
 
     // Global audio element. We use just the one to truncate any audio playing
     // when anothe raudio clip should be played
-    var audioElement = document.createElement('audio');
+    window.audioElement = document.createElement('audio');
 
     // Preliminary setup. Hide elements and instruct user on how to begin playing
     // the game.
@@ -45,7 +45,6 @@ $(function() {
         audioElement.addEventListener("load", function() {
             audioElement.play();
         }, true);
-
     }();
 
     // Preparations for when the puzzle is completed. This allows for selecting certain
@@ -71,25 +70,33 @@ $(function() {
             "Well done! Be careful around stoves and exposed handles."
         ];
 
+        // Load in audio related to finishing game when user clicks correct spot
+        correctClick = function(e, instr, src) {
+            e.preventDefault();
+            $('.instructions').text(instr);
+            audioElement.setAttribute('src', './assets/audio/' + src + '.mp3');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.addEventListener('load', function() {
+                audioElement.play();
+            }, true);
+            audioElement.addEventListener('ended', function() {
+                document.getElementById('tableLink').click();
+                writeTable(score, window.board);
+            });
+        }
+
         // Switch over to scoring now that the user has selected the correct spot
-        // Load in audio related to finishing game
         for(var i = 0; i < classes.length; i++) {
             +function() {
                 var src = classes[i];
                 var instr = instructions[i];
                 $('.' + classes[i] + '-correct').click(function(e) {
-                    e.preventDefault();
-                    $('.instructions').text(instr);
-                    audioElement.setAttribute('src', './assets/audio/' + src + '.mp3');
-                    audioElement.setAttribute('autoplay', 'autoplay');
-                    audioElement.addEventListener('load', function() {
-                        audioElement.play();
-                    }, true);
-                    audioElement.addEventListener('ended', function() {
-                        document.getElementById('tableLink').click();
-                        writeTable(score, window.board);
-                    });
+                    correctClick(e, instr, src);
+                });
 
+                $('#skipClick').click(function(e) {
+                    window.wroteScoreboard = true;
+                    correctClick(e, instr, src);
                 });
             }();
         }
@@ -135,6 +142,32 @@ $(function() {
                 display.text(window.formatScore(score));
             }, 1000);
 
+            // Setup up completion callback
+            var callback = function() {
+
+                // Stop timer to fix our score
+                clearInterval(window.board.intervalId);
+
+                // Some notification that the puzzle is complete
+                audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
+                audioElement.setAttribute('autoplay', 'autoplay');
+                audioElement.addEventListener('load', function() {
+                   audioElement.play();
+                }, true);
+
+                // Switch to selection portion of game
+                $('#board').hide();
+                puzzle_container.hide();
+                $('#click-puzzle').show();
+                $('#' + puzzleName + '-img').show();
+                $('#' + puzzleName + '-img-anim').show();
+                that.hide();
+
+                // Setup responsive image map
+                $('img[usemap]').rwdImageMaps();
+
+            };
+
             // Play audio for puzzle instructions
             // Do not allow for selection of any other puzzles
             // In particular, load up the shuffled puzzle into the canvas
@@ -145,30 +178,10 @@ $(function() {
                 dimension: that.data('level'),
                 difficulty: that.data('content'),
                 puzzleName: selectedPuzzle.data('content'),
-                completed: function() {
-
-                    // Stop timer to fix our score
-                    clearInterval(window.board.intervalId);
-
-                    // Some notification that the puzzle is complete
-                    audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
-                    audioElement.setAttribute('autoplay', 'autoplay');
-                    audioElement.addEventListener('load', function() {
-                       audioElement.play();
-                    }, true);
-
-                    // Switch to selection portion of game
-                    $('#board').hide();
-                    puzzle_container.hide();
-                    $('#click-puzzle').show();
-                    $('#' + puzzleName + '-img').show();
-                    $('#' + puzzleName + '-img-anim').show();
-
-                    // Setup responsive image map
-                    $('img[usemap]').rwdImageMaps();
-
-                }
+                completed: callback
             });
+
+            $('#skip').click(callback);
 
             // Play audio for puzzle instructions
             audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
