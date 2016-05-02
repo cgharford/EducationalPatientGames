@@ -4,11 +4,7 @@
 1. [Description](#sect1)
 2. [Documentation](#doc)
   1. [Making Changes](#doc-a)
-  2. [Design Decisions](#doc-b)
-    1. [Spawning](#doc-b-a)
-    2. [Scoring](#doc-b-b)
-    3. [Lives](#doc-b-c)
-    4. [Optimal Gameplay Environment](#doc-b-d)
+  2. [Optimal Gameplay Environment](#doc-b)
 2. [Game Installation](#game-install)
   1. [Prerequisites and Dependencies](#req)
   2. [Running the Game](#run)
@@ -22,62 +18,69 @@
 
 ## Description <a id="sect1"></a>
 
-A game created at the behest of UNC hospitals to encourage safe standards such as wearing a lifejacket every time you're on the water, or wearing a helmet every time you ride.
+A library of games designed and programmed for the UNC hospital system, targeted to engage and educate preschool aged children. Current games address lifejackets, helmets, and burn safety.
 
 ## Documentation<a id="doc"></a>
 
 ### Making Changes<a id="doc-a"></a>
 
-To make changes to existing code, it is a fairly simple process: Edit the appropriate file listed below with the changes you'd like to make.
+Regarding changes to one of the games, all of the files are easily editable. The main game in each folder is dependent on the assests inside their subfolders. These dependencies should be obvious to a mildly experienced programmer. However, if you are unsure, we reccomend you check the headers of each HTML file to ensure you aren't removing any dependencies.
 
-### Design Decisions <a id="doc-b"></a>
+To add a new game link to the main site, open the index.html file on the system's root level, and find the <div class="content-container row"> section. Each game is formatted inside as follows...
 
-#### Spawning: <a id="doc-b-a"></a>
+            <div class="col-lg-4 col-md-6 col-sm-6 gameContainer">
+                <div class="gameTitle">
+                    YOUR TITLE
+                </div>
+                <div>
+                    <a href="games/YOUR_GAME_FOLDER/YOUR_GAME.html">
+                        <img class="gameImg" src="games/YOUR_GAME_FOLDER/assets/imgs/YOUR_GAME_THUMBNAIL.png">
+                    </a>
+                </div>
+                <div class="gameExplanation">
+                    YOUR EXPLANATION
+                </div>
+            </div>
 
-Sprites spawn from the left side of the screen at set time intervals.  It is helpful to think of an entity (a spawner) as the "creator" of Sprites that appear on the screen.  Initially (as soon as the game begins), there is one spawner creating Sprites at a rate of 1 Sprite every 3 seconds.  (Note that spawn times are predictable; not random within an interval).  After 20 seconds of gameplay, an additional spawner is added that creates a Sprite every 1.5 seconds.  This operates in tandem with the original spawner, meaning a total of 3 Sprites appear ever 3 seconds (1 from the first spawner and 2 from the second spawner).  After 20 more seconds, a third spawner is added that also generates a Sprite every 1.5 seconds.  Thus, for the remainder of the game, 5 Sprites spawn every 3 seconds.  
+Simply copy this into the specified section and fill in the emphasized sections with your own information. Note that this will obviously require the existance of the .html and .png files you will name in this section.
 
-Sprites begin at a random location along the left side of the screen, and move in a randomly-generated bezier path to the right side of the screen.  The speed at which Sprites move increments by 1 unit every 5 seconds.  While the units of speed are arbitrary, the speed value must be a whole number.  We have found that incrementing by 1 unit every 5 seconds allows for a smooth, linear speed-up while ensuring that the game does not become overwhelming during the last few seconds.
+To add new game code to the library, navigate to the games folder and create a folder for your game. Note that the only file that is strictly neccesary for the purposes of the 'new game link' specifications above is a .html folder for your game. However, your game will likely require other files. We reccomend you check our vendor folder on the root level for any dependencies such as bootstrap or phaser, which are already packaged in our program. Beyond that, we also highly reccomend you follow the organizational format of the other games in this library, which you may explore yourself.
 
-Sprites and spawning behaves the same way for both the Helmet Safety and the Water Safety levels.
+Modifying the library's database is permitable only by the request of the UNC hospital system. For those with that access, the basic database load and save functions are in the db-api file. Note that you should only need to make basic modifications to this file, to accomodate the new input you've created.
 
-#### Scoring: <a id="doc-b-b"></a>
 
-Players get points for clicking on unsafe Sprites or not clicking on already-safe Sprites.  The specific number of points awarded depends on the player's current score multiplier.  
+### Optimal Gameplay Environment: <a id="doc-b"></a>
 
-Initially the multiplier is equal to 0.  When the user clicks on an unsafe Sprite or allows a safe Sprite to exit the screen, he/she receives points equal to 10 times the current multiplier value, and the multiplier increments by 1.  
+For the water safety and bicycle safety games, previous groups have found that the game renders best on very high resolution screens.  The game itself is more entertaining and gameplay is much more feasible on touch screen devices.  They recommend Chrome or Firefox as browsers on which to play the game.
 
-Once the multiplier reaches 20, it is no longer incremented.  This is the maximum possible value of the score multiplier.
-
-If the player clicks on an already-safe Sprite or allows an unsafe Sprite to exit the screen, the score multiplier resets to 1.  
-
-#### Lives: <a id="doc-b-c"></a>
-
-Players begin each game with three lives.  These are represented by throwable flotation devices (Water Safety) or band aids (Helmet Safety) in the bottom righthand corner of the screen.  
-
-If an unsafe Sprite exits the screen, the player loses a life.  Upon losing all three lives, the game immediately ends, and the player is taken to the game over/high score screen.
-
-#### Optimal Gameplay Environment: <a id="doc-b-d"></a>
-
-We have found that the game renders best on very high resolution screens.  The game itself is more entertaining and gameplay is much more feasible on touch screen devices.  We recommend Chrome or Firefox as browsers on which to play the game.
+The additions made with the puzzle game should allow for an improved mobile experience. However, we still recommend tablets as the optimal (and our client's intended) medium.
 
 
 ## Game Installation and Setup <a id="game-install"></a>
 
 ### Dependencies: <a id="req"></a>
 
-* Phaser 2.3.0 (phaser.io) [included]
+* Phaser 2.3.0 (phaser.io)
+* Bootstrap
+* Jquery
+* Paper
 
-Note that all dependencies are bundled with the game.  No additional downloads are necessary to deploy this project.
+Note that all dependencies are bundled with the game inside the 'vendor' folder.  No additional downloads are necessary to deploy this project.
 
 ### Running the Game: <a id="run"></a>
 
+Note that running the game on a personal computer will prevent the game from accessing the high scores database. Additionally, depending on the security settings of your chosen browser, said browser may prevent your files from interacting as they were intended. For a full, easy experience, we recommend our client's main site.
+
+There are no neccesary hardware installations or user name/password pairs. The newest 'burn' game has been tested on computer, tablet, and mobile. It works best on computer and tablet, as already mentioned. Unfortunately, the preceding projects left little detail on their own functionality limitations, and at the time of this writing, the current group has not done extensive testing on past projects to assess their functionality. That aside, here are our recommendations for usage.
+
 #### Locally <a id="local"></a>
 
-For running the game locally, use a disabled security session for Chrome, or run it using a local web server. Alternatively, Firefox seems to not have any security issues, so we recommend Firefox over chrome.
+For running the game locally, previous groups have recommended using a disabled security session for Chrome, or a local web server. Alternatively, past groups have also reccomended Firefox.
 
 #### Remotely <a id="remote"></a>
 
 Everything should work rather simply- there are no security issues to worry about. Just move the entirety of the folders to a remote location and it should work by pointing a browser at the index.html file in the main directory.
+
 
 ## Contibutors <a id="authors"></a>
 ---
