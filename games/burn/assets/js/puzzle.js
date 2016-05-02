@@ -1,7 +1,12 @@
 $(function() {
 
-    var audioElement = document.createElement('audio');
+    // This is the user's current score. It simply records the number of seconds
+    // that have passed since selecting a level
     var score = 0;
+
+    // Global audio element. We use just the one to truncate any audio playing
+    // when anothe raudio clip should be played
+    var audioElement = document.createElement('audio');
 
     // Preliminary setup. Hide elements and instruct user on how to begin playing
     // the game.
@@ -67,17 +72,12 @@ $(function() {
         ];
 
         // Switch over to scoring now that the user has selected the correct spot
-        // This means stopping the timer and launching the scoreboard
+        // Load in audio related to finishing game
         for(var i = 0; i < classes.length; i++) {
             +function() {
                 var src = classes[i];
                 var instr = instructions[i];
                 $('.' + classes[i] + '-correct').click(function(e) {
-
-                    // Stop timer to fix our score
-                    clearInterval(window.puzzle.intervalId);
-
-                    // Load in audio related to finishing game
                     e.preventDefault();
                     $('.instructions').text(instr);
                     audioElement.setAttribute('src', './assets/audio/' + src + '.mp3');
@@ -87,7 +87,7 @@ $(function() {
                     }, true);
                     audioElement.addEventListener('ended', function() {
                         document.getElementById('tableLink').click();
-                        writeTable(score);
+                        writeTable(score, window.board);
                     });
 
                 });
@@ -107,8 +107,8 @@ $(function() {
         $('.puzzle-img').click(function() {
 
             selectedPuzzle = $(this);
-            $('#puzzle-select-container').hide();
             $('#level-select-container').show();
+            $('#puzzle-select-container').hide();
 
             audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
@@ -125,6 +125,50 @@ $(function() {
         $('.level-button').click(function() {
 
             var that = $(this);
+            var puzzleName = selectedPuzzle.data('content');
+            var puzzle_container = $('#puzzle-container').show();
+
+            // When the puzzle is completed, we disable this interval ID
+            var display = $('#tool-bar').show().find('#timer').find('span');
+            window.board.intervalId = setInterval(function() {
+                score += 1;
+                display.text(window.formatScore(score));
+            }, 1000);
+
+            // Play audio for puzzle instructions
+            // Do not allow for selection of any other puzzles
+            // In particular, load up the shuffled puzzle into the canvas
+            $('#level-select-container').hide();
+            $('#board').css('display', 'block');
+            window.board.load({
+                image: selectedPuzzle.get(0),
+                dimension: that.data('level'),
+                difficulty: that.data('content'),
+                puzzleName: selectedPuzzle.data('content'),
+                completed: function() {
+
+                    // Stop timer to fix our score
+                    clearInterval(window.board.intervalId);
+
+                    // Some notification that the puzzle is complete
+                    audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
+                    audioElement.setAttribute('autoplay', 'autoplay');
+                    audioElement.addEventListener('load', function() {
+                       audioElement.play();
+                    }, true);
+
+                    // Switch to selection portion of game
+                    $('#board').hide();
+                    puzzle_container.hide();
+                    $('#click-puzzle').show();
+                    $('#' + puzzleName + '-img').show();
+                    $('#' + puzzleName + '-img-anim').show();
+
+                    // Setup responsive image map
+                    $('img[usemap]').rwdImageMaps();
+
+                }
+            });
 
             // Play audio for puzzle instructions
             audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
@@ -133,67 +177,7 @@ $(function() {
                audioElement.play();
             }, true);
 
-            // Initialize the timer
-            // Begin starting the timer now that the puzzle has been selected.
-            +function() {
 
-                $('#puzzle-container').show();
-                var bar = $('#tool-bar');
-                var display = bar.find('#timer').find('span');
-
-                var minutes = 0;
-                var seconds = 0;
-                var format = function(value) {
-                    var prepend = (value < 10) ? "0" : "";
-                    return prepend + value;
-                }
-
-                // When the puzzle is completed, we disable this interval ID
-                window.puzzle.intervalId = setInterval(function() {
-                    seconds += 1;
-                    score = minutes * 60 + seconds;
-                    if(seconds === 60) {
-                        minutes += 1;
-                        seconds = 0;
-                    }
-                    display.text(format(minutes) + ":" + format(seconds));
-                }, 1000);
-
-            }();
-
-            // Do not allow for selection of any other puzzles
-            // In particular, load up the shuffled puzzle into the canvas
-            +function() {
-                $('#level-select-container').hide();
-                $('#board').css('display', 'block');
-                window.puzzle.load({
-                    image: selectedPuzzle.get(0),
-                    dimension: that.data('level'),
-                    completed: function() {
-                        setTimeout(function() {
-
-                            // Some notification that the puzzle is complete
-                            audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
-                            audioElement.setAttribute('autoplay', 'autoplay');
-                            audioElement.addEventListener('load', function() {
-                               audioElement.play();
-                            }, true);
-
-                            // Switch to selection portion of game
-                            $('#puzzle-container').hide();
-                            $('#board').hide();
-                            $('#click-puzzle').show();
-                            $('#' + selectedPuzzle.data('content') + '-img-anim').show();
-                            $('#' + selectedPuzzle.data('content') + '-img').show();
-                            $(this).hide();
-
-                            // Setup responsive image map
-                            $('img[usemap]').rwdImageMaps();
-
-                        }, 200);
-                    }
-                });
-            }();
         });
 
     }();
