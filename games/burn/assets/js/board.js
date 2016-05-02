@@ -467,7 +467,7 @@ var Board = function() {
 
         // Positions group to fit snug against joined piece and then combines
         // all pieces together
-        if(Math.abs(deltaX) < snapDelta && Math.abs(deltaY) < snapDelta) {
+        if(Math.sqrt(deltaX * deltaX + deltaY * deltaY) < snapDelta) {
             for(var i = 0; i < moved.joint.pieces.length; i++) {
                 moved.joint.pieces[i].position += new Point(deltaX, deltaY);
             }
@@ -497,6 +497,8 @@ var Board = function() {
         this.path = config.path;
         this.dimension = config.dimension;
         this.completed = config.completed;
+		this.puzzleName = config.puzzleName;
+		this.difficulty = config.difficulty;
 
         // Square Image
         this.image = new Raster(config.image);
@@ -587,14 +589,16 @@ var Board = function() {
             // the rest of the group should also be in the correct spot
             //
             // Lastly, if all pieces are added together, we call the callback
-            // to move on to the next portion of the game.
+            // to move on to the next portion of the game. (We add a slight delay
+			// so that the puzzle can be snapped together before completed is
+			// called).
             view.onMouseUp = function(event) {
                 if(selected !== undefined) {
                     for(var j = 0; j < selected.joint.pieces.length; j++) {
                         for(var k = 0; k < that.tiles.length; k++) {
-                            if(that.snapPiece(selected.joint.pieces[j], that.tiles[k], 200)) {
+                            if(that.snapPiece(selected.joint.pieces[j], that.tiles[k], 100)) {
                                 if(selected.joint.pieces.length == Math.pow(that.dimension, 2)) {
-                                    that.completed();
+                                    setTimeout(that.completed, 200);
                                 }
                                 selected = undefined;
                                 return;
@@ -625,25 +629,40 @@ var Board = function() {
  * afterward run puzzle.js, which will bootstrap our choices of puzzle and
  * difficulty.
 */
-window.puzzle = new Board();
+window.board = new Board();
 $(window).resize(function() {
-    if(window.puzzle.loaded) {
+    if(window.board.loaded) {
 
         // Because of the different difficulty levels and potentially different sized
         // images, we must scale the board in such a way that the completed puzzle will
         // fit completely within the canvas.
         var ratio = 0.9;
         var canvas = $(view.element);
-        var tileWidth = window.puzzle.tiles[0].bounds.width;
+        var tileWidth = window.board.tiles[0].bounds.width;
         var minimumSide = Math.min(canvas.width(), canvas.height());
-        view.zoom = (ratio * minimumSide) / (window.puzzle.dimension * tileWidth);
+        view.zoom = (ratio * minimumSide) / (window.board.dimension * tileWidth);
 
         // We must also make sure each piece is bound within the canvas.
-        for(var i = 0; i < window.puzzle.tiles.length; i++) {
-            if(window.puzzle.tiles[i].joint.bounds !== undefined) {
-                window.puzzle.boundGroup(window.puzzle.tiles[i].joint);
+        for(var i = 0; i < window.board.tiles.length; i++) {
+            if(window.board.tiles[i].joint.bounds !== undefined) {
+                window.board.boundGroup(window.board.tiles[i].joint);
             }
         }
 
     }
 })
+
+/**
+ * Formatting
+ * ==================================
+ *
+ * Utility function to format the time
+*/
+window.formatScore = function(score) {
+	var value = parseInt(score, 10);
+	var time = [Math.floor(score / 60), score % 60];
+	for(var i = 0; i < time.length; i++) {
+		time[i] = ((time[i] < 10) ? '0' : '') + time[i];
+	}
+	return time[0] + ':' + time[1];
+}

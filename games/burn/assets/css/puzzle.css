@@ -46,10 +46,6 @@
     margin: 10px auto;
 }
 
-#skip {
-    margin: 0em 1em;
-}
-
 /**
  * Puzzle Selection
  * ===================================
@@ -187,3 +183,12 @@
         width: 100%;
     }
 }
+
+/**
+ * High Score
+ * ===================================
+*/
+.scorelabel-personal {
+	background-color: #E6606C;
+}
+
