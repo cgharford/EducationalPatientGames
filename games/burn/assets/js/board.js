@@ -50,7 +50,7 @@ var TileTemplate = function(width, height) {
         // Create border
         var border = mask.clone();
         border.opacity = 1;
-        border.strokeWidth = 5;
+        border.strokeWidth = 2;
         border.strokeColor = '#000';
 
         // Join all components together to form the tile
