@@ -491,6 +491,9 @@ var Board = function() {
     this.load = function(config) {
 
         var that = this;
+		
+		// Underlying canvas element
+		var canvas = $(view.element);
 
         // General Properties
         this.loaded = true;
@@ -562,10 +565,8 @@ var Board = function() {
 
             // Allow movement of each tile piece. Note these will snap together
             // if they are placed in the correct position. When this occurs, we
-            // move the attached pieces as a unit. In addition, we stop event
-            // propagation to prevent the window to scroll on mobile.
+            // move the attached pieces as a unit.
             view.onMouseMove = function(event) {
-                event.stopPropagation();
                 if(selected !== undefined) {
                     var deltaX = event.point.x - selected.joint.bounds.x - selected.joint.bounds.width / 2;
                     var deltaY = event.point.y - selected.joint.bounds.y - selected.joint.bounds.height / 2;
@@ -610,11 +611,28 @@ var Board = function() {
                     selected = undefined;
                 }
             };
-
+			
+			// Prevent scrolling if on mobile
+			var blockScrolling = false;
+			$(window).on('touchstart', function(e) {
+				if($(e.target).closest('#puzzle-container').length == 1) {
+					blockScrolling = true;
+				}
+			});
+			
+			$(window).on('touchend', function() {
+				blockScrolling = false;
+			});
+			
+			$(window).on('touchmove', function(e) {
+				if(blockScrolling) {
+					e.preventDefault();
+				}
+			});
+			
         }();
 
         // Initialize the board
-        var canvas = $(view.element);
         view.setViewSize(canvas.width(), canvas.height());
         $(window).trigger('resize');
         this.placePieces();
