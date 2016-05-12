@@ -8,12 +8,14 @@
     window.boot.prototype = {
 
     	preload: function(){
-            // this.game.load.image("loading","assets/loading.png");
+
     	},
 
       	create: function(){
     		this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+            this.scale.setMinMax(480, 260, 1024, 768);
     		this.scale.pageAlignHorizontally = true;
+            this.scale.pageAlignVertically = true;
     		this.scale.setScreenSize();
     		this.game.state.start("Preload");
     	}

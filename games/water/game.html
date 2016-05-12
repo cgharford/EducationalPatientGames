@@ -11,6 +11,7 @@
         <script type="text/javascript" src="assets/js/boot.js"></script>
         <script type="text/javascript" src="assets/js/preload.js"></script>
         <script type="text/javascript" src="assets/js/title.js"></script>
+        <script type="text/javascript" src="assets/js/victory.js"></script>
         <script type="text/javascript" src="assets/js/main.js"></script>
     </head>
     <body>
@@ -29,6 +30,7 @@
                 game.state.add("Preload", window.preload);
                 game.state.add("Title", window.title);
                 game.state.add("Main", window.main);
+                game.state.add("Victory", window.victory);
                 game.state.start("Boot");
             })();
         </script>

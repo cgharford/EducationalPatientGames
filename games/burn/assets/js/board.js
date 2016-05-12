@@ -562,8 +562,10 @@ var Board = function() {
 
             // Allow movement of each tile piece. Note these will snap together
             // if they are placed in the correct position. When this occurs, we
-            // move the attached pieces as a unit
+            // move the attached pieces as a unit. In addition, we stop event
+            // propagation to prevent the window to scroll on mobile.
             view.onMouseMove = function(event) {
+                event.stopPropagation();
                 if(selected !== undefined) {
                     var deltaX = event.point.x - selected.joint.bounds.x - selected.joint.bounds.width / 2;
                     var deltaY = event.point.y - selected.joint.bounds.y - selected.joint.bounds.height / 2;

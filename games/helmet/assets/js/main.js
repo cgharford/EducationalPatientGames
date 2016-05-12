@@ -327,7 +327,7 @@
          //    victoryText.visible = true;
             game_over.play();
             //change to victory state
-            this.game.state.start("Victory1", true, false, score);
+            this.game.state.start("Victory", true, false, score);
         },
         /**
          * Function for placing random children -- NO LONGER USED BUT MAINTAINED FOR FUTURE
