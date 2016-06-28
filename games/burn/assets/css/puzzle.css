@@ -71,6 +71,21 @@
 }
 
 /**
+ * Language Selection
+ * ===================================
+*/
+
+.language-button {
+    background-color: #14BECC;
+    font-family: verdana;
+    font-weight: 200;
+    border: none;
+    border-radius: 0em;
+    margin: .5em;
+    padding: 1.5em;
+}
+
+/**
  * Level Selection
  * ===================================
 */
@@ -191,4 +206,3 @@
 .scorelabel-personal {
 	background-color: #E6606C;
 }
-

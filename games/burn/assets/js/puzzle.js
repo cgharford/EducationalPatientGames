@@ -3,6 +3,7 @@ $(function() {
     // This is the user's current score. It simply records the number of seconds
     // that have passed since selecting a level
     var score = 0;
+    var selectedLanguage;
 
     // Global audio element. We use just the one to truncate any audio playing
     // when anothe raudio clip should be played
@@ -34,10 +35,27 @@ $(function() {
         });
 
         // Hide all components beforehand
+        $('#puzzle-select-container').hide();
+        $('#puzzle-instructions-english').hide();
+        $('#puzzle-instructions-spanish').hide();
         $('.img-container').find('img').hide();
-        $('#click-puzzle').hide();
         $('#level-select-container').hide();
+        $('#level-instructions-english').hide();
+        $('#level-instructions-spanish').hide();
         $('#puzzle-container').hide();
+        $('#click-puzzle').hide();
+        $('#click-instructions-english').hide();
+        $('#click-instructions-spanish').hide();
+        $('#easy-english').hide();
+        $('#easy-spanish').hide();
+        $('#medium-english').hide();
+        $('#medium-spanish').hide();
+        $('#hard-english').hide();
+        $('#hard-spanish').hide();
+        $('#insane-english').hide();
+        $('#insane-spanish').hide();
+        $('#nightmare-english').hide();
+        $('#nightmare-spanish').hide();
 
         // Create audio element and instruct user to pick a puzzle
         audioElement.setAttribute('src', './assets/audio/choosePuzzle.mp3');
@@ -53,7 +71,12 @@ $(function() {
     +function() {
 
         $('.finished-img').click(function(e) {
-            $('.instructions').text("Not quite...keep looking!");
+            if (selectedLanguage == "english") {
+                $('.instructions').text("Not quite...keep looking!");
+            }
+            else {
+                $('.instructions').text("Spanish Not quite...keep looking!");
+            }
             audioElement.setAttribute('src', './assets/audio/unsuccessfulTry.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
             audioElement.addEventListener('load', function() {
@@ -62,12 +85,19 @@ $(function() {
         });
 
         var classes = ['fireplace', 'lamp', 'matches', 'outlet', 'stove'];
-        var instructions = [
+        var instructionsEnglish = [
             "Great job! Make sure you keep your distance from any fireplaces.",
             "You're right! Clothes don't belong on hot lamps.",
             "Fantastic! Let adults handle the matches.",
             "Nice one! Excercise caution when plugging into outlets.",
             "Well done! Be careful around stoves and exposed handles."
+        ];
+        var instructionsSpanish = [
+            "Spanish Great job! Make sure you keep your distance from any fireplaces.",
+            "Spanish You're right! Clothes don't belong on hot lamps.",
+            "Spanish Fantastic! Let adults handle the matches.",
+            "Spanish Nice one! Excercise caution when plugging into outlets.",
+            "Spanish Well done! Be careful around stoves and exposed handles."
         ];
 
         // Load in audio related to finishing game when user clicks correct spot
@@ -89,7 +119,14 @@ $(function() {
         for(var i = 0; i < classes.length; i++) {
             +function() {
                 var src = classes[i];
-                var instr = instructions[i];
+                var instr;
+                if (selectedLanguage == english) {
+                    instr = instructionsEnglish[i];
+                }
+                else {
+                    instr = instructionsSpanish[i];
+                }
+
                 $('.' + classes[i] + '-correct').click(function(e) {
                     correctClick(e, instr, src);
                 });
@@ -109,12 +146,29 @@ $(function() {
         // The puzzle selected and to be displayed after level selection
         var selectedPuzzle = undefined;
 
+        // Allow selection of the langauge to work with. We then set the language
+        // and allow selection for the puzzle
+        $('.language-button').click(function() {
+
+            selectedLanguage = $(this).data('content');
+            $('#puzzle-select-container').show();
+            $('#puzzle-instructions-' + selectedLanguage).show();
+            $('#language-select-container').hide();
+
+        });
+
         // Allow selection of the puzzle to work with. We then query the difficulty
         // of the puzzle
         $('.puzzle-img').click(function() {
 
             selectedPuzzle = $(this);
             $('#level-select-container').show();
+            $('#level-instructions-' + selectedLanguage).show();
+            $('#easy-' + selectedLanguage).show();
+            $('#medium-' + selectedLanguage).show();
+            $('#hard-' + selectedLanguage).show();
+            $('#insane-' + selectedLanguage).show();
+            $('#nightmare-' + selectedLanguage).show();
             $('#puzzle-select-container').hide();
 
             audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
@@ -159,6 +213,7 @@ $(function() {
                 $('#board').hide();
                 puzzle_container.hide();
                 $('#click-puzzle').show();
+                $('#click-instructions-' + selectedLanguage).show();
                 $('#' + puzzleName + '-img').show();
                 $('#' + puzzleName + '-img-anim').show();
                 that.hide();

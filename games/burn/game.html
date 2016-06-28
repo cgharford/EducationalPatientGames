@@ -43,9 +43,24 @@
             </div>
             <div class="row" id="headerStrip"></div>
 
+            <!-- Language Selection -->
+            <div class="content-container" id="language-select-container">
+                <div class="instructions">
+                    Choose a language!
+                </div>
+                <div>
+                    <button id="english" type="button" class="btn btn-primary language-button" data-content="english">English</button>
+                    <button id="spanish" type="button" class="btn btn-primary language-button" data-content="spanish">Espa&#241;ol</button>
+                </div>
+
+                <div class="row"></div>
+            </div>
+
             <!-- Puzzle Selection -->
             <div class="content-container" id="puzzle-select-container">
-                Pick a puzzle!
+                <span id="puzzle-instructions-english">Pick a puzzle!</span>
+                <span id="puzzle-instructions-spanish">Pick a puzzle! --CHANGE ME</span>
+
                 <div class="col-lg-12" id="puzzle-pic-container">
                     <div class="col-lg-4 col-md-4 col-sm-6 puzzle-img-container">
                         <img class="puzzle-img" src="assets/imgs/puzzles/fireplace.jpg" data-content="fireplace"/>
@@ -69,20 +84,25 @@
             <!-- Level Selection -->
             <div class="content-container" id="level-select-container">
                 <div class="instructions">
-                    Pick a level!
+                    <span id="level-instructions-english">Pick a level!</span>
+                    <span id="level-instructions-spanish">Spanish Pick a level!</span>
                 </div>
                 <div><button id="easy-button" type="button" class="btn btn-primary level-button" data-level="2" data-content="easy">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                     </div>
-                    Easy</button>
+                    <span id="easy-english">Easy</span>
+                    <span id="easy-spanish">S Easy</span>
+                    </button>
                 </div>
                 <div><button id="medium-button" type="button" class="btn btn-primary level-button" data-level="3" data-content="medium">
                     <div class="level-icons">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                     </div>
-                    Medium</button>
+                    <span id="medium-english">Medium</span>
+                    <span id="medium-spanish">S med</span>
+                    </button>
                 </div>
                 <div><button id="hard-button" type="button" class="btn btn-primary level-button" data-level="4" data-content="hard">
                     <div class="level-icons">
@@ -90,7 +110,9 @@
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                     </div>
-                    Hard</button>
+                    <span id="hard-english">Hard</span>
+                    <span id="hard-spanish">S hard</span>
+                    </button>
                 </div>
                 <div><button id="insane-button" type="button" class="btn btn-primary level-button" data-level="5" data-content="insane">
                     <div class="level-icons">
@@ -99,7 +121,9 @@
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                     </div>
-                    Insane</button>
+                    <span id="insane-english">Insane</span>
+                    <span id="insane-spanish">S insane</span>
+                    </button>
                 </div>
                 <div><button id="nightmare-button" type="button" class="btn btn-primary level-button" data-level="6" data-content="nightmare">
                     <div class="level-icons">
@@ -109,7 +133,8 @@
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                     </div>
-                    NIGHTMARE</button>
+                    <span id="nightmare-english">NIGHTMARE</span>
+                    <span id="nightmare-spanish">S nightmare</span>
                 </div>
                 <div class="row"></div>
             </div>
@@ -127,7 +152,8 @@
             <!-- Puzzle Completion Game -->
             <div class="content-container" id="click-puzzle">
                 <div class="instructions">
-                    Click on the dangerous spot in the puzzle!
+                    <span id="click-instructions-english">Click on the dangerous spot in the puzzle!</span>
+                    <span id="click-instructions-spanish">Spanish Click on the dangerous spot in the puzzle!</span>
                 </div>
                 <div class="col-lg-12" id="puzzle-pic-container">
 
