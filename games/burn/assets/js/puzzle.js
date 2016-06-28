@@ -56,13 +56,6 @@ $(function() {
         $('#insane-spanish').hide();
         $('#nightmare-english').hide();
         $('#nightmare-spanish').hide();
-
-        // Create audio element and instruct user to pick a puzzle
-        audioElement.setAttribute('src', './assets/audio/choosePuzzle.mp3');
-        audioElement.setAttribute('autoplay', 'autoplay');
-        audioElement.addEventListener("load", function() {
-            audioElement.play();
-        }, true);
     }();
 
     // Preparations for when the puzzle is completed. This allows for selecting certain
@@ -77,13 +70,14 @@ $(function() {
             else {
                 $('.instructions').text("Spanish Not quite...keep looking!");
             }
-            audioElement.setAttribute('src', './assets/audio/unsuccessfulTry.mp3');
+            audioElement.setAttribute('src', './assets/audio/' + selectedLanguage + 'UnsuccessfulTry.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
             audioElement.addEventListener('load', function() {
                audioElement.play();
             }, true);
         });
 
+        var classesAudio = ['Fireplace', 'Lamp', 'Matches', 'Outlet', 'Stove'];
         var classes = ['fireplace', 'lamp', 'matches', 'outlet', 'stove'];
         var instructionsEnglish = [
             "Great job! Make sure you keep your distance from any fireplaces.",
@@ -118,7 +112,8 @@ $(function() {
         // Switch over to scoring now that the user has selected the correct spot
         for(var i = 0; i < classes.length; i++) {
             +function() {
-                var src = classes[i];
+                console.log(selectedLanguage);
+                var src = selectedLanguage + classesAudio[i];
                 var instr;
                 if (selectedLanguage == english) {
                     instr = instructionsEnglish[i];
@@ -155,6 +150,12 @@ $(function() {
             $('#puzzle-instructions-' + selectedLanguage).show();
             $('#language-select-container').hide();
 
+            // Create audio element and instruct user to pick a puzzle
+            audioElement.setAttribute('src', './assets/audio/' + selectedLanguage + 'ChoosePuzzle.mp3');
+            audioElement.setAttribute('autoplay', 'autoplay');
+            audioElement.addEventListener("load", function() {
+                audioElement.play();
+            }, true);
         });
 
         // Allow selection of the puzzle to work with. We then query the difficulty
@@ -171,7 +172,7 @@ $(function() {
             $('#nightmare-' + selectedLanguage).show();
             $('#puzzle-select-container').hide();
 
-            audioElement.setAttribute('src', './assets/audio/levelIntro.mp3');
+            audioElement.setAttribute('src', './assets/audio/' + selectedLanguage + 'LevelIntro.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
             audioElement.addEventListener('load', function() {
                audioElement.play();
@@ -203,7 +204,7 @@ $(function() {
                 clearInterval(window.board.intervalId);
 
                 // Some notification that the puzzle is complete
-                audioElement.setAttribute('src', './assets/audio/clickIntro.mp3');
+                audioElement.setAttribute('src', './assets/audio/' + selectedLanguage + 'ClickIntro.mp3');
                 audioElement.setAttribute('autoplay', 'autoplay');
                 audioElement.addEventListener('load', function() {
                    audioElement.play();
@@ -239,7 +240,7 @@ $(function() {
             $('#skip').click(callback);
 
             // Play audio for puzzle instructions
-            audioElement.setAttribute('src', './assets/audio/puzzleIntro.mp3');
+            audioElement.setAttribute('src', './assets/audio/' + selectedLanguage + 'PuzzleIntro.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
             audioElement.addEventListener('load', function() {
                audioElement.play();
