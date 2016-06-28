@@ -68,7 +68,7 @@ $(function() {
                 $('.instructions').text("Not quite...keep looking!");
             }
             else {
-                $('.instructions').text("Spanish Not quite...keep looking!");
+                $('.instructions').text("No exactamente, ¡Sigue buscando!");
             }
             audioElement.setAttribute('src', './assets/audio/' + selectedLanguage + 'UnsuccessfulTry.mp3');
             audioElement.setAttribute('autoplay', 'autoplay');
@@ -87,11 +87,11 @@ $(function() {
             "Well done! Be careful around stoves and exposed handles."
         ];
         var instructionsSpanish = [
-            "Spanish Great job! Make sure you keep your distance from any fireplaces.",
-            "Spanish You're right! Clothes don't belong on hot lamps.",
-            "Spanish Fantastic! Let adults handle the matches.",
-            "Spanish Nice one! Excercise caution when plugging into outlets.",
-            "Spanish Well done! Be careful around stoves and exposed handles."
+            "¡Muy bien! Asegúrate de no acercarte a las chimeneas.",
+            "¡Tienes razón! La ropa no se debe poner sobre lámparas calientes",
+            "¡Fantástico! Deja que los adultos usen las cerillas.",
+            "¡Excelente! No juegues con el enchufe.",
+            "¡Súper bien! Ten cuidado con estufas y asas de cacerolas calientes."
         ];
 
         // Load in audio related to finishing game when user clicks correct spot
