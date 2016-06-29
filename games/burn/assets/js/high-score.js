@@ -4,18 +4,28 @@
  *
  * Creates the HTML for our highscore table and displays the top four high scores.
 */
-function writeTable(score, board) {
-    loadTable(score, board, function(responseArray) {
+function writeTable(score, board, language) {
+    loadTable(score, board, language, function(responseArray) {
+        var highScoreLabel;
+        var yourScoreLabel;
+        if (language == "spanish") {
+            highScoreLabel = "Puntuación más alta ";
+            yourScoreLabel = "Tu puntuación";
+        }
+        else {
+            highScoreLabel = "High Score ";
+            yourScoreLabel = "Your Score";
+        }
         var tbody = $('#body');
         for (var i = 0; i < 4; i++) {
             if(responseArray[i] > 0){
                 var tr = $('<tr>').appendTo(tbody);
-                tr.append('<td class="scorelabel">' + 'High Score '+ (i + 1) + ' ' + '</td>');
+                tr.append('<td class="scorelabel">' + highScoreLabel + (i + 1) + ' ' + '</td>');
                 tr.append('<td class="scoreval">' + window.formatScore(responseArray[i]) + '</td>');
             }
         }
         var tr = $('<tr>').appendTo(tbody);
-        tr.append('<td class="scorelabel-personal">' + 'Your Score' + '</td>');
+        tr.append('<td class="scorelabel-personal">' + yourScoreLabel + '</td>');
         tr.append('<td class="scoreval">' + window.formatScore(score) + '</td>');
     });
 }
@@ -26,7 +36,7 @@ function writeTable(score, board) {
  *
  * Fetches the high scores from the database, database info in the db-api folder
 */
-function loadTable(score, board, callback) {
+function loadTable(score, board, language, callback) {
 
     // Get the cookie for high scores.
     // Split the XHR response if it was successfully received
@@ -49,7 +59,7 @@ function loadTable(score, board, callback) {
             } catch (e) { // Otherwise, follow built-in error handling procedure
                 responseArray = errorArray;
             }
-			
+
             for(var i = 0; i < responseArray.length; i++) {
                 if(responseArray[i] === undefined || responseArray === "NULL") {
                     responseArray[i] = errorArray[i];

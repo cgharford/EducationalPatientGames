@@ -56,6 +56,11 @@ $(function() {
         $('#insane-spanish').hide();
         $('#nightmare-english').hide();
         $('#nightmare-spanish').hide();
+        $('#congratstext-english').hide();
+        $('#congratstext-spanish').hide();
+        $('#restart-english').hide();
+        $('#restart-spanish').hide();
+
     }();
 
     // Preparations for when the puzzle is completed. This allows for selecting certain
@@ -104,25 +109,34 @@ $(function() {
                 audioElement.play();
             }, true);
             audioElement.addEventListener('ended', function() {
+                if (selectedLanguage == "spanish") {
+                    $('#congratstext').text("¡Tú ganas!");
+                    $('#restart').val("Elegir un nuevo juego!");
+                }
+                else {
+                    $('#congratstext').text("You win!");
+                    $('#restart').val("Pick a new game!");
+                }
                 document.getElementById('tableLink').click();
-                writeTable(score, window.board);
+                writeTable(score, window.board, selectedLanguage);
             });
         }
 
         // Switch over to scoring now that the user has selected the correct spot
         for(var i = 0; i < classes.length; i++) {
             +function() {
-                console.log(selectedLanguage);
-                var src = selectedLanguage + classesAudio[i];
+                var src;
                 var instr;
-                if (selectedLanguage == english) {
-                    instr = instructionsEnglish[i];
-                }
-                else {
-                    instr = instructionsSpanish[i];
-                }
+                var index = i;
 
                 $('.' + classes[i] + '-correct').click(function(e) {
+                    if (selectedLanguage == "spanish") {
+                        instr = instructionsSpanish[index];
+                    }
+                    else {
+                        instr = instructionsEnglish[index];
+                    }
+                    var src = selectedLanguage + classesAudio[index];
                     correctClick(e, instr, src);
                 });
 
